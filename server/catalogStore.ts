@@ -56,9 +56,10 @@ export interface CatalogMeta {
   count: number;
   kinds: string[];
   priceMax: number;
+  isCompiled?: boolean;
 }
 
-interface CatalogFile {
+export interface CatalogFile {
   meta: CatalogMeta;
   products: CatalogProduct[];
 }
@@ -362,7 +363,7 @@ const ICONIC_SPECS: IconicHitSpec[] = [
   { key: 'armaf-cdn-woman', rank: 75, match: (b, n) => b.includes('armaf') && n.includes('club de nuit') && (n.includes('woman') || n.includes('женск')) },
 ];
 
-function groupProductsByModel(rawList: CatalogProduct[]): {
+export function groupProductsByModel(rawList: CatalogProduct[]): {
   grouped: CatalogProduct[];
   byId: Map<string, CatalogProduct>;
   bySlug: Map<string, CatalogProduct>;
@@ -543,6 +544,31 @@ export function reloadCatalog() {
 export function getCatalog() {
   if (cache) return cache;
   const file = loadFile();
+
+  if (file.meta.isCompiled) {
+    const byId = new Map<string, CatalogProduct>();
+    const bySlug = new Map<string, CatalogProduct>();
+    for (const p of file.products) {
+      if (!p.description) {
+        p.description = `${p.name} — ${p.kindLabel || 'оригинальная продукция'}.`;
+      }
+      if (!p.images) p.images = [];
+      if (!p.allNotes) p.allNotes = [];
+      byId.set(p.id, p);
+      bySlug.set(p.slug, p);
+    }
+    cache = {
+      products: file.products,
+      byId,
+      bySlug,
+      meta: {
+        ...file.meta,
+        count: file.products.length,
+      },
+    };
+    return cache;
+  }
+
   const { grouped, byId, bySlug } = groupProductsByModel(file.products);
   cache = {
     products: grouped,

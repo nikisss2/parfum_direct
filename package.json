@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "api": "tsx server/index.ts",
-    "start": "tsx server/index.ts",
-    "import:catalog": "tsx scripts/import-price-list.ts",
+    "start": "node --max-old-space-size=450 dist-server/index.js",
+    "build:server": "esbuild server/index.ts --platform=node --format=esm --outdir=dist-server --bundle --packages=external",
+    "build": "vite build && esbuild server/index.ts --platform=node --format=esm --outdir=dist-server --bundle --packages=external",
+    "catalog:compile": "tsx scripts/compile-catalog.ts",
+    "import:catalog": "tsx scripts/import-price-list.ts && tsx scripts/compile-catalog.ts",
     "images:fetch": "tsx scripts/fetch-curated-images.ts",
     "dev:all": "tsx scripts/dev-all.ts",
-    "build": "vite build",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
+    "clean": "rm -rf dist dist-server",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
