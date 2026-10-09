@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #09090b;
+    background-color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  }
+
+  /* Эстетика Золотого Яблока: строгая прямоугольная геометрия без скруглений */
+  *,
+  *::before,
+  *::after {
+    border-radius: 0px !important;
+  }
+
+  /* Премиальный лаконичный скроллбар */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f4f4f5;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #a1a1aa;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+  }
+}

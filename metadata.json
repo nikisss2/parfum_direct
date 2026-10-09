@@ -1,0 +1,6 @@
+{
+  "name": "Пространство Проектов",
+  "description": "Интерактивная рабочая среда для планирования приложений, задач и прототипов с быстрыми шаблонами и заметками.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

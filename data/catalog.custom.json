@@ -1,0 +1,194 @@
+{
+  "products": [
+    {
+      "id": "p-75ddbac9-12576",
+      "sku": "12576",
+      "slug": "creed-aventus-creed-aventus-мужской-парфюмерная-вода-без-спрея-500-мл-12576",
+      "name": "Creed Aventus Мужской парфюмерная вода",
+      "brand": "Creed",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "description": "Creed Aventus Мужской парфюмерная вода (без спрея) 500 мл — другое, оригинальная продукция.",
+      "images": [
+        "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1000&q=80"
+      ],
+      "allNotes": [
+        "Ананас",
+        "Бергамот",
+        "Черная смородина",
+        "Яблоко",
+        "Береза",
+        "Пачули",
+        "Мускус",
+        "Амбра"
+      ],
+      "isHit": true,
+      "isNew": false,
+      "rating": 4.8,
+      "reviewsCount": 2,
+      "minPrice": 658,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 658,
+          "inStock": true
+        },
+        {
+          "type": "vol_1.7_мл_bottle",
+          "label": "1.7 мл",
+          "volumeMl": 1.7,
+          "price": 467,
+          "inStock": true
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 422,
+          "inStock": true
+        },
+        {
+          "type": "vol_3_мл_decant",
+          "label": "3 мл (отливант)",
+          "volumeMl": 3,
+          "price": 627,
+          "inStock": true
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 1034,
+          "inStock": true
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 1907,
+          "inStock": true
+        },
+        {
+          "type": "vol_10_мл_bottle",
+          "label": "10 мл",
+          "volumeMl": 10,
+          "price": 8009,
+          "inStock": true
+        },
+        {
+          "type": "vol_15_мл_decant",
+          "label": "15 мл (отливант)",
+          "volumeMl": 15,
+          "price": 5344,
+          "inStock": true
+        },
+        {
+          "type": "vol_20_мл_decant",
+          "label": "20 мл (отливант)",
+          "volumeMl": 20,
+          "price": 7156,
+          "inStock": true
+        },
+        {
+          "type": "vol_30_мл_decant",
+          "label": "30 мл (отливант)",
+          "volumeMl": 30,
+          "price": 5451,
+          "inStock": true
+        },
+        {
+          "type": "vol_30_мл_bottle",
+          "label": "30 мл (флакон)",
+          "volumeMl": 30,
+          "price": 18710,
+          "inStock": true
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 19709,
+          "inStock": true
+        },
+        {
+          "type": "vol_50_мл_tester",
+          "label": "50 мл (тестер)",
+          "volumeMl": 50,
+          "price": 23473,
+          "inStock": true
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 26120,
+          "inStock": true
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 27969,
+          "inStock": true
+        },
+        {
+          "type": "vol_240_мл_tester",
+          "label": "240 мл (тестер)",
+          "volumeMl": 240,
+          "price": 61405,
+          "inStock": true
+        },
+        {
+          "type": "vol_240_мл_bottle",
+          "label": "240 мл (флакон)",
+          "volumeMl": 240,
+          "price": 62491,
+          "inStock": true
+        },
+        {
+          "type": "vol_500_мл_tester",
+          "label": "500 мл (тестер)",
+          "volumeMl": 500,
+          "price": 98801,
+          "inStock": true
+        },
+        {
+          "type": "vol_500_мл_bottle",
+          "label": "500 мл (флакон)",
+          "volumeMl": 500,
+          "price": 105859,
+          "inStock": true
+        }
+      ],
+      "sourceName": "Creed Aventus Мужской парфюмерная вода (без спрея) 500 мл",
+      "notes": {
+        "top": [
+          "Ананас",
+          "Бергамот",
+          "Черная смородина",
+          "Яблоко"
+        ],
+        "heart": [
+          "Береза",
+          "Пачули",
+          "Марокканский жасмин",
+          "Роза"
+        ],
+        "base": [
+          "Мускус",
+          "Дубовый мох",
+          "Серая амбра",
+          "Ваниль"
+        ]
+      },
+      "_hitPriority": 1100,
+      "custom": true
+    }
+  ]
+}
