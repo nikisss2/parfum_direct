@@ -15,7 +15,8 @@
     "dev:all": "tsx scripts/dev-all.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist dist-server",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
