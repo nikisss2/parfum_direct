@@ -145,8 +145,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
                     }}
                     className={`px-2 py-0.5 border text-[11px] font-medium transition-colors rounded-none leading-tight ${
                       isSelected
-                        ? 'bg-black text-white border-black font-bold'
-                        : 'border-zinc-300 text-zinc-700 hover:border-black hover:text-black bg-white'
+                        ? 'bg-black text-white border-black font-bold dark:bg-white dark:text-black dark:border-white'
+                        : 'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-white bg-white dark:bg-zinc-800 hover:border-black dark:hover:border-zinc-500 hover:text-black'
                     }`}
                   >
                     {shortLabel}
@@ -156,15 +156,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
             </div>
           ) : (perfume.rating || 0) > 0 ? (
             /* Or Star Rating Line (5.0 ★★★★★ — 1) */
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-900 mb-1.5">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-900 dark:text-white mb-1.5">
               <span>{(Number(perfume.rating) || 5).toFixed(1)}</span>
-              <span className="text-zinc-900 tracking-tight text-xs font-serif">★★★★★</span>
+              <span className="text-amber-400 tracking-tight text-xs">★★★★★</span>
               <span className="text-zinc-400">— {perfume.reviewsCount || 1}</span>
             </div>
           ) : null}
 
           {/* Row 2: Uppercase Product Kind Label (e.g. ПАРФЮМЕРНАЯ ВОДА) */}
-          <div className="text-[11px] font-bold tracking-wider text-zinc-900 uppercase mt-0.5 mb-1 truncate">
+          <div className="text-[11px] font-bold tracking-wider text-zinc-900 dark:text-zinc-300 uppercase mt-0.5 mb-1 truncate">
             {displayKind}
           </div>
 
@@ -173,8 +173,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
             to={`/product/${encodeURIComponent(perfume.slug || perfume.id)}`}
             className="block text-sm sm:text-[15px] leading-snug hover:underline line-clamp-2 mt-0.5"
           >
-            <span className="font-bold uppercase text-zinc-950 tracking-tight">{perfume.brand}</span>{' '}
-            <span className="font-normal text-zinc-800">{perfume.name}</span>
+            <span className="font-bold uppercase text-zinc-950 dark:text-white tracking-tight">{perfume.brand}</span>{' '}
+            <span className="font-normal text-zinc-800 dark:text-zinc-200">{perfume.name}</span>
           </Link>
 
           {/* Row 4: Olive Discount Tag */}
@@ -188,7 +188,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
 
           {/* Row 5: Price display exactly as ЗЯ Screenshot 2: 2 371 ₽   2 790 ₽ */}
           <div className="mt-2 flex items-baseline gap-2.5 flex-wrap">
-            <span className="text-lg sm:text-xl font-bold text-zinc-950 font-sans tracking-tight">
+            <span className="text-lg sm:text-xl font-bold text-zinc-950 dark:text-white font-sans tracking-tight">
               {currentPrice.toLocaleString('ru-RU')} ₽
             </span>
             {hasDiscount && calculatedOldPrice && calculatedOldPrice > currentPrice && (
@@ -211,8 +211,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
             onClick={handleAddToCart}
             className={`w-full py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors rounded-none ${
               isAddedAnim
-                ? 'bg-black text-white border-black'
-                : 'border-zinc-950 bg-white text-zinc-950 hover:bg-zinc-950 hover:text-white'
+                ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
+                : 'border-zinc-950 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-950 dark:text-white hover:bg-zinc-950 dark:hover:bg-zinc-700 hover:text-white'
             }`}
           >
             {isAddedAnim ? (

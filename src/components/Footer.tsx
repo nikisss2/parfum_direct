@@ -64,13 +64,8 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-3">
               <img
                 src="/assets/branding/логотип_2_white.png"
-                alt="MA"
-                className="h-8 w-auto object-contain"
-              />
-              <img
-                src="/assets/branding/логотип_1_white.png"
                 alt="MAISON ARÔME"
-                className="h-6 w-auto object-contain"
+                className="h-9 sm:h-11 w-auto object-contain"
               />
             </div>
             <p className="text-zinc-400 text-xs leading-relaxed max-w-sm">
@@ -108,9 +103,10 @@ export const Footer: React.FC = () => {
           <div className="space-y-3">
             <div className="font-semibold text-white tracking-wide uppercase text-[11px]">Сервис и Помощь</div>
             <ul className="space-y-2 text-zinc-400">
-              <li><Link to="/faq" className="hover:text-white transition-colors text-white font-medium">Ответы на вопросы (FAQ)</Link></li>
+              <li><Link to="/gallery" className="hover:text-white transition-colors text-white font-medium">Галерея заказов (Фотоотчеты)</Link></li>
+              <li><Link to="/reviews" className="hover:text-white transition-colors text-amber-300 font-medium">Отзывы покупателей (★ 5.0)</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">Ответы на вопросы (FAQ)</Link></li>
               <li><Link to="/contacts" className="hover:text-white transition-colors">Контакты и шоурум</Link></li>
-              <li><Link to="/reviews" className="hover:text-white transition-colors text-amber-300 font-medium">Отзывы покупателей (★ 4.9)</Link></li>
               <li><Link to="/how-to-decant" className="hover:text-white transition-colors">Как устроен распив</Link></li>
               <li><Link to="/delivery" className="hover:text-white transition-colors">Доставка и оплата</Link></li>
               <li><Link to="/about" className="hover:text-white transition-colors">О компании</Link></li>

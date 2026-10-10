@@ -345,16 +345,16 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
       </div>
 
       {/* Trust & Flow Explainer Banner */}
-      <div className="mb-8 p-5 bg-[#f4f4f5] border border-zinc-200 rounded-none flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="mb-8 p-5 bg-[#f4f4f5] dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 bg-black text-white flex items-center justify-center shrink-0">
-            <Send className="w-4 h-4 text-white" />
+          <div className="w-9 h-9 bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shrink-0">
+            <Send className="w-4 h-4 text-white dark:text-black" />
           </div>
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-zinc-950">
+            <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
               Как работает оформление через Telegram:
             </div>
-            <div className="text-xs text-zinc-600 mt-0.5 leading-relaxed">
+            <div className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5 leading-relaxed">
               После нажатия кнопки <strong>«Оформить заказ в Telegram»</strong> сформированные данные заказа автоматически откроются в вашем диалоге с менеджером (и сохранятся в буфере обмена). Менеджер подтвердит наличие, пришлет фото флаконов перед отправкой и реквизиты для оплаты (СБП / перевод).
             </div>
           </div>
@@ -365,9 +365,9 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
         {/* Left Columns: Form Fields */}
         <div className="lg:col-span-2 space-y-8">
           {/* Section 1: Контакты получателя */}
-          <div className="p-6 rounded-none bg-white border border-zinc-200 space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-mono flex items-center justify-center font-bold">
+          <div className="p-6 rounded-none bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 dark:text-white flex items-center gap-2">
+              <span className="w-5 h-5 rounded-none bg-black dark:bg-white text-white dark:text-black text-[10px] font-mono flex items-center justify-center font-bold">
                 1
               </span>
               Данные получателя
@@ -375,7 +375,7 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                   Имя и Фамилия *
                 </label>
                 <input
@@ -384,14 +384,14 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none ${
-                    errors.fullName ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white'
+                    errors.fullName ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30' : 'border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white'
                   }`}
                 />
                 {errors.fullName && <div className="text-[11px] text-rose-600 mt-1">{errors.fullName}</div>}
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                   Номер телефона *
                 </label>
                 <input
@@ -400,14 +400,14 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-mono ${
-                    errors.phone ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white'
+                    errors.phone ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30' : 'border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white'
                   }`}
                 />
                 {errors.phone && <div className="text-[11px] text-rose-600 mt-1">{errors.phone}</div>}
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                   Ваш Telegram ник (@username) *
                 </label>
                 <input
@@ -416,14 +416,14 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                   value={telegram}
                   onChange={e => setTelegram(e.target.value)}
                   className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-mono ${
-                    errors.telegram ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white'
+                    errors.telegram ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30' : 'border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white'
                   }`}
                 />
                 {errors.telegram && <div className="text-[11px] text-rose-600 mt-1">{errors.telegram}</div>}
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                   Электронная почта (для истории)
                 </label>
                 <input
@@ -431,17 +431,17 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                   placeholder="ivan@example.com (необязательно)"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full text-xs px-3.5 py-2.5 rounded-none border border-zinc-300 focus:border-black bg-white outline-none"
+                  className="w-full text-xs px-3.5 py-2.5 rounded-none border border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white outline-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 2: Доставка и Адрес */}
-          <div className="p-6 rounded-none bg-white border border-zinc-200 space-y-4">
+          <div className="p-6 rounded-none bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-mono flex items-center justify-center font-bold">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 dark:text-white flex items-center gap-2">
+                <span className="w-5 h-5 rounded-none bg-black dark:bg-white text-white dark:text-black text-[10px] font-mono flex items-center justify-center font-bold">
                   2
                 </span>
                 Доставка и Пункт выдачи (ПВЗ)
@@ -457,9 +457,9 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
 
             {/* Quick Saved Addresses if logged in */}
             {user && user.savedAddresses && user.savedAddresses.length > 0 && (
-              <div className="p-3.5 bg-zinc-50 rounded-none border border-zinc-200 space-y-2">
-                <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
-                  <Building className="w-3.5 h-3.5 text-zinc-900" />
+              <div className="p-3.5 bg-zinc-50 dark:bg-zinc-900 rounded-none border border-zinc-200 dark:border-zinc-800 space-y-2">
+                <div className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Building className="w-3.5 h-3.5 text-zinc-900 dark:text-white" />
                   Ваши сохранённые адреса из профиля:
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -468,9 +468,9 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                       key={saved.id}
                       type="button"
                       onClick={() => handleSelectSavedAddress(saved)}
-                      className="px-3 py-1.5 rounded-none bg-white hover:bg-black hover:text-white border border-zinc-300 text-left text-xs transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 rounded-none bg-white dark:bg-zinc-800 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black border border-zinc-300 dark:border-zinc-700 text-left text-xs transition-colors flex items-center gap-1.5"
                     >
-                      <MapPin className="w-3 h-3 text-zinc-900 shrink-0" />
+                      <MapPin className="w-3 h-3 text-zinc-900 dark:text-white shrink-0" />
                       <span className="font-bold">{saved.label}:</span>
                       <span className="truncate max-w-[200px]">{saved.address}</span>
                     </button>
@@ -482,7 +482,7 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Dynamic City Search with Autocomplete */}
               <div ref={cityRef} className="relative">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                   Город доставки *
                 </label>
                 <div className="relative">
@@ -496,7 +496,7 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                       setCityDropdownOpen(true);
                     }}
                     className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none pr-8 ${
-                      errors.city ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white'
+                      errors.city ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30' : 'border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white'
                     }`}
                   />
                   <MapPin className="w-4 h-4 text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -505,17 +505,17 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
 
                 {/* Autocomplete Dropdown */}
                 {cityDropdownOpen && filteredCities.length > 0 && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-zinc-300 shadow-xl z-20 max-h-48 overflow-y-auto">
+                  <div className="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 shadow-xl z-20 max-h-48 overflow-y-auto">
                     {filteredCities.map(c => (
                       <button
                         key={c.name}
                         type="button"
                         onClick={() => handleSelectCity(c)}
-                        className="w-full text-left px-3.5 py-2 hover:bg-zinc-100 flex items-center justify-between text-xs border-b border-zinc-100 last:border-b-0"
+                        className="w-full text-left px-3.5 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-between text-xs border-b border-zinc-100 dark:border-zinc-800 last:border-b-0"
                       >
                         <div>
-                          <span className="font-bold text-zinc-950">{c.name}</span>
-                          <span className="text-[10px] text-zinc-500 ml-1.5">{c.region}</span>
+                          <span className="font-bold text-zinc-950 dark:text-white">{c.name}</span>
+                          <span className="text-[10px] text-zinc-500 dark:text-zinc-400 ml-1.5">{c.region}</span>
                         </div>
                         <span className="text-[10px] text-zinc-400 font-mono">{c.deliveryDays}</span>
                       </button>
@@ -525,19 +525,19 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                   Срок доставки до вашего города:
                 </label>
-                <div className="text-xs px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 text-zinc-900 font-mono flex items-center justify-between">
+                <div className="text-xs px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white font-mono flex items-center justify-between">
                   <span>{city}</span>
-                  <span className="font-bold text-black">{cityDeliveryDays}</span>
+                  <span className="font-bold text-black dark:text-white">{cityDeliveryDays}</span>
                 </div>
               </div>
             </div>
 
             {/* Delivery Methods Grid */}
             <div className="pt-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-2">
                 Служба доставки:
               </label>
               <div className="space-y-2">
@@ -550,8 +550,8 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                       onClick={() => setSelectedDelivery(opt)}
                       className={`flex items-start justify-between p-3.5 rounded-none border cursor-pointer transition-colors ${
                         isSelected
-                          ? 'border-black bg-zinc-50/70 shadow-xs'
-                          : 'border-zinc-200 hover:border-zinc-300 bg-white'
+                          ? 'border-black dark:border-white bg-zinc-50/70 dark:bg-zinc-800 shadow-xs'
+                          : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-white dark:bg-zinc-900/60'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -560,18 +560,18 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                           name="deliveryOption"
                           checked={isSelected}
                           onChange={() => setSelectedDelivery(opt)}
-                          className="mt-0.5 accent-black rounded-none"
+                          className="mt-0.5 accent-black dark:accent-white rounded-none"
                         />
                         <div>
-                          <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-2">
+                          <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 dark:text-white flex items-center gap-2">
                             <span>{opt.name}</span>
                             <span className="text-[10px] text-zinc-400 font-mono font-normal">({opt.time})</span>
                           </div>
-                          <div className="text-[11px] text-zinc-500 mt-0.5">{opt.description}</div>
+                          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">{opt.description}</div>
                         </div>
                       </div>
 
-                      <div className="text-xs font-bold font-mono text-zinc-950 shrink-0 ml-4">
+                      <div className="text-xs font-bold font-mono text-zinc-950 dark:text-white shrink-0 ml-4">
                         {priceToPay === 0 ? (
                           <span className="text-[#5A6B32] uppercase">Бесплатно</span>
                         ) : (
@@ -586,7 +586,7 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
 
             {/* Address / PVZ Input */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1">
                 Адрес пункта выдачи (ПВЗ) или улицы/дома *
               </label>
               <input
@@ -595,7 +595,7 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                 value={address}
                 onChange={e => setAddress(e.target.value)}
                 className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none ${
-                  errors.address ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white'
+                  errors.address ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/30' : 'border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white'
                 }`}
               />
               {errors.address && <div className="text-[11px] text-rose-600 mt-1">{errors.address}</div>}
@@ -624,7 +624,7 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
                 placeholder="Положите, пожалуйста, фирменный блоттер или пробник свежего аромата..."
                 value={comment}
                 onChange={e => setComment(e.target.value)}
-                className="w-full text-xs px-3.5 py-2 rounded-none border border-zinc-300 focus:border-black bg-white outline-none"
+                className="w-full text-xs px-3.5 py-2 rounded-none border border-zinc-300 dark:border-zinc-700 focus:border-black dark:focus:border-white bg-white dark:bg-zinc-900 dark:text-white outline-none"
               />
             </div>
           </div>
@@ -632,32 +632,32 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
 
         {/* Right Column: Order Summary & Checkout Button */}
         <div className="space-y-6">
-          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
-            <h2 className="text-base font-normal font-serif text-zinc-950">
+          <div className="p-6 rounded-none bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-5">
+            <h2 className="text-base font-normal font-serif text-zinc-950 dark:text-white">
               Состав заказа
             </h2>
 
             {/* Items list preview */}
-            <div className="divide-y divide-zinc-200 max-h-60 overflow-y-auto pr-1">
+            <div className="divide-y divide-zinc-200 dark:divide-zinc-800 max-h-60 overflow-y-auto pr-1">
               {cart.map(item => (
                 <div key={item.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <img
                       src={item.image}
                       alt=""
-                      className="w-10 h-10 object-contain bg-white border border-zinc-200 rounded-none shrink-0 p-0.5"
+                      className="w-10 h-10 object-contain bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-none shrink-0 p-0.5"
                     />
                     <div className="truncate">
-                      <div className="font-bold uppercase tracking-tight text-zinc-950 truncate">
+                      <div className="font-bold uppercase tracking-tight text-zinc-950 dark:text-white truncate">
                         {item.brand}
                       </div>
-                      <div className="text-zinc-600 text-[11px] truncate">{item.name}</div>
+                      <div className="text-zinc-600 dark:text-zinc-300 text-[11px] truncate">{item.name}</div>
                       <div className="text-[10px] text-zinc-400 font-mono">
                         {item.volumeLabel} × {item.quantity}
                       </div>
                     </div>
                   </div>
-                  <div className="font-bold font-mono text-zinc-950 shrink-0">
+                  <div className="font-bold font-mono text-zinc-950 dark:text-white shrink-0">
                     {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
@@ -666,36 +666,36 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
 
             {/* Gift banner */}
             {isFreeShipping && (
-              <div className="p-3 bg-white border border-zinc-200 rounded-none flex items-center gap-2.5">
+              <div className="p-3 bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-none flex items-center gap-2.5">
                 <Gift className="w-5 h-5 text-[#5A6B32] shrink-0" />
-                <div className="text-[11px] text-zinc-700 leading-tight">
-                  <strong className="text-zinc-950 font-bold uppercase">Подарок добавлен:</strong> атомайзер 10 мл + 2 семпла селектива
+                <div className="text-[11px] text-zinc-700 dark:text-zinc-300 leading-tight">
+                  <strong className="text-zinc-950 dark:text-white font-bold uppercase">Подарок добавлен:</strong> атомайзер 10 мл + 2 семпла селектива
                 </div>
               </div>
             )}
 
             {/* Price Calculations */}
-            <div className="space-y-2 pt-4 border-t border-zinc-200 text-xs">
-              <div className="flex justify-between text-zinc-600">
+            <div className="space-y-2 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-xs">
+              <div className="flex justify-between text-zinc-600 dark:text-zinc-400">
                 <span>Товары ({cart.reduce((a, b) => a + b.quantity, 0)} шт.)</span>
-                <span className="font-mono">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
+                <span className="font-mono text-zinc-950 dark:text-white">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex justify-between text-zinc-900 font-bold">
+                <div className="flex justify-between text-zinc-900 dark:text-white font-bold">
                   <span>Скидка</span>
-                  <span className="font-mono">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
-              <div className="flex justify-between items-center text-zinc-600">
+              <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400">
                 <span>Доставка ({selectedDelivery.name})</span>
-                <span className="font-mono">
+                <span className="font-mono text-zinc-950 dark:text-white">
                   {effectiveDeliveryPrice === 0 ? '0 ₽ (Бесплатно)' : `${effectiveDeliveryPrice.toLocaleString('ru-RU')} ₽`}
                 </span>
               </div>
 
-              <div className="pt-3 border-t border-zinc-200 flex justify-between text-base font-bold text-zinc-950">
+              <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 flex justify-between text-base font-bold text-zinc-950 dark:text-white">
                 <span className="uppercase tracking-wider">Итого к оплате:</span>
                 <span className="font-mono text-lg">{finalTotal.toLocaleString('ru-RU')} ₽</span>
               </div>
@@ -705,29 +705,29 @@ ${isFreeShipping ? '🎁 Подарок: Фирменный тревел-ато�
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest text-center transition-all shadow-md active:scale-98 disabled:opacity-50"
+              className="w-full py-4 bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-none text-xs font-bold uppercase tracking-widest text-center transition-all shadow-md active:scale-98 disabled:opacity-50"
             >
               <span className="inline-flex items-center justify-center gap-2.5">
-                <Send className="w-4 h-4 text-white shrink-0" />
+                <Send className="w-4 h-4 text-white dark:text-black shrink-0" />
                 <span>{isSubmitting ? 'Формирование заказа...' : 'Оформить заказ в Telegram'}</span>
               </span>
             </button>
 
-            <div className="text-[11px] text-zinc-500 text-center leading-relaxed">
+            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 text-center leading-relaxed">
               При нажатии заказ копируется в буфер обмена и открывается диалог в Telegram с личным менеджером.
             </div>
 
             {/* Guarantees */}
-            <div className="p-3.5 bg-white rounded-none border border-zinc-200 text-xs text-zinc-600 space-y-2">
-              <div className="flex items-center gap-2 text-zinc-900 font-bold uppercase tracking-wider text-[10px]">
+            <div className="p-3.5 bg-white dark:bg-zinc-800/50 rounded-none border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-600 dark:text-zinc-300 space-y-2">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-white font-bold uppercase tracking-wider text-[10px]">
                 <ShieldCheck className="w-4 h-4 text-[#5A6B32]" />
                 100% Оригинал
               </div>
-              <div className="flex items-center gap-2 text-zinc-900 font-bold uppercase tracking-wider text-[10px]">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-white font-bold uppercase tracking-wider text-[10px]">
                 <Camera className="w-4 h-4 text-[#5A6B32]" />
                 Фото флакона перед отправкой
               </div>
-              <div className="flex items-center gap-2 text-zinc-900 font-bold uppercase tracking-wider text-[10px]">
+              <div className="flex items-center gap-2 text-zinc-900 dark:text-white font-bold uppercase tracking-wider text-[10px]">
                 <CheckCircle2 className="w-4 h-4 text-[#5A6B32]" />
                 Оплата после согласования в диалоге
               </div>

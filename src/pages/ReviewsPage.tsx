@@ -12,8 +12,10 @@ import {
   Filter,
   Package,
   Award,
-  X
+  X,
+  MapPin
 } from 'lucide-react';
+import { ORDERS_GALLERY } from '../data/ordersGalleryData';
 
 interface ReviewItem {
   id: string;
@@ -456,91 +458,85 @@ export const ReviewsPage: React.FC = () => {
       </div>
 
       {/* Галерея собранных заказов (Фото перед отправкой) */}
-      <section id="gallery" className="pt-8 space-y-6 border-t border-zinc-200">
+      <section id="gallery" className="pt-8 space-y-6 border-t border-zinc-200 dark:border-zinc-800">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest font-mono mb-2">
-              <Camera className="w-3.5 h-3.5 text-white" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-widest font-mono mb-2">
+              <Camera className="w-3.5 h-3.5 text-white dark:text-black" />
               <span>Фотоконтроль заказов</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-serif text-zinc-950 font-normal">
+            <h2 className="text-2xl sm:text-3xl font-serif text-zinc-950 dark:text-white font-normal">
               Галерея собранных заказов
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-light mt-1 max-w-xl">
               Перед каждой отправкой мы делаем подробные фотографии собранного заказа, флаконов и тревел-атомайзеров, и присылаем их клиенту в Telegram или WhatsApp.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-400 font-mono">100% реальные фото</span>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/gallery"
+              className="text-xs font-bold uppercase tracking-wider text-black dark:text-white hover:underline flex items-center gap-1"
+            >
+              <span>Открыть отдельную страницу галереи</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {[
-            {
-              src: '/assets/gallery/order-decants.jpg',
-              badge: 'Заказ №84920 · Распив',
-              title: 'Сет премиальных отливантов',
-              desc: '4 флакона по 10 мл в фирменном ложементе с ручной каллиграфией. Доставка СДЭК в Екатеринбург.',
-              tag: 'Собрано в бутике'
-            },
-            {
-              src: '/assets/gallery/order-bottles.jpg',
-              badge: 'Заказ №84935 · Оригиналы',
-              title: 'Фотоконтроль флаконов',
-              desc: 'Полноразмерные нишевые флаконы в оригинальных запечатанных коробках перед упаковкой. Москва.',
-              tag: 'Проверено по батч-коду'
-            },
-            {
-              src: '/assets/gallery/order-arabian.jpg',
-              badge: 'Заказ №84912 · Селектив',
-              title: 'Арабская селективная коллекция',
-              desc: 'Флакон и дорожные спреи в крафтовом боксе с древесной стружкой. Яндекс Доставка в Санкт-Петербург.',
-              tag: 'Фото выслано в TG'
-            },
-            {
-              src: '/assets/gallery/order-dispatch.jpg',
-              badge: 'Заказ №84948 · Отправка',
-              title: 'Бережная подготовка к отправке',
-              desc: 'Многослойная воздушно-пузырьковая защита, сургучная печать Maison Arôme. Отправка в день оплаты.',
-              tag: 'Передано курьеру'
-            },
-          ].map((item, idx) => (
+        {/* 10 Mini-Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {ORDERS_GALLERY.map((item, idx) => (
             <div
               key={idx}
-              className="group bg-white border border-zinc-200 hover:border-black transition-all flex flex-col overflow-hidden"
+              onClick={() => setPreviewPhoto({ url: item.imageUrl, caption: `Заказ для ${item.customerName} из ${item.city}: ${item.title}` })}
+              className="group bg-white dark:bg-[#0e0e12] border border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-xs hover:shadow-md"
             >
-              <div className="relative aspect-[4/3] bg-zinc-100 overflow-hidden">
+              <div className="relative aspect-[4/3] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
                 <img
-                  src={item.src}
+                  src={item.imageUrl}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-mono">
+                <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-mono">
+                  {item.orderNumber}
+                </span>
+                <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xs text-zinc-900 dark:text-white text-[8px] font-bold uppercase tracking-wider">
                   {item.badge}
                 </span>
-                <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 bg-white/95 backdrop-blur-sm text-zinc-900 text-[9px] font-bold uppercase tracking-wider">
-                  {item.tag}
-                </span>
               </div>
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+              <div className="p-3 flex-1 flex flex-col justify-between space-y-2">
                 <div>
-                  <h3 className="font-bold text-xs uppercase tracking-wider text-zinc-950">
+                  <div className="flex items-center gap-1 text-[11px] text-zinc-900 dark:text-white font-bold uppercase tracking-wide truncate">
+                    <MapPin className="w-3 h-3 text-[#5A6B32] shrink-0" />
+                    <span className="truncate">Заказ для {item.customerName} ({item.city})</span>
+                  </div>
+                  <h3 className="font-semibold text-[11px] text-zinc-700 dark:text-zinc-300 mt-1 line-clamp-1">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light">
-                    {item.desc}
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 leading-snug font-light line-clamp-2">
+                    {item.description}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                  <span className="flex items-center gap-1 text-emerald-600 font-bold uppercase">
-                    <CheckCircle2 className="w-3 h-3" /> Фотоконтроль пройден
+                <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[9px] text-zinc-400 font-mono">
+                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold uppercase">
+                    <CheckCircle2 className="w-2.5 h-2.5" /> Проверено
                   </span>
+                  <span>{item.date}</span>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="pt-2 text-center">
+          <Link
+            to="/gallery"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-black dark:bg-white text-white dark:text-black text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-xs"
+          >
+            <span>Смотреть все 10 фотоотчетов с увеличением</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 

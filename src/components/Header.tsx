@@ -141,22 +141,17 @@ export const Header: React.FC = () => {
               {navDrawerTab ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            {/* Logo: Monogram + Text with Day/Night adaptation */}
-            <Link to="/" className="flex items-center gap-2 sm:gap-3.5 select-none group py-0.5" aria-label="Maison Arôme — На главную">
+            {/* Logo: Single prominent logo with Day/Night adaptation */}
+            <Link to="/" className="flex items-center select-none group py-1" aria-label="Maison Arôme — На главную">
               <img
                 src={isDark ? '/assets/branding/логотип_2_white.png' : '/assets/branding/логотип_2.png'}
-                alt="MA"
-                className="h-7 sm:h-8 w-auto object-contain transition-opacity duration-200"
-              />
-              <img
-                src={isDark ? '/assets/branding/логотип_1_white.png' : '/assets/branding/логотип_1.png'}
                 alt="Maison Arôme"
-                className="hidden sm:block h-5 sm:h-6 w-auto object-contain transition-opacity duration-200"
+                className="h-9 sm:h-11 md:h-12 w-auto object-contain transition-opacity duration-200"
               />
             </Link>
           </div>
 
-          {/* Desktop ЗЯ Primary Triggers: каталог, бренды, скидки, другое, конструктор (Hidden when search is expanded) */}
+          {/* Desktop ЗЯ Primary Triggers: каталог, бренды, скидки, галерея, другое, конструктор */}
           {!searchOpen && (
             <div className="hidden lg:flex items-center gap-6">
               <button
@@ -164,8 +159,8 @@ export const Header: React.FC = () => {
                 onClick={() => setNavDrawerTab(navDrawerTab === 'catalog' ? null : 'catalog')}
                 className={`text-base font-medium tracking-normal transition-colors py-2 relative lowercase select-none ${
                   navDrawerTab === 'catalog'
-                    ? 'text-black font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black'
-                    : 'text-zinc-800 hover:text-black'
+                    ? 'text-black dark:text-white font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black dark:after:bg-white'
+                    : 'text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white'
                 }`}
               >
                 каталог
@@ -176,8 +171,8 @@ export const Header: React.FC = () => {
                 onClick={() => setNavDrawerTab(navDrawerTab === 'brands' ? null : 'brands')}
                 className={`text-base font-medium tracking-normal transition-colors py-2 relative lowercase select-none ${
                   navDrawerTab === 'brands'
-                    ? 'text-black font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black'
-                    : 'text-zinc-800 hover:text-black'
+                    ? 'text-black dark:text-white font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black dark:after:bg-white'
+                    : 'text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white'
                 }`}
               >
                 бренды
@@ -185,26 +180,33 @@ export const Header: React.FC = () => {
 
               <Link
                 to="/catalog?filter=sale"
-                className="text-base font-medium tracking-normal text-zinc-800 hover:text-black transition-colors py-2 lowercase select-none"
+                className="text-base font-medium tracking-normal text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors py-2 lowercase select-none"
               >
                 скидки
+              </Link>
+
+              <Link
+                to="/gallery"
+                className="text-base font-medium tracking-normal text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors py-2 lowercase select-none"
+              >
+                галерея
               </Link>
 
               {/* "Другое" Dropdown: FAQ and Contacts */}
               <div className="relative group">
                 <button
                   type="button"
-                  className="text-base font-medium tracking-normal text-zinc-800 hover:text-black transition-colors py-2 lowercase select-none flex items-center gap-1"
+                  className="text-base font-medium tracking-normal text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors py-2 lowercase select-none flex items-center gap-1"
                 >
                   <span>другое</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-zinc-400 group-hover:text-black transition-transform group-hover:rotate-180" />
+                  <ChevronDown className="w-3.5 h-3.5 text-zinc-400 group-hover:text-black dark:group-hover:text-white transition-transform group-hover:rotate-180" />
                 </button>
 
                 <div className="absolute left-0 top-full hidden group-hover:block pt-1 z-50">
-                  <div className="bg-white border border-black shadow-2xl py-2 min-w-[220px] animate-in fade-in">
+                  <div className="bg-white dark:bg-zinc-950 border border-black dark:border-zinc-700 shadow-2xl py-2 min-w-[220px] animate-in fade-in">
                     <Link
-                      to="/reviews#gallery"
-                      className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 hover:bg-zinc-100 transition-colors flex items-center justify-between"
+                      to="/gallery"
+                      className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-between"
                     >
                       <span>Галерея заказов</span>
                       <span className="text-[10px] font-mono text-zinc-400 font-normal">Фото</span>
@@ -482,21 +484,21 @@ export const Header: React.FC = () => {
       {/* FULL GOLDEN APPLE (ЗЯ) NAVIGATION MEGA-MENU DRAWER (Screenshot 2 style)   */}
       {/* ========================================================================= */}
       {navDrawerTab && (
-        <div className="fixed inset-0 top-[72px] z-50 bg-black/40 backdrop-blur-xs flex flex-col justify-start animate-in fade-in duration-200">
+        <div className="fixed inset-0 top-[72px] z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-start animate-in fade-in duration-200">
           <div
-            className="w-full bg-white border-b border-zinc-200 shadow-2xl max-h-[82vh] flex flex-col overflow-hidden"
+            className="w-full bg-white dark:bg-[#0e0e12] border-b border-zinc-200 dark:border-zinc-800 shadow-2xl max-h-[82vh] flex flex-col overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Top Navigation Tabs Header (Screenshot 2: каталог | бренды | акции) */}
-            <div className="border-b border-zinc-200 px-4 sm:px-8 bg-white flex items-center justify-between">
+            <div className="border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-8 bg-white dark:bg-[#0e0e12] flex items-center justify-between">
               <div className="flex items-center gap-8 sm:gap-12">
                 <button
                   type="button"
                   onClick={() => setNavDrawerTab('catalog')}
                   className={`py-4 text-base sm:text-lg tracking-tight lowercase transition-all select-none relative ${
                     navDrawerTab === 'catalog'
-                      ? 'font-bold text-black after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-black'
-                      : 'font-normal text-zinc-500 hover:text-black'
+                      ? 'font-bold text-black dark:text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-black dark:after:bg-white'
+                      : 'font-normal text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white'
                   }`}
                 >
                   каталог
@@ -507,17 +509,25 @@ export const Header: React.FC = () => {
                   onClick={() => setNavDrawerTab('brands')}
                   className={`py-4 text-base sm:text-lg tracking-tight lowercase transition-all select-none relative ${
                     navDrawerTab === 'brands'
-                      ? 'font-bold text-black after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-black'
-                      : 'font-normal text-zinc-500 hover:text-black'
+                      ? 'font-bold text-black dark:text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-black dark:after:bg-white'
+                      : 'font-normal text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white'
                   }`}
                 >
                   бренды
                 </button>
 
                 <Link
+                  to="/gallery"
+                  onClick={() => setNavDrawerTab(null)}
+                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all select-none"
+                >
+                  галерея заказов
+                </Link>
+
+                <Link
                   to="/faq"
                   onClick={() => setNavDrawerTab(null)}
-                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
+                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all select-none"
                 >
                   вопросы
                 </Link>
@@ -525,7 +535,7 @@ export const Header: React.FC = () => {
                 <Link
                   to="/contacts"
                   onClick={() => setNavDrawerTab(null)}
-                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
+                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all select-none"
                 >
                   контакты
                 </Link>
@@ -535,7 +545,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setNavDrawerTab(null)}
-                className="p-2 text-zinc-400 hover:text-black transition-colors"
+                className="p-2 text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
                 aria-label="Закрыть меню"
               >
                 <X className="w-5 h-5" />
@@ -546,7 +556,7 @@ export const Header: React.FC = () => {
             {navDrawerTab === 'catalog' && (
               <div className="flex-1 overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left Category List (Clean vertical list in ЗЯ lowercase style) */}
-                <div className="lg:col-span-4 space-y-1 sm:space-y-1.5 border-b lg:border-b-0 lg:border-r border-zinc-100 pb-4 lg:pb-0 lg:pr-8">
+                <div className="lg:col-span-4 space-y-1 sm:space-y-1.5 border-b lg:border-b-0 lg:border-r border-zinc-100 dark:border-zinc-800 pb-4 lg:pb-0 lg:pr-8">
                   {[
                     { id: 'sale', label: 'скидки', path: '/catalog?filter=sale', badge: '−10%' },
                     { id: 'new', label: 'новинки', path: '/catalog?filter=new', badge: 'NEW' },
@@ -570,8 +580,8 @@ export const Header: React.FC = () => {
                         onClick={() => setNavDrawerTab(null)}
                         className={`flex items-center justify-between py-2 px-3 transition-colors ${
                           hoveredCategory === cat.id
-                            ? 'bg-zinc-100 font-bold text-black'
-                            : 'text-zinc-800 hover:text-black font-medium'
+                            ? 'bg-zinc-100 dark:bg-zinc-800 font-bold text-black dark:text-white'
+                            : 'text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 font-medium'
                         } text-sm sm:text-base lowercase tracking-normal`}
                       >
                         <span className="flex items-center gap-2">
@@ -582,7 +592,7 @@ export const Header: React.FC = () => {
                             </span>
                           )}
                         </span>
-                        <ChevronRight className={`w-4 h-4 transition-transform ${hoveredCategory === cat.id ? 'translate-x-1 text-black' : 'text-zinc-400 group-hover:text-black'}`} />
+                        <ChevronRight className={`w-4 h-4 transition-transform ${hoveredCategory === cat.id ? 'translate-x-1 text-black dark:text-white' : 'text-zinc-400 group-hover:text-black dark:group-hover:text-white'}`} />
                       </Link>
                     </div>
                   ))}
@@ -600,35 +610,35 @@ export const Header: React.FC = () => {
                           <Link
                             to="/catalog?kind=perfume"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block font-bold text-zinc-950 hover:underline"
+                            className="block font-bold text-zinc-950 dark:text-white hover:underline"
                           >
                             Все ароматы каталога →
                           </Link>
                           <Link
                             to="/catalog?category=niche"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Нишевая и селективная парфюмерия
                           </Link>
                           <Link
                             to="/catalog?category=arabian"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Арабские хиты (Lattafa, Armaf, French Avenue)
                           </Link>
                           <Link
                             to="/catalog?category=luxury"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Люксовые дома (Dior, Chanel, Tom Ford, Gucci)
                           </Link>
                           <Link
                             to="/catalog?type=decant"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black font-semibold text-amber-700"
+                            className="block text-amber-700 dark:text-amber-400 hover:text-black dark:hover:text-white font-semibold"
                           >
                             Распивы и отливанты (от 3 мл)
                           </Link>
@@ -643,28 +653,28 @@ export const Header: React.FC = () => {
                           <Link
                             to="/catalog?q=ваниль"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Гурманские и ванильные ароматы
                           </Link>
                           <Link
                             to="/catalog?q=свежий"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Свежие цитрусовые и морские
                           </Link>
                           <Link
                             to="/catalog?q=древесный"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Древесные, кожаные и восточные
                           </Link>
                           <Link
                             to="/catalog?filter=hits"
                             onClick={() => setNavDrawerTab(null)}
-                            className="block text-zinc-700 hover:text-black"
+                            className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white"
                           >
                             Хиты продаж и бестселлеры
                           </Link>
@@ -678,10 +688,10 @@ export const Header: React.FC = () => {
                           Уход за лицом
                         </div>
                         <div className="space-y-2 text-sm">
-                          <Link to="/catalog?kind=skincare" onClick={() => setNavDrawerTab(null)} className="block font-bold text-zinc-950">Все средства для лица</Link>
-                          <Link to="/catalog?kind=skincare&q=крем" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Кремы и увлажнение</Link>
-                          <Link to="/catalog?kind=skincare&q=сыворотка" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Сыворотки и концентраты</Link>
-                          <Link to="/catalog?kind=skincare&q=очищение" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Очищение и пенки</Link>
+                          <Link to="/catalog?kind=skincare" onClick={() => setNavDrawerTab(null)} className="block font-bold text-zinc-950 dark:text-white hover:underline">Все средства для лица</Link>
+                          <Link to="/catalog?kind=skincare&q=крем" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Кремы и увлажнение</Link>
+                          <Link to="/catalog?kind=skincare&q=сыворотка" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Сыворотки и концентраты</Link>
+                          <Link to="/catalog?kind=skincare&q=очищение" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Очищение и пенки</Link>
                         </div>
                       </div>
                       <div className="space-y-3">
@@ -689,8 +699,8 @@ export const Header: React.FC = () => {
                           Специальный уход
                         </div>
                         <div className="space-y-2 text-sm">
-                          <Link to="/catalog?kind=skincare&q=маска" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Маски и патчи</Link>
-                          <Link to="/catalog?kind=skincare&q=глаз" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Уход вокруг глаз</Link>
+                          <Link to="/catalog?kind=skincare&q=маска" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Маски и патчи</Link>
+                          <Link to="/catalog?kind=skincare&q=глаз" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Уход вокруг глаз</Link>
                         </div>
                       </div>
                     </div>
@@ -701,9 +711,9 @@ export const Header: React.FC = () => {
                           Средства для волос
                         </div>
                         <div className="space-y-2 text-sm">
-                          <Link to="/catalog?kind=haircare" onClick={() => setNavDrawerTab(null)} className="block font-bold text-zinc-950">Все средства для волос</Link>
-                          <Link to="/catalog?kind=haircare&q=шампунь" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Профессиональные шампуни</Link>
-                          <Link to="/catalog?kind=haircare&q=бальзам" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Бальзамы и кондиционеры</Link>
+                          <Link to="/catalog?kind=haircare" onClick={() => setNavDrawerTab(null)} className="block font-bold text-zinc-950 dark:text-white hover:underline">Все средства для волос</Link>
+                          <Link to="/catalog?kind=haircare&q=шампунь" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Профессиональные шампуни</Link>
+                          <Link to="/catalog?kind=haircare&q=бальзам" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Бальзамы и кондиционеры</Link>
                         </div>
                       </div>
                       <div className="space-y-3">
@@ -711,8 +721,8 @@ export const Header: React.FC = () => {
                           Питание и блеск
                         </div>
                         <div className="space-y-2 text-sm">
-                          <Link to="/catalog?kind=haircare&q=масло" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Масла и несмываемый уход</Link>
-                          <Link to="/catalog?kind=haircare&q=маска" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 hover:text-black">Интенсивные маски</Link>
+                          <Link to="/catalog?kind=haircare&q=масло" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Масла и несмываемый уход</Link>
+                          <Link to="/catalog?kind=haircare&q=маска" onClick={() => setNavDrawerTab(null)} className="block text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white">Интенсивные маски</Link>
                         </div>
                       </div>
                     </div>
@@ -722,7 +732,7 @@ export const Header: React.FC = () => {
                         Быстрый переход
                       </div>
                       <div className="space-y-2 text-sm">
-                        <Link to="/catalog" onClick={() => setNavDrawerTab(null)} className="block font-bold text-zinc-950">
+                        <Link to="/catalog" onClick={() => setNavDrawerTab(null)} className="block font-bold text-zinc-950 dark:text-white hover:underline">
                           Перейти в общий каталог всех 100 000+ товаров →
                         </Link>
                       </div>
@@ -764,14 +774,14 @@ export const Header: React.FC = () => {
                       placeholder="Поиск бренда (например: Creed, Tom Ford, Kilian, Chanel)..."
                       value={brandSearchQuery}
                       onChange={e => setBrandSearchQuery(e.target.value)}
-                      className="w-full bg-[#f4f4f5] text-xs text-zinc-900 placeholder:text-zinc-400 pl-9 pr-4 py-2.5 border border-zinc-200 outline-none focus:border-black font-medium"
+                      className="w-full bg-[#f4f4f5] dark:bg-zinc-900 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 pl-9 pr-4 py-2.5 border border-zinc-200 dark:border-zinc-700 outline-none focus:border-black dark:focus:border-white font-medium"
                     />
                     <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     {brandSearchQuery && (
                       <button
                         type="button"
                         onClick={() => setBrandSearchQuery('')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-black font-bold"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-black dark:hover:text-white font-bold"
                       >
                         ✕
                       </button>
@@ -787,8 +797,8 @@ export const Header: React.FC = () => {
                         onClick={() => setSelectedLetter(letter)}
                         className={`px-2.5 py-1 text-xs font-semibold tracking-wider transition-colors ${
                           selectedLetter === letter
-                            ? 'bg-black text-white font-bold'
-                            : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-black'
+                            ? 'bg-black dark:bg-white text-white dark:text-black font-bold'
+                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-black dark:hover:text-white'
                         }`}
                       >
                         {letter === 'ALL' ? 'Все' : letter}
@@ -809,7 +819,7 @@ export const Header: React.FC = () => {
                           key={b.slug}
                           type="button"
                           onClick={() => handleBrandClick(b.searchQuery)}
-                          className="px-3 py-1.5 border border-zinc-200 hover:border-black bg-white hover:bg-black hover:text-white text-xs font-semibold tracking-wide transition-colors flex items-center gap-1.5"
+                          className="px-3 py-1.5 border border-zinc-200 dark:border-zinc-700 hover:border-black dark:hover:border-white bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black text-xs font-semibold tracking-wide transition-colors flex items-center gap-1.5"
                         >
                           <span>{b.name}</span>
                           {b.country && (
@@ -835,7 +845,7 @@ export const Header: React.FC = () => {
                         setNavDrawerTab(null);
                         navigate('/catalog');
                       }}
-                      className="text-black hover:underline flex items-center gap-1"
+                      className="text-black dark:text-white hover:underline flex items-center gap-1"
                     >
                       Смотреть весь каталог <ArrowRight className="w-3 h-3" />
                     </button>
@@ -848,7 +858,7 @@ export const Header: React.FC = () => {
                           key={b.slug}
                           type="button"
                           onClick={() => handleBrandClick(b.searchQuery)}
-                          className="text-left font-medium text-zinc-800 hover:text-black hover:underline truncate py-0.5"
+                          className="text-left font-medium text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:underline truncate py-0.5"
                         >
                           {b.name}
                         </button>

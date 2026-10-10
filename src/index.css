@@ -39,12 +39,12 @@
     background: #52525b;
   }
 
-  /* Ночная тема (Dark Theme) */
+/* Ночная тема (Dark Theme) - Высококонтрастный премиум стиль */
   html.dark {
     color-scheme: dark;
   }
   html.dark body {
-    color: #f4f4f5;
+    color: #ffffff;
     background-color: #09090b;
   }
   html.dark ::-webkit-scrollbar-track {
@@ -58,58 +58,118 @@
   }
 }
 
-/* Глобальные плавные стили для ночной темы */
+/* Глобальные стили для ночной темы (Dark Mode) */
 html.dark header {
   background-color: #09090b !important;
   border-color: #27272a !important;
 }
 
 html.dark header nav,
-html.dark header button,
 html.dark header a {
-  color: #f4f4f5;
+  color: #ffffff;
 }
 
-html.dark div.bg-white:not(.keep-light),
+/* Фоны контейнеров и карточек в темной теме */
+html.dark div.bg-white:not(.keep-light):not(button):not(.btn-primary-invert),
 html.dark section.bg-white:not(.keep-light),
 html.dark article.bg-white:not(.keep-light) {
-  background-color: #0d0d11;
-  color: #f4f4f5;
+  background-color: #0e0e12;
+  color: #ffffff;
 }
 
 html.dark div.bg-zinc-50,
 html.dark section.bg-zinc-50 {
-  background-color: #121216;
+  background-color: #141418;
 }
 
 html.dark div.bg-zinc-100 {
-  background-color: #18181d;
+  background-color: #1a1a20;
 }
 
 html.dark .border-zinc-200,
 html.dark .border-zinc-300,
 html.dark .border-zinc-100 {
-  border-color: #27272a !important;
+  border-color: #2a2a32 !important;
 }
 
+/* Текст в темной теме - четкий и читаемый */
 html.dark .text-zinc-950,
-html.dark .text-zinc-900 {
-  color: #f4f4f5 !important;
+html.dark .text-zinc-900,
+html.dark .text-zinc-800 {
+  color: #ffffff !important;
 }
 
-html.dark .text-zinc-600,
-html.dark .text-zinc-500 {
+html.dark .text-zinc-700,
+html.dark .text-zinc-600 {
+  color: #e4e4e7 !important;
+}
+
+html.dark .text-zinc-500,
+html.dark .text-zinc-400 {
   color: #a1a1aa !important;
 }
 
+/* Текст описания товара */
+html.dark p {
+  color: #e4e4e7;
+}
+
+/* КНОПКИ В ТЕМНОЙ ТЕМЕ:
+   - Второстепенные/неактивные кнопки (включая объемы): темно-серые с БЕЛЫМ текстом
+   - Главные акцентные кнопки (В корзину, Оформить): белые с ЧЕРНЫМ текстом
+*/
+html.dark button.bg-white,
+html.dark .bg-white button:not(.bg-black):not(.btn-accent):not([class*="bg-emerald"]),
+html.dark button.border-zinc-300:not(.bg-black),
+html.dark button.border-zinc-200:not(.bg-black) {
+  background-color: #222228 !important;
+  color: #ffffff !important;
+  border-color: #383842 !important;
+}
+
+html.dark button.bg-white:hover,
+html.dark button.border-zinc-300:hover {
+  background-color: #2c2c34 !important;
+  color: #ffffff !important;
+  border-color: #52525c !important;
+}
+
+/* Активные кнопки объемов и радиокнопки (когда выбраны) */
+html.dark button.border-black.bg-black.text-white,
+html.dark button.bg-black.text-white:not(.btn-keep-dark),
+html.dark .btn-primary {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  border-color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html.dark button.bg-black.text-white:hover {
+  background-color: #e4e4e7 !important;
+  color: #09090b !important;
+}
+
+/* Инпуты, селекты и текстареа в темной теме */
 html.dark input,
 html.dark select,
 html.dark textarea {
-  background-color: #141418 !important;
-  color: #f4f4f5 !important;
+  background-color: #16161b !important;
+  color: #ffffff !important;
+  border-color: #383842 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #71717a !important;
+}
+
+html.dark input:focus,
+html.dark textarea:focus {
+  border-color: #ffffff !important;
+}
+
+html.dark .divide-zinc-200 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-zinc-100 > :not([hidden]) ~ :not([hidden]) {
   border-color: #27272a !important;
 }
 
-html.dark .divide-zinc-200 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #27272a !important;
-}

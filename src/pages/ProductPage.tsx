@@ -185,18 +185,18 @@ export const ProductPage: React.FC = () => {
               )}
             </div>
             <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 mt-2">{perfume.brand}</div>
-            <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950 mt-1">{perfume.name}</h1>
+            <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950 dark:text-white mt-1">{perfume.name}</h1>
             <div className="mt-3 flex items-center gap-2 text-xs font-mono">
-              <Star className="w-4 h-4 fill-black text-black" />
-              <span className="font-bold">{perfume.rating}</span>
+              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <span className="font-bold text-zinc-900 dark:text-white">{perfume.rating}</span>
               <span className="text-zinc-400">({perfume.reviewsCount} отзывов)</span>
             </div>
           </div>
 
-          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
-            <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-900">
+          <div className="p-6 rounded-none bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-5">
+            <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-white">
               <span>{isPerfume ? 'Выберите объём' : 'Фасовка'}</span>
-              {isPerfume && <span className="text-zinc-500 font-mono font-normal">{pricePerMl} ₽ / мл</span>}
+              {isPerfume && <span className="text-zinc-500 dark:text-zinc-400 font-mono font-normal">{pricePerMl} ₽ / мл</span>}
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {uniqueVolumes.map(vol => (
@@ -206,8 +206,8 @@ export const ProductPage: React.FC = () => {
                   onClick={() => setSelectedVolume(vol)}
                   className={`p-3.5 rounded-none border text-left text-xs transition-colors ${
                     currentVolume.type === vol.type
-                      ? 'border-black bg-black text-white'
-                      : 'border-zinc-300 bg-white text-zinc-900 hover:border-black'
+                      ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black font-bold shadow-xs'
+                      : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white hover:border-black dark:hover:border-zinc-500'
                   }`}
                 >
                   <div className="font-bold uppercase tracking-wider">{volumeShortLabel(vol)}</div>
@@ -216,20 +216,22 @@ export const ProductPage: React.FC = () => {
               ))}
             </div>
 
-            <div className="pt-4 border-t border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="text-2xl sm:text-3xl font-black font-mono">
+            <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="text-2xl sm:text-3xl font-black font-mono text-zinc-950 dark:text-white">
                 {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
               </div>
               <div className="flex items-center gap-3 w-full sm:w-auto">
-                <div className="flex border border-zinc-300 rounded-none bg-white">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 font-bold text-sm">−</button>
-                  <span className="w-10 h-11 flex items-center justify-center text-xs font-bold font-mono border-x border-zinc-300">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 font-bold text-sm">+</button>
+                <div className="flex border border-zinc-300 dark:border-zinc-700 rounded-none bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-700 font-bold text-sm">−</button>
+                  <span className="w-10 h-11 flex items-center justify-center text-xs font-bold font-mono border-x border-zinc-300 dark:border-zinc-700">{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-700 font-bold text-sm">+</button>
                 </div>
                 <button
                   onClick={handleAddToCart}
                   className={`flex-1 sm:flex-none px-8 py-3.5 rounded-none text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors ${
-                    addedSuccess ? 'bg-emerald-600 text-white' : 'bg-black hover:bg-zinc-800 text-white'
+                    addedSuccess
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm'
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4" />
@@ -240,29 +242,29 @@ export const ProductPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 bg-white rounded-none">
-              <Camera className="w-4 h-4 text-zinc-900 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 rounded-none text-zinc-900 dark:text-white">
+              <Camera className="w-4 h-4 text-zinc-900 dark:text-white shrink-0" />
               <span className="font-semibold uppercase tracking-wider text-[11px]">Фото перед отправкой</span>
             </div>
-            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 bg-white rounded-none">
-              <ShieldCheck className="w-4 h-4 text-zinc-900 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 rounded-none text-zinc-900 dark:text-white">
+              <ShieldCheck className="w-4 h-4 text-zinc-900 dark:text-white shrink-0" />
               <span className="font-semibold uppercase tracking-wider text-[11px]">100% Оригинал</span>
             </div>
-            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 bg-white rounded-none">
-              <Truck className="w-4 h-4 text-zinc-900 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 rounded-none text-zinc-900 dark:text-white">
+              <Truck className="w-4 h-4 text-zinc-900 dark:text-white shrink-0" />
               <span className="font-semibold uppercase tracking-wider text-[11px]">Доставка по РФ</span>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-zinc-200">
-            <h2 className="text-sm font-bold uppercase mb-2">Описание</h2>
-            <p className="text-sm text-zinc-600 leading-relaxed">{perfume.description}</p>
+          <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+            <h2 className="text-sm font-bold uppercase mb-2 text-zinc-950 dark:text-white">Описание</h2>
+            <p className="text-sm text-zinc-600 dark:text-zinc-100 leading-relaxed font-normal">{perfume.description}</p>
           </div>
 
           {isPerfume && perfume.notes && (perfume.notes.top?.length > 0 || perfume.notes.heart?.length > 0 || perfume.notes.base?.length > 0) && (
-            <div className="pt-6 border-t border-zinc-200 space-y-4">
+            <div className="pt-6 border-t border-zinc-200 dark:border-zinc-800 space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-900">
+                <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-white">
                   Ольфакторная пирамида
                 </h2>
                 <span className="text-[10px] uppercase font-mono tracking-wider text-[#5A6B32] font-semibold bg-[#5A6B32]/10 px-2 py-0.5 border border-[#5A6B32]/30">
@@ -270,10 +272,10 @@ export const ProductPage: React.FC = () => {
                 </span>
               </div>
 
-              <div className="space-y-3.5 bg-zinc-50 p-4 border border-zinc-200">
+              <div className="space-y-3.5 bg-zinc-50 dark:bg-zinc-900/50 p-4 border border-zinc-200 dark:border-zinc-800">
                 {perfume.notes.top?.length > 0 && (
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                       <span>🌿 Верхние ноты</span>
                       <span className="text-[10px] text-zinc-400">Первые 15 минут</span>
                     </div>
@@ -282,7 +284,7 @@ export const ProductPage: React.FC = () => {
                         <Link
                           key={n}
                           to={`/catalog?notes=${encodeURIComponent(n)}`}
-                          className="px-2.5 py-1 text-xs border border-zinc-300 bg-white hover:border-black hover:bg-black hover:text-white transition-colors font-medium text-zinc-800"
+                          className="px-2.5 py-1 text-xs border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black text-zinc-800 dark:text-zinc-200 transition-colors font-medium"
                           title={`Смотреть все ароматы с нотой «${n}»`}
                         >
                           {n}
@@ -293,8 +295,8 @@ export const ProductPage: React.FC = () => {
                 )}
 
                 {perfume.notes.heart?.length > 0 && (
-                  <div className="space-y-1.5 pt-2.5 border-t border-zinc-200">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
+                  <div className="space-y-1.5 pt-2.5 border-t border-zinc-200 dark:border-zinc-800">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                       <span>🌸 Ноты сердца</span>
                       <span className="text-[10px] text-zinc-400">Звучание 2–6 часов</span>
                     </div>
@@ -303,7 +305,7 @@ export const ProductPage: React.FC = () => {
                         <Link
                           key={n}
                           to={`/catalog?notes=${encodeURIComponent(n)}`}
-                          className="px-2.5 py-1 text-xs border border-zinc-300 bg-white hover:border-black hover:bg-black hover:text-white transition-colors font-medium text-zinc-800"
+                          className="px-2.5 py-1 text-xs border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black text-zinc-800 dark:text-zinc-200 transition-colors font-medium"
                           title={`Смотреть все ароматы с нотой «${n}»`}
                         >
                           {n}
@@ -314,8 +316,8 @@ export const ProductPage: React.FC = () => {
                 )}
 
                 {perfume.notes.base?.length > 0 && (
-                  <div className="space-y-1.5 pt-2.5 border-t border-zinc-200">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
+                  <div className="space-y-1.5 pt-2.5 border-t border-zinc-200 dark:border-zinc-800">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                       <span>🪵 Базовые ноты / Шлейф</span>
                       <span className="text-[10px] text-zinc-400">Стойкость до 24 часов</span>
                     </div>
@@ -324,7 +326,7 @@ export const ProductPage: React.FC = () => {
                         <Link
                           key={n}
                           to={`/catalog?notes=${encodeURIComponent(n)}`}
-                          className="px-2.5 py-1 text-xs border border-zinc-300 bg-white hover:border-black hover:bg-black hover:text-white transition-colors font-medium text-zinc-800"
+                          className="px-2.5 py-1 text-xs border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black text-zinc-800 dark:text-zinc-200 transition-colors font-medium"
                           title={`Смотреть все ароматы с нотой «${n}»`}
                         >
                           {n}

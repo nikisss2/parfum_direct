@@ -158,20 +158,20 @@ export const CartPage: React.FC = () => {
 
                   {/* Quantity and subtotal */}
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center border border-zinc-300 rounded-none bg-white">
+                    <div className="flex items-center border border-zinc-300 dark:border-zinc-700 rounded-none bg-white dark:bg-zinc-800">
                       <button
                         onClick={() => updateCartQuantity(item.id, -1)}
-                        className="w-8 h-8 text-zinc-700 hover:bg-zinc-100 transition-colors text-xs font-bold flex items-center justify-center"
+                        className="w-8 h-8 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors text-xs font-bold flex items-center justify-center"
                         aria-label="Уменьшить"
                       >
                         −
                       </button>
-                      <span className="w-8 h-8 text-xs font-bold font-mono flex items-center justify-center border-x border-zinc-300">
+                      <span className="w-8 h-8 text-xs font-bold font-mono flex items-center justify-center border-x border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => updateCartQuantity(item.id, 1)}
-                        className="w-8 h-8 text-zinc-700 hover:bg-zinc-100 transition-colors text-xs font-bold flex items-center justify-center"
+                        className="w-8 h-8 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors text-xs font-bold flex items-center justify-center"
                         aria-label="Увеличить"
                       >
                         +
@@ -179,12 +179,12 @@ export const CartPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                      <div className="text-base font-bold font-mono text-zinc-950">
+                      <div className="text-base font-bold font-mono text-zinc-950 dark:text-white">
                         {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                       </div>
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="p-1.5 text-zinc-400 hover:text-black transition-colors"
+                        className="p-1.5 text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
                         aria-label="Удалить"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -199,7 +199,7 @@ export const CartPage: React.FC = () => {
           <div className="pt-2 flex items-center justify-between">
             <Link
               to="/catalog"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-700 hover:text-black"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Продолжить покупки</span>
@@ -209,14 +209,14 @@ export const CartPage: React.FC = () => {
 
         {/* Order Summary Sidebar */}
         <div className="space-y-6">
-          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
-            <h2 className="text-base font-normal font-serif text-zinc-950">
+          <div className="p-6 rounded-none bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-5">
+            <h2 className="text-base font-normal font-serif text-zinc-950 dark:text-white">
               Сумма заказа
             </h2>
 
             {/* Promo Code Input */}
             <form onSubmit={applyPromo} className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
                 Промокод на скидку:
               </label>
               <div className="flex gap-2">
@@ -225,17 +225,17 @@ export const CartPage: React.FC = () => {
                   placeholder="Введите промокод"
                   value={promoCode}
                   onChange={e => setPromoCode(e.target.value)}
-                  className="flex-1 uppercase bg-white border border-zinc-300 text-xs px-3.5 py-2.5 rounded-none outline-none focus:border-black font-mono"
+                  className="flex-1 uppercase bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-xs text-zinc-900 dark:text-white px-3.5 py-2.5 rounded-none outline-none focus:border-black dark:focus:border-white font-mono"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2.5 bg-black text-white text-xs font-bold uppercase tracking-wider rounded-none hover:bg-zinc-800 transition-colors"
+                  className="px-4 py-2.5 bg-black dark:bg-white text-white dark:text-black text-xs font-bold uppercase tracking-wider rounded-none hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
                 >
                   Применить
                 </button>
               </div>
               {promoApplied && (
-                <div className="text-xs text-black flex items-center gap-1 font-bold uppercase tracking-wider font-mono">
+                <div className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold uppercase tracking-wider font-mono">
                   <Check className="w-3.5 h-3.5" />
                   Скидка {discountPercent}% применена!
                 </div>
@@ -248,27 +248,27 @@ export const CartPage: React.FC = () => {
             </form>
 
             {/* Price Calculations */}
-            <div className="space-y-3 pt-4 border-t border-zinc-200 text-xs">
-              <div className="flex justify-between text-zinc-600">
+            <div className="space-y-3 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-xs">
+              <div className="flex justify-between text-zinc-600 dark:text-zinc-400">
                 <span>Товары ({cart.reduce((a, b) => a + b.quantity, 0)} шт.)</span>
-                <span className="font-mono">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
+                <span className="font-mono text-zinc-950 dark:text-white">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex justify-between text-zinc-900 font-bold">
+                <div className="flex justify-between text-zinc-900 dark:text-white font-bold">
                   <span>Скидка ({discountPercent}%)</span>
-                  <span className="font-mono">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
-              <div className="flex justify-between items-center text-zinc-600">
+              <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400">
                 <span>Доставка</span>
-                <span className={isFreeShippingUnlocked ? "text-zinc-950 font-bold uppercase tracking-wider font-mono" : "text-zinc-500 font-mono"}>
+                <span className={isFreeShippingUnlocked ? "text-zinc-950 dark:text-white font-bold uppercase tracking-wider font-mono" : "text-zinc-500 font-mono"}>
                   {isFreeShippingUnlocked ? "0 ₽ (Бесплатно)" : "от 280 ₽ (0 ₽ от 15 000 ₽)"}
                 </span>
               </div>
 
-              <div className="pt-4 border-t border-zinc-200 flex justify-between text-base font-bold text-zinc-950">
+              <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-between text-base font-bold text-zinc-950 dark:text-white">
                 <span className="uppercase tracking-wider">Итого к оплате:</span>
                 <span className="font-mono text-lg">{finalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
@@ -279,16 +279,16 @@ export const CartPage: React.FC = () => {
               onClick={() => {
                 navigate('/checkout', { state: { discountAmount } });
               }}
-              className="w-full py-4 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md active:scale-98"
+              className="w-full py-4 bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-none text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md active:scale-98"
             >
               <span>Перейти к оформлению</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             {/* Payment term reminder */}
-            <div className="p-4 bg-white rounded-none border border-zinc-200 text-xs text-zinc-500 space-y-1.5">
-              <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-zinc-900 text-[11px]">
-                <Camera className="w-3.5 h-3.5 text-zinc-900" />
+            <div className="p-4 bg-white dark:bg-zinc-800/50 rounded-none border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-500 dark:text-zinc-400 space-y-1.5">
+              <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-zinc-900 dark:text-white text-[11px]">
+                <Camera className="w-3.5 h-3.5 text-zinc-900 dark:text-white" />
                 Оплата по факту сборки
               </div>
               <p className="leading-relaxed font-light">

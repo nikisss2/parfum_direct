@@ -21,6 +21,7 @@ const CatalogPage = React.lazy(() => import('./pages/CatalogPage').then(m => ({ 
 const ProductPage = React.lazy(() => import('./pages/ProductPage').then(m => ({ default: m.ProductPage })));
 const AromaBoxPage = React.lazy(() => import('./pages/AromaBoxPage').then(m => ({ default: m.AromaBoxPage })));
 const ReviewsPage = React.lazy(() => import('./pages/ReviewsPage').then(m => ({ default: m.ReviewsPage })));
+const GalleryPage = React.lazy(() => import('./pages/GalleryPage').then(m => ({ default: m.GalleryPage })));
 const CartPage = React.lazy(() => import('./pages/CartPage').then(m => ({ default: m.CartPage })));
 const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
 const OrderSuccessPage = React.lazy(() =>
@@ -68,6 +69,7 @@ export default function App() {
                   <Route path="/product/:slug" element={<ProductPage />} />
                   <Route path="/aromabox" element={<AromaBoxPage />} />
                   <Route path="/reviews" element={<ReviewsPage />} />
+                  <Route path="/gallery" element={<GalleryPage />} />
                   <Route path="/cart" element={<CartPage />} />
                   <Route path="/wishlist" element={<WishlistPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
