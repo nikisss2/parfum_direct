@@ -35,7 +35,7 @@ export const OrderSuccessPage: React.FC = () => {
     initialOrderText ||
     (order
       ? `🛍️ ЗАКАЗ №${order.orderNumber}
-PARFUM DIRECT (parfum-direct.ru)
+MAISON ARÔME (maisonarome.ru)
 
 👤 Покупатель: ${order.recipient.fullName}
 📱 Телефон: ${order.recipient.phone}

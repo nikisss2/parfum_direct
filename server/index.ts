@@ -368,7 +368,7 @@ app.post('/api/admin/telegram-config', authAdmin, (req, res) => {
 
 app.post('/api/admin/telegram-test', authAdmin, async (_req, res) => {
   const result = await sendTelegramMessage(
-    '🔔 <b>Тестовое уведомление из админ-панели Parfum Direct!</b>\n\nTelegram-бот успешно подключен и готов мгновенно присылать новые заказы в личные сообщения.',
+    '🔔 <b>Тестовое уведомление из админ-панели Maison Arôme!</b>\n\nTelegram-бот успешно подключен и готов мгновенно присылать новые заказы в личные сообщения.',
     [[{ text: 'Открыть чат с менеджером', url: 'https://t.me/nikisss2' }]]
   );
   if (!result.ok) {

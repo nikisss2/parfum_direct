@@ -284,7 +284,7 @@ export const CheckoutPage: React.FC = () => {
       .join('\n');
 
     const formattedOrderText = `🛍️ НОВЫЙ ЗАКАЗ №${newOrder.orderNumber}
-PARFUM DIRECT (parfum-direct.ru)
+MAISON ARÔME (maisonarome.ru)
 
 👤 Покупатель: ${fullName.trim()}
 📱 Телефон: ${phone.trim()}

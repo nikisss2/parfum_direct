@@ -138,9 +138,9 @@ export const Header: React.FC = () => {
             </button>
 
             {/* Logo: 2 letters "PD" */}
-            <Link to="/" className="flex items-center select-none group" aria-label="PD — На главную">
-              <span className="text-2xl sm:text-3xl font-black font-serif tracking-tight text-zinc-950 group-hover:text-zinc-600 transition-colors leading-none">
-                PD
+            <Link to="/" className="flex items-center select-none group" aria-label="Maison Arôme — На главную">
+              <span className="text-xl sm:text-2xl font-black font-serif tracking-tight text-zinc-950 group-hover:text-zinc-600 transition-colors leading-none uppercase">
+                Maison Arôme
               </span>
             </Link>
           </div>

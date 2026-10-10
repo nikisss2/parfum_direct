@@ -10,7 +10,7 @@ interface StoredUser extends User {
 
 const DEFAULT_ADMIN: StoredUser = {
   id: 'usr_admin',
-  email: 'admin@parfumdirect.ru',
+  email: 'admin@maisonarome.ru',
   passwordHash: 'admin123',
   fullName: 'Администратор Магазина',
   phone: '+7 (800) 555-35-90',

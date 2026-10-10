@@ -66,7 +66,7 @@ export const Footer: React.FC = () => {
                 PD
               </span>
               <span className="text-sm font-bold tracking-widest text-zinc-400 font-serif uppercase">
-                PARFUM DIRECT
+                MAISON ARÔME
               </span>
             </div>
             <p className="text-zinc-400 text-xs leading-relaxed max-w-sm">
@@ -125,7 +125,7 @@ export const Footer: React.FC = () => {
               <div className="text-[11px] text-zinc-500">Ежедневно: 09:00 — 21:00 (МСК)</div>
               <div className="flex items-center gap-2 pt-1">
                 <Mail className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-                <a href="mailto:order@parfumdirect.ru" className="hover:text-white">order@parfumdirect.ru</a>
+                <a href="mailto:order@maisonarome.ru" className="hover:text-white">order@maisonarome.ru</a>
               </div>
               <div className="flex items-start gap-2 pt-1 text-[11px]">
                 <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0 mt-0.5" />
@@ -155,7 +155,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
-          <div>© {new Date().getFullYear()} Parfum Direct. Все права защищены. 100% оригинальная парфюмерия.</div>
+          <div>© {new Date().getFullYear()} Maison Arôme. Все права защищены. 100% оригинальная парфюмерия.</div>
           <div className="flex items-center gap-4">
             <Link to="/privacy" className="hover:text-zinc-300">Политика конфиденциальности</Link>
             <span>·</span>

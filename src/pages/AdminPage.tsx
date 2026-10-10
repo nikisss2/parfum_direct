@@ -577,7 +577,7 @@ export const AdminPage: React.FC = () => {
             Вход для администратора
           </h1>
           <p className="text-xs text-zinc-500 mb-6 leading-relaxed font-light">
-            Вы можете войти под аккаунтом администратора <code>admin@parfumdirect.ru</code> / <code>admin123</code> на странице аккаунта или ввести сервисный токен API:
+            Вы можете войти под аккаунтом администратора <code>admin@maisonarome.ru</code> / <code>admin123</code> на странице аккаунта или ввести сервисный токен API:
           </p>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
@@ -593,7 +593,7 @@ export const AdminPage: React.FC = () => {
             </button>
             <div className="pt-2 flex justify-between text-xs text-zinc-500 uppercase tracking-wider text-[11px]">
               <Link to="/account" className="text-black hover:underline font-bold">
-                Войти как admin@parfumdirect.ru
+                Войти как admin@maisonarome.ru
               </Link>
               <Link to="/" className="hover:text-black flex items-center gap-1">
                 <ArrowLeft className="w-3 h-3" /> На сайт

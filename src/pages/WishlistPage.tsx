@@ -327,7 +327,7 @@ export const WishlistPage: React.FC = () => {
   // Share to Telegram channel/friend
   const handleShareTelegram = useCallback(() => {
     if (!shareableUrl) return;
-    const text = 'Мой вишлист ароматов в Parfum Direct ✨';
+    const text = 'Мой вишлист ароматов в Maison Arôme ✨';
     const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableUrl)}&text=${encodeURIComponent(text)}`;
     window.open(tgUrl, '_blank', 'noopener,noreferrer');
   }, [shareableUrl]);

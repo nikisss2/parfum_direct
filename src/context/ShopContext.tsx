@@ -264,7 +264,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(newUser);
     setWishlist([]);
     setAllOrders(db.getAllOrders());
-    showToast('Регистрация успешна', `Добро пожаловать в Parfum Direct, ${newUser.fullName}!`, 'success');
+    showToast('Регистрация успешна', `Добро пожаловать в Maison Arôme, ${newUser.fullName}!`, 'success');
     return newUser;
   };
 

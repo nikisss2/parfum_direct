@@ -25,10 +25,10 @@ export const AboutPage: React.FC = () => {
           О проекте
         </span>
         <h1 className="text-3xl sm:text-4xl font-normal font-serif text-zinc-950 uppercase tracking-wide">
-          Parfum Direct — парфюмерный бутик новой эпохи
+          Maison Arôme — парфюмерный бутик новой эпохи
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 leading-relaxed pt-2 font-light">
-          Мы создали Parfum Direct для людей, которые ценят подлинное парфюмерное искусство и не хотят переплачивать за невскрытый 100-миллилитровый флакон, не распробовав аромат в повседневной жизни.
+          Мы создали Maison Arôme для людей, которые ценят подлинное парфюмерное искусство и не хотят переплачивать за невскрытый 100-миллилитровый флакон, не распробовав аромат в повседневной жизни.
         </p>
       </div>
 
@@ -414,8 +414,8 @@ export const ContactsPage: React.FC = () => {
               <Mail className="w-5 h-5 text-black shrink-0 mt-0.5" />
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Электронная почта:</div>
-                <a href="mailto:order@parfumdirect.ru" className="text-sm font-bold text-zinc-900 hover:underline">
-                  order@parfumdirect.ru
+                <a href="mailto:order@maisonarome.ru" className="text-sm font-bold text-zinc-900 hover:underline">
+                  order@maisonarome.ru
                 </a>
               </div>
             </div>
@@ -505,7 +505,7 @@ export const PrivacyPage: React.FC = () => {
       <p className="text-zinc-500">Дата публикации: 4 октября 2026 г.</p>
 
       <p>
-        Настоящая Политика регламентирует обработку и защиту персональных данных пользователей интернет-магазина Parfum Direct в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».
+        Настоящая Политика регламентирует обработку и защиту персональных данных пользователей интернет-магазина Maison Arôme в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».
       </p>
 
       <h2 className="text-base font-bold text-zinc-900 pt-2">1. Сбор информации</h2>

@@ -281,14 +281,14 @@ export const AccountPage: React.FC = () => {
             <div className="pt-3 border-t border-zinc-100 flex flex-col gap-2 text-center">
               <button
                 type="button"
-                onClick={() => login('client@parfumdirect.ru', 'password123')}
+                onClick={() => login('client@maisonarome.ru', 'password123')}
                 className="text-xs text-black hover:underline font-bold uppercase tracking-wider"
               >
                 Быстрый вход: Тестовый клиент
               </button>
               <button
                 type="button"
-                onClick={() => login('admin@parfumdirect.ru', 'admin123')}
+                onClick={() => login('admin@maisonarome.ru', 'admin123')}
                 className="text-xs text-zinc-500 hover:text-black font-medium tracking-wide"
               >
                 Вход администратора (Управление заказами)
@@ -495,7 +495,7 @@ export const AccountPage: React.FC = () => {
                             }}
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">{item.brand || 'Parfum Direct'}</div>
+                            <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">{item.brand || 'Maison Arôme'}</div>
                             <div className="font-bold text-zinc-900 truncate uppercase tracking-tight">{item.name}</div>
                             <div className="text-zinc-500 text-[11px] uppercase tracking-wider">{item.volumeLabel}</div>
                           </div>

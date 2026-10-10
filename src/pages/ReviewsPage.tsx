@@ -233,7 +233,7 @@ export const ReviewsPage: React.FC = () => {
               <span>Честные отзывы реальных покупателей</span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-normal font-serif tracking-tight leading-tight">
-              Отзывы о Parfum Direct
+              Отзывы о Maison Arôme
             </h1>
             <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed max-w-xl font-light">
               Мы гордимся доверием наших клиентов. Каждый отзыв проходит проверку: мы публикуем реальные впечатления о стойкости, оригинальности и скорости доставки по всей России.
@@ -429,7 +429,7 @@ export const ReviewsPage: React.FC = () => {
                 <div className="mt-4 p-4 rounded-none bg-zinc-50 border-l-2 border-black text-xs space-y-1">
                   <div className="font-bold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5 text-[11px]">
                     <Sparkles className="w-3 h-3 text-black" />
-                    Ответ Parfum Direct:
+                    Ответ Maison Arôme:
                   </div>
                   <div className="text-zinc-600 leading-relaxed font-light">{review.adminReply}</div>
                 </div>

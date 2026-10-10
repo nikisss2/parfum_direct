@@ -43,7 +43,7 @@ export const HomePage: React.FC = () => {
         <div className="absolute inset-0 z-0 opacity-40">
           <img
             src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=2000&q=80"
-            alt="Parfum Direct"
+            alt="Maison Arôme"
             className="w-full h-full object-cover object-center filter brightness-50"
           />
         </div>
@@ -57,6 +57,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-normal font-serif tracking-tight leading-[1.1]">
+              <span className="block text-amber-500 font-serif italic text-xl sm:text-2xl mb-2">Maison Arôme</span>
               {totalCount ? `${totalCount.toLocaleString('ru-RU')}+` : '100 000+'} позиций.
               <span className="block text-zinc-400 font-sans font-light text-2xl sm:text-4xl mt-2">
                 Парфюмерия и профессиональный уход

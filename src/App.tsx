@@ -47,7 +47,7 @@ export default function App() {
     <HashRouter>
       <ShopProvider>
         <ScrollToTop />
-        <div className="min-h-screen flex flex-col bg-white text-zinc-900 selection:bg-zinc-900 selection:text-white antialiased font-sans">
+        <div className="min-h-screen flex flex-col bg-white text-zinc-900 selection:bg-amber-900 selection:text-amber-50 antialiased font-sans">
           <Header />
 
           <div className="flex-1">

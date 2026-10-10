@@ -23,7 +23,7 @@ function download(url: string, dest: string): Promise<void> {
     const mod = url.startsWith('https') ? https : http;
     const file = fs.createWriteStream(dest);
     mod
-      .get(url, { headers: { 'User-Agent': 'ParfumDirectCatalog/1.0' } }, res => {
+      .get(url, { headers: { 'User-Agent': 'MaisonAromeCatalog/1.0' } }, res => {
         if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           file.close();
           fs.unlinkSync(dest);

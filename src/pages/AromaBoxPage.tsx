@@ -253,7 +253,7 @@ export const AromaBoxPage: React.FC = () => {
 
     addCustomCartItem({
       name: `Аромабокс «${selectedTier.name}» (${selectedTier.count} ароматов по 5 мл)`,
-      brand: 'PARFUM DIRECT STUDIO',
+      brand: 'MAISON ARÔME STUDIO',
       image: slots[0]?.images[0] || 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=600&q=80',
       volumeLabel: `Набор из ${selectedTier.count} ароматов по 5 мл: ${names}`,
       price: selectedTier.price,
@@ -429,7 +429,7 @@ export const AromaBoxPage: React.FC = () => {
               </div>
               <div>
                 <div className="font-serif uppercase tracking-widest text-sm text-white font-medium">
-                  PARFUM DIRECT COUTURE ATELIER
+                  MAISON ARÔME COUTURE ATELIER
                 </div>
                 <div className="font-mono uppercase text-[10px] text-zinc-400 mt-0.5">
                   Эксклюзивный бархатный бокс · {selectedTier.count} атомайзеров по 5 мл
