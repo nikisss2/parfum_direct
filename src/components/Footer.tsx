@@ -61,10 +61,17 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 py-12 border-b border-zinc-800 text-xs">
           {/* Brand Info */}
           <div className="col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <span className="text-xl sm:text-2xl font-black font-serif tracking-tight text-white uppercase">
-                MAISON ARÔME
-              </span>
+            <div className="flex items-center gap-3">
+              <img
+                src="/assets/branding/логотип_2_white.png"
+                alt="MA"
+                className="h-8 w-auto object-contain"
+              />
+              <img
+                src="/assets/branding/логотип_1_white.png"
+                alt="MAISON ARÔME"
+                className="h-6 w-auto object-contain"
+              />
             </div>
             <p className="text-zinc-400 text-xs leading-relaxed max-w-sm">
               Премиальный интернет-магазин оригинальной парфюмерии и распивов. Более 100 000 позиций нишевых, арабских и люксовых брендов с доставкой по всей России.

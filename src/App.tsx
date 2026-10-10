@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ShopProvider } from './context/ShopContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ToastContainer } from './components/Toast';
@@ -45,10 +46,11 @@ function ScrollToTop() {
 export default function App() {
   return (
     <HashRouter>
-      <ShopProvider>
-        <ScrollToTop />
-        <div className="min-h-screen flex flex-col bg-white text-zinc-900 selection:bg-amber-900 selection:text-amber-50 antialiased font-sans">
-          <Header />
+      <ThemeProvider>
+        <ShopProvider>
+          <ScrollToTop />
+          <div className="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 selection:bg-amber-900 selection:text-amber-50 antialiased font-sans transition-colors duration-200">
+            <Header />
 
           <div className="flex-1">
             <ErrorBoundary>
@@ -89,6 +91,7 @@ export default function App() {
           <ToastContainer />
         </div>
       </ShopProvider>
-    </HashRouter>
+    </ThemeProvider>
+  </HashRouter>
   );
 }

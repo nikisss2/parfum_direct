@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -36,4 +38,78 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #52525b;
   }
+
+  /* Ночная тема (Dark Theme) */
+  html.dark {
+    color-scheme: dark;
+  }
+  html.dark body {
+    color: #f4f4f5;
+    background-color: #09090b;
+  }
+  html.dark ::-webkit-scrollbar-track {
+    background: #121215;
+  }
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #71717a;
+  }
+}
+
+/* Глобальные плавные стили для ночной темы */
+html.dark header {
+  background-color: #09090b !important;
+  border-color: #27272a !important;
+}
+
+html.dark header nav,
+html.dark header button,
+html.dark header a {
+  color: #f4f4f5;
+}
+
+html.dark div.bg-white:not(.keep-light),
+html.dark section.bg-white:not(.keep-light),
+html.dark article.bg-white:not(.keep-light) {
+  background-color: #0d0d11;
+  color: #f4f4f5;
+}
+
+html.dark div.bg-zinc-50,
+html.dark section.bg-zinc-50 {
+  background-color: #121216;
+}
+
+html.dark div.bg-zinc-100 {
+  background-color: #18181d;
+}
+
+html.dark .border-zinc-200,
+html.dark .border-zinc-300,
+html.dark .border-zinc-100 {
+  border-color: #27272a !important;
+}
+
+html.dark .text-zinc-950,
+html.dark .text-zinc-900 {
+  color: #f4f4f5 !important;
+}
+
+html.dark .text-zinc-600,
+html.dark .text-zinc-500 {
+  color: #a1a1aa !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #141418 !important;
+  color: #f4f4f5 !important;
+  border-color: #27272a !important;
+}
+
+html.dark .divide-zinc-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #27272a !important;
 }

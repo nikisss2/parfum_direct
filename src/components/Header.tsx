@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
+import { useTheme } from '../context/ThemeContext';
 import { fetchProducts, listItemToPerfume } from '../api/catalog';
 import { POPULAR_BRANDS, UNIQUE_PURE_BRANDS, isPureBrand } from '../data/brandsData';
 import type { Perfume } from '../types';
@@ -18,11 +19,14 @@ import {
   Camera,
   Truck,
   Star,
-  ArrowRight
+  ArrowRight,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { cartTotalCount, cartTotalPrice, wishlist, user } = useShop();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -137,11 +141,18 @@ export const Header: React.FC = () => {
               {navDrawerTab ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            {/* Logo: 2 letters "PD" */}
-            <Link to="/" className="flex items-center select-none group" aria-label="Maison Arôme — На главную">
-              <span className="text-xl sm:text-2xl font-black font-serif tracking-tight text-zinc-950 group-hover:text-zinc-600 transition-colors leading-none uppercase">
-                Maison Arôme
-              </span>
+            {/* Logo: Monogram + Text with Day/Night adaptation */}
+            <Link to="/" className="flex items-center gap-2 sm:gap-3.5 select-none group py-0.5" aria-label="Maison Arôme — На главную">
+              <img
+                src={isDark ? '/assets/branding/логотип_2_white.png' : '/assets/branding/логотип_2.png'}
+                alt="MA"
+                className="h-7 sm:h-8 w-auto object-contain transition-opacity duration-200"
+              />
+              <img
+                src={isDark ? '/assets/branding/логотип_1_white.png' : '/assets/branding/логотип_1.png'}
+                alt="Maison Arôme"
+                className="hidden sm:block h-5 sm:h-6 w-auto object-contain transition-opacity duration-200"
+              />
             </Link>
           </div>
 
@@ -388,10 +399,25 @@ export const Header: React.FC = () => {
 
           {/* Action Icons */}
           <div className="flex items-center gap-1 sm:gap-2">
+            {/* Theme Toggle Button (Day / Night) */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-2.5 border border-transparent hover:border-zinc-200 hover:bg-zinc-50 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-colors flex items-center justify-center select-none"
+              aria-label={isDark ? 'Включить дневную тему' : 'Включить ночную тему'}
+              title={isDark ? 'Дневная тема' : 'Ночная тема'}
+            >
+              {isDark ? (
+                <Sun className="w-5 h-5 text-amber-400 stroke-[1.5] transition-transform hover:rotate-45" />
+              ) : (
+                <Moon className="w-5 h-5 text-zinc-800 stroke-[1.5] transition-transform hover:-rotate-12" />
+              )}
+            </button>
+
             {/* Wishlist */}
             <Link
               to="/wishlist"
-              className="p-2.5 border border-transparent hover:border-zinc-200 hover:bg-zinc-50 text-zinc-900 transition-colors relative"
+              className="p-2.5 border border-transparent hover:border-zinc-200 hover:bg-zinc-50 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-colors relative"
               aria-label="Избранное"
             >
               <Heart className="w-5 h-5 stroke-[1.5]" />
