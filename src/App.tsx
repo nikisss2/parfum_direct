@@ -50,7 +50,7 @@ export default function App() {
       <ThemeProvider>
         <ShopProvider>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 selection:bg-amber-900 selection:text-amber-50 antialiased font-sans transition-colors duration-200">
+          <div className="min-h-screen flex flex-col bg-white text-zinc-900 selection:bg-amber-900 selection:text-amber-50 antialiased font-sans transition-colors duration-200">
             <Header />
 
           <div className="flex-1">
