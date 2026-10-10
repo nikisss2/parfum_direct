@@ -10,6 +10,16 @@ interface ProductCardProps {
   perfume: Perfume;
 }
 
+const getShortVolumeLabel = (vol: VolumeOption): string => {
+  if (vol.label) {
+    // Сокращаем длинные названия вроде "10 мл (отливант)" или "100 мл (флакон)" до лаконичных "10 мл", "100 мл"
+    const match = vol.label.match(/^(\d+(?:\.\d+)?\s*(?:мл|ml))/i);
+    if (match) return match[1];
+    return vol.label;
+  }
+  return `${vol.volumeMl} мл`;
+};
+
 export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
   const { addToCart, isInWishlist, toggleWishlist } = useShop();
 
@@ -47,17 +57,34 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
 
   const currentPrice = selectedVolume?.price ?? perfume.minPrice ?? 0;
 
+  // Дедуплицируем объемы по миллилитрам, чтобы не было "2 мл" и "2 мл (отливант)" одновременно
   const uniqueVolumes = React.useMemo(() => {
-    const map = new Map<string, VolumeOption>();
+    const map = new Map<number, VolumeOption>();
     for (const v of perfume.volumes || []) {
-      const key = v.label || `${v.volumeMl} мл`;
-      const existing = map.get(key);
-      if (!existing || v.price > existing.price) {
-        map.set(key, v);
+      const ml = Math.round(v.volumeMl);
+      const existing = map.get(ml);
+      if (!existing || v.price < existing.price) {
+        map.set(ml, v);
       }
     }
     return Array.from(map.values()).sort((a, b) => a.volumeMl - b.volumeMl || a.price - b.price);
   }, [perfume.volumes]);
+
+  // На карточке товара в каталоге показываем максимум 3-4 ключевых объема, чтобы не загромождать карточку 16 кнопками
+  const displayedVolumes = React.useMemo(() => {
+    if (uniqueVolumes.length <= 4) {
+      return uniqueVolumes;
+    }
+    // Если объемов много, отдаем приоритет популярным распивам (3, 5, 10) и полноразмерному флакону
+    const priority = [3, 5, 10, 50, 100];
+    const picked = uniqueVolumes.filter(v => priority.includes(Math.round(v.volumeMl)));
+    if (picked.length >= 3) {
+      return picked.slice(0, 4);
+    }
+    return uniqueVolumes.slice(0, 4);
+  }, [uniqueVolumes]);
+
+  const remainingVolumesCount = uniqueVolumes.length - displayedVolumes.length;
 
   // Calculate selective fake/strikethrough discount if applicable
   const hasDiscount = !!perfume.oldPrice || (perfume.discountPercent && perfume.discountPercent > 0);
@@ -76,11 +103,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
     ? 'ПАРФЮМЕРНАЯ ВОДА'
     : 'КОСМЕТИКА И УХОД';
 
+  const productUrl = `/product/${encodeURIComponent(perfume.slug || perfume.id)}`;
+
   return (
     <div className="group relative flex flex-col bg-white border border-transparent hover:border-zinc-200 p-2 sm:p-3 transition-colors duration-200">
       {/* 1. Image Container (ЗЯ soft light-gray background #f4f4f5 with centered bottle) */}
       <div className="relative aspect-square sm:aspect-[4/5] bg-[#f4f4f5] flex items-center justify-center overflow-hidden">
-        <Link to={`/product/${encodeURIComponent(perfume.slug || perfume.id)}`} className="block w-full h-full p-3 sm:p-4">
+        <Link to={productUrl} className="block w-full h-full p-3 sm:p-4">
           <img
             src={perfume.images?.[0] || PLACEHOLDER}
             alt={`${perfume.brand || ''} ${perfume.name || ''}`}
@@ -115,7 +144,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
         <button
           onClick={handleToggleFavorite}
           aria-label={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
-          className="absolute top-2.5 right-2.5 p-1 text-zinc-400 hover:text-black transition-colors z-10"
+          className="absolute top-2.5 right-2.5 p-1 text-zinc-400 hover:text-black transition-colors z-10 cursor-pointer"
         >
           <Heart
             className={`w-5 h-5 transition-transform active:scale-125 ${
@@ -128,35 +157,43 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
       {/* 2. Content Container */}
       <div className="pt-3 flex-1 flex flex-col justify-between">
         <div>
-          {/* Row 1: Volume Chips row (e.g. 5 мл отливант, 10 мл отливант, 50 мл тестер, 100 мл) */}
-          {uniqueVolumes.length > 1 ? (
+          {/* Row 1: Volume Chips row (compact and clean, max 4 chips + link if more) */}
+          {displayedVolumes.length > 1 ? (
             <div className="flex items-center gap-1.5 flex-wrap mb-2">
-              {uniqueVolumes.map(vol => {
-                const isSelected = selectedVolume?.type === vol.type;
-                const shortLabel = vol.label || `${vol.volumeMl} мл`;
+              {displayedVolumes.map(vol => {
+                const isSelected = selectedVolume?.type === vol.type || selectedVolume?.volumeMl === vol.volumeMl;
+                const shortLabel = getShortVolumeLabel(vol);
                 return (
                   <button
-                    key={vol.type}
+                    key={vol.type || `${vol.volumeMl}`}
                     type="button"
                     onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
                       setSelectedVolume(vol);
                     }}
-                    className={`px-2 py-0.5 border text-[11px] font-medium transition-colors rounded-none leading-tight ${
+                    className={`px-2 py-0.5 border text-[11px] transition-colors rounded-none leading-tight cursor-pointer ${
                       isSelected
-                        ? 'bg-black text-white border-black font-bold dark:bg-white dark:text-black dark:border-white'
-                        : 'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-white bg-white dark:bg-zinc-800 hover:border-black dark:hover:border-zinc-500 hover:text-black'
+                        ? 'bg-black text-white border-black font-bold shadow-xs'
+                        : 'border-zinc-300 text-zinc-800 bg-white hover:border-black hover:text-black font-medium'
                     }`}
                   >
                     {shortLabel}
                   </button>
                 );
               })}
+              {remainingVolumesCount > 0 && (
+                <Link
+                  to={productUrl}
+                  className="text-[11px] text-zinc-500 hover:text-black font-medium tracking-tight whitespace-nowrap pl-0.5"
+                >
+                  +{remainingVolumesCount}
+                </Link>
+              )}
             </div>
           ) : (perfume.rating || 0) > 0 ? (
             /* Or Star Rating Line (5.0 ★★★★★ — 1) */
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-900 dark:text-white mb-1.5">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-900 mb-1.5">
               <span>{(Number(perfume.rating) || 5).toFixed(1)}</span>
               <span className="text-amber-400 tracking-tight text-xs">★★★★★</span>
               <span className="text-zinc-400">— {perfume.reviewsCount || 1}</span>
@@ -164,17 +201,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           ) : null}
 
           {/* Row 2: Uppercase Product Kind Label (e.g. ПАРФЮМЕРНАЯ ВОДА) */}
-          <div className="text-[11px] font-bold tracking-wider text-zinc-900 dark:text-zinc-300 uppercase mt-0.5 mb-1 truncate">
+          <div className="text-[11px] font-bold tracking-wider text-zinc-500 uppercase mt-0.5 mb-1 truncate">
             {displayKind}
           </div>
 
-          {/* Row 3: Product Title: BOLD UPPERCASE BRAND + regular perfume name */}
+          {/* Row 3: Product Title: BOLD UPPERCASE BRAND + regular perfume name (HIGH CONTRAST BLACK) */}
           <Link
-            to={`/product/${encodeURIComponent(perfume.slug || perfume.id)}`}
+            to={productUrl}
             className="block text-sm sm:text-[15px] leading-snug hover:underline line-clamp-2 mt-0.5"
           >
-            <span className="font-bold uppercase text-zinc-950 dark:text-white tracking-tight">{perfume.brand}</span>{' '}
-            <span className="font-normal text-zinc-800 dark:text-zinc-200">{perfume.name}</span>
+            <span className="font-bold uppercase text-zinc-950 tracking-tight">{perfume.brand}</span>{' '}
+            <span className="font-normal text-zinc-800">{perfume.name}</span>
           </Link>
 
           {/* Row 4: Olive Discount Tag */}
@@ -186,9 +223,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
             </div>
           )}
 
-          {/* Row 5: Price display exactly as ЗЯ Screenshot 2: 2 371 ₽   2 790 ₽ */}
+          {/* Row 5: Price display exactly as ЗЯ Screenshot: 2 371 ₽   2 790 ₽ */}
           <div className="mt-2 flex items-baseline gap-2.5 flex-wrap">
-            <span className="text-lg sm:text-xl font-bold text-zinc-950 dark:text-white font-sans tracking-tight">
+            <span className="text-lg sm:text-xl font-bold text-zinc-950 font-sans tracking-tight">
               {currentPrice.toLocaleString('ru-RU')} ₽
             </span>
             {hasDiscount && calculatedOldPrice && calculatedOldPrice > currentPrice && (
@@ -204,15 +241,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           </div>
         </div>
 
-        {/* Row 6: Buy CTA Button with text "В корзину" (Sharp classic rectangle) */}
+        {/* Row 6: Buy CTA Button with text "В корзину" (Solid Black / Green Added) */}
         <div className="mt-3 pt-2">
           <button
             type="button"
             onClick={handleAddToCart}
-            className={`w-full py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors rounded-none ${
+            className={`w-full py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors rounded-none cursor-pointer ${
               isAddedAnim
-                ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
-                : 'border-zinc-950 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-950 dark:text-white hover:bg-zinc-950 dark:hover:bg-zinc-700 hover:text-white'
+                ? 'bg-emerald-700 border-emerald-700 text-white'
+                : 'border-black bg-black text-white hover:bg-zinc-800'
             }`}
           >
             {isAddedAnim ? (

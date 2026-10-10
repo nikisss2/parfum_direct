@@ -458,24 +458,24 @@ export const ReviewsPage: React.FC = () => {
       </div>
 
       {/* Галерея собранных заказов (Фото перед отправкой) */}
-      <section id="gallery" className="pt-8 space-y-6 border-t border-zinc-200 dark:border-zinc-800">
+      <section id="gallery" className="pt-8 space-y-6 border-t border-zinc-200">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-widest font-mono mb-2">
-              <Camera className="w-3.5 h-3.5 text-white dark:text-black" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest font-mono mb-2">
+              <Camera className="w-3.5 h-3.5 text-white" />
               <span>Фотоконтроль заказов</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-serif text-zinc-950 dark:text-white font-normal">
+            <h2 className="text-2xl sm:text-3xl font-serif text-zinc-950 font-normal">
               Галерея собранных заказов
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-light mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 max-w-xl">
               Перед каждой отправкой мы делаем подробные фотографии собранного заказа, флаконов и тревел-атомайзеров, и присылаем их клиенту в Telegram или WhatsApp.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/gallery"
-              className="text-xs font-bold uppercase tracking-wider text-black dark:text-white hover:underline flex items-center gap-1"
+              className="text-xs font-bold uppercase tracking-wider text-black hover:underline flex items-center gap-1"
             >
               <span>Открыть отдельную страницу галереи</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -489,9 +489,9 @@ export const ReviewsPage: React.FC = () => {
             <div
               key={idx}
               onClick={() => setPreviewPhoto({ url: item.imageUrl, caption: `Заказ для ${item.customerName} из ${item.city}: ${item.title}` })}
-              className="group bg-white dark:bg-[#0e0e12] border border-zinc-200 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-xs hover:shadow-md"
+              className="group bg-white border border-zinc-200 hover:border-black transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-xs hover:shadow-md"
             >
-              <div className="relative aspect-[4/3] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
+              <div className="relative aspect-[4/3] bg-zinc-100 overflow-hidden">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
@@ -501,25 +501,25 @@ export const ReviewsPage: React.FC = () => {
                 <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-mono">
                   {item.orderNumber}
                 </span>
-                <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xs text-zinc-900 dark:text-white text-[8px] font-bold uppercase tracking-wider">
+                <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-white/95 backdrop-blur-xs text-zinc-900 text-[8px] font-bold uppercase tracking-wider">
                   {item.badge}
                 </span>
               </div>
               <div className="p-3 flex-1 flex flex-col justify-between space-y-2">
                 <div>
-                  <div className="flex items-center gap-1 text-[11px] text-zinc-900 dark:text-white font-bold uppercase tracking-wide truncate">
-                    <MapPin className="w-3 h-3 text-[#5A6B32] shrink-0" />
+                  <div className="flex items-center gap-1 text-[11px] text-zinc-900 font-bold uppercase tracking-wide truncate">
+                    <MapPin className="w-3-5 h-3 text-[#5A6B32] shrink-0" />
                     <span className="truncate">Заказ для {item.customerName} ({item.city})</span>
                   </div>
-                  <h3 className="font-semibold text-[11px] text-zinc-700 dark:text-zinc-300 mt-1 line-clamp-1">
+                  <h3 className="font-semibold text-[11px] text-zinc-700 mt-1 line-clamp-1">
                     {item.title}
                   </h3>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 leading-snug font-light line-clamp-2">
+                  <p className="text-[11px] text-zinc-500 mt-1 leading-snug font-light line-clamp-2">
                     {item.description}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[9px] text-zinc-400 font-mono">
-                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold uppercase">
+                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[9px] text-zinc-400 font-mono">
+                  <span className="flex items-center gap-1 text-emerald-600 font-bold uppercase">
                     <CheckCircle2 className="w-2.5 h-2.5" /> Проверено
                   </span>
                   <span>{item.date}</span>
@@ -532,7 +532,7 @@ export const ReviewsPage: React.FC = () => {
         <div className="pt-2 text-center">
           <Link
             to="/gallery"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black dark:bg-white text-white dark:text-black text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-xs"
           >
             <span>Смотреть все 10 фотоотчетов с увеличением</span>
             <ArrowRight className="w-4 h-4" />
