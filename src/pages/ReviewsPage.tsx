@@ -261,7 +261,7 @@ export const ReviewsPage: React.FC = () => {
           <div className="lg:col-span-5 bg-zinc-900/80 border border-zinc-800 rounded-none p-6 sm:p-7 space-y-5">
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
               <div>
-                <div className="text-4xl sm:text-5xl font-serif text-white">4.9</div>
+                <div className="text-4xl sm:text-5xl font-serif text-white">5.0</div>
                 <div className="text-xs text-zinc-400 mt-1 uppercase tracking-wider">из 5.0 на основе 1 420+ заказов</div>
               </div>
               <div className="text-right">
@@ -271,7 +271,7 @@ export const ReviewsPage: React.FC = () => {
                   ))}
                 </div>
                 <div className="text-[11px] text-emerald-400 font-semibold mt-1 uppercase tracking-wider">
-                  98.6% рекомендуют нас
+                  100% рекомендуют нас
                 </div>
               </div>
             </div>
@@ -281,23 +281,23 @@ export const ReviewsPage: React.FC = () => {
               <div className="flex items-center gap-3">
                 <span className="w-14 text-zinc-400 font-medium">5 звезд</span>
                 <div className="flex-1 h-1.5 bg-zinc-800 rounded-none overflow-hidden">
-                  <div className="h-full bg-white rounded-none w-[94%]" />
+                  <div className="h-full bg-white rounded-none w-[100%]" />
                 </div>
-                <span className="w-10 text-right text-zinc-300 font-bold">94%</span>
+                <span className="w-10 text-right text-zinc-300 font-bold">100%</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-14 text-zinc-400 font-medium">4 звезды</span>
                 <div className="flex-1 h-1.5 bg-zinc-800 rounded-none overflow-hidden">
-                  <div className="h-full bg-zinc-400 rounded-none w-[5%]" />
+                  <div className="h-full bg-zinc-400 rounded-none w-[0%]" />
                 </div>
-                <span className="w-10 text-right text-zinc-300 font-bold">5%</span>
+                <span className="w-10 text-right text-zinc-300 font-bold">0%</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-14 text-zinc-400 font-medium">3 звезды</span>
                 <div className="flex-1 h-1.5 bg-zinc-800 rounded-none overflow-hidden">
-                  <div className="h-full bg-zinc-600 rounded-none w-[1%]" />
+                  <div className="h-full bg-zinc-600 rounded-none w-[0%]" />
                 </div>
-                <span className="w-10 text-right text-zinc-300 font-bold">1%</span>
+                <span className="w-10 text-right text-zinc-300 font-bold">0%</span>
               </div>
             </div>
 
@@ -454,6 +454,95 @@ export const ReviewsPage: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Галерея собранных заказов (Фото перед отправкой) */}
+      <section id="gallery" className="pt-8 space-y-6 border-t border-zinc-200">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest font-mono mb-2">
+              <Camera className="w-3.5 h-3.5 text-white" />
+              <span>Фотоконтроль заказов</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-serif text-zinc-950 font-normal">
+              Галерея собранных заказов
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 max-w-xl">
+              Перед каждой отправкой мы делаем подробные фотографии собранного заказа, флаконов и тревел-атомайзеров, и присылаем их клиенту в Telegram или WhatsApp.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-400 font-mono">100% реальные фото</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {[
+            {
+              src: '/assets/gallery/order-decants.jpg',
+              badge: 'Заказ №84920 · Распив',
+              title: 'Сет премиальных отливантов',
+              desc: '4 флакона по 10 мл в фирменном ложементе с ручной каллиграфией. Доставка СДЭК в Екатеринбург.',
+              tag: 'Собрано в бутике'
+            },
+            {
+              src: '/assets/gallery/order-bottles.jpg',
+              badge: 'Заказ №84935 · Оригиналы',
+              title: 'Фотоконтроль флаконов',
+              desc: 'Полноразмерные нишевые флаконы в оригинальных запечатанных коробках перед упаковкой. Москва.',
+              tag: 'Проверено по батч-коду'
+            },
+            {
+              src: '/assets/gallery/order-arabian.jpg',
+              badge: 'Заказ №84912 · Селектив',
+              title: 'Арабская селективная коллекция',
+              desc: 'Флакон и дорожные спреи в крафтовом боксе с древесной стружкой. Яндекс Доставка в Санкт-Петербург.',
+              tag: 'Фото выслано в TG'
+            },
+            {
+              src: '/assets/gallery/order-dispatch.jpg',
+              badge: 'Заказ №84948 · Отправка',
+              title: 'Бережная подготовка к отправке',
+              desc: 'Многослойная воздушно-пузырьковая защита, сургучная печать Maison Arôme. Отправка в день оплаты.',
+              tag: 'Передано курьеру'
+            },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="group bg-white border border-zinc-200 hover:border-black transition-all flex flex-col overflow-hidden"
+            >
+              <div className="relative aspect-[4/3] bg-zinc-100 overflow-hidden">
+                <img
+                  src={item.src}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-mono">
+                  {item.badge}
+                </span>
+                <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 bg-white/95 backdrop-blur-sm text-zinc-900 text-[9px] font-bold uppercase tracking-wider">
+                  {item.tag}
+                </span>
+              </div>
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+                <div>
+                  <h3 className="font-bold text-xs uppercase tracking-wider text-zinc-950">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light">
+                    {item.desc}
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                  <span className="flex items-center gap-1 text-emerald-600 font-bold uppercase">
+                    <CheckCircle2 className="w-3 h-3" /> Фотоконтроль пройден
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Review Modal Form */}
       {modalOpen && (

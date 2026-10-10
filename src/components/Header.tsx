@@ -192,6 +192,13 @@ export const Header: React.FC = () => {
                 <div className="absolute left-0 top-full hidden group-hover:block pt-1 z-50">
                   <div className="bg-white border border-black shadow-2xl py-2 min-w-[220px] animate-in fade-in">
                     <Link
+                      to="/reviews#gallery"
+                      className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 hover:bg-zinc-100 transition-colors flex items-center justify-between"
+                    >
+                      <span>Галерея заказов</span>
+                      <span className="text-[10px] font-mono text-zinc-400 font-normal">Фото</span>
+                    </Link>
+                    <Link
                       to="/faq"
                       className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 hover:bg-zinc-100 transition-colors"
                     >

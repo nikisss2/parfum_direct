@@ -213,7 +213,7 @@ export const HomePage: React.FC = () => {
                 className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-zinc-300 bg-white text-zinc-900 text-[10px] font-bold uppercase tracking-wider hover:border-black transition-colors"
               >
                 <Star className="w-3.5 h-3.5 fill-black text-black" />
-                <span>Отзывы 4.9 (1 420+)</span>
+                <span>Отзывы 5.0 (1 420+)</span>
               </Link>
             </div>
             <h2 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">

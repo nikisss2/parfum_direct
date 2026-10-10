@@ -62,10 +62,7 @@ export const Footer: React.FC = () => {
           {/* Brand Info */}
           <div className="col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <span className="text-2xl font-black font-serif tracking-tighter text-white">
-                PD
-              </span>
-              <span className="text-sm font-bold tracking-widest text-zinc-400 font-serif uppercase">
+              <span className="text-xl sm:text-2xl font-black font-serif tracking-tight text-white uppercase">
                 MAISON ARÔME
               </span>
             </div>

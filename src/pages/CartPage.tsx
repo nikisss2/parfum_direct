@@ -94,28 +94,28 @@ export const CartPage: React.FC = () => {
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Cart Items List */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Free Shipping & Gift Progress Bar */}
+          {/* Free Shipping Progress Bar */}
           <div className="p-5 rounded-none border border-zinc-200 bg-zinc-50">
             <div className="flex items-center justify-between gap-3 mb-2">
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 rounded-none bg-black text-white flex items-center justify-center shrink-0">
-                  {isFreeShippingUnlocked ? <Check className="w-5 h-5" /> : <Gift className="w-5 h-5" />}
+                  {isFreeShippingUnlocked ? <Check className="w-5 h-5" /> : <Truck className="w-5 h-5" />}
                 </span>
                 <div>
                   {isFreeShippingUnlocked ? (
                     <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950">
-                      🎉 Бесплатная доставка (0 ₽) и фирменный подарок активированы!
+                      🎉 Бесплатная доставка (0 ₽) активирована!
                     </div>
                   ) : (
                     <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-900">
-                      До бесплатной доставки и подарка осталось{' '}
+                      До бесплатной доставки осталось{' '}
                       <span className="font-mono font-black">{remainingForGift.toLocaleString('ru-RU')} ₽</span>
                     </div>
                   )}
                   <div className="text-[11px] text-zinc-500 mt-0.5">
                     {isFreeShippingUnlocked
-                      ? 'В заказ добавлен металлический атомайзер 10 мл + 2 тревел-семпла селектива (0 ₽)'
-                      : 'При заказе от 15 000 ₽: доставка за 0 ₽ + тревел-атомайзер 10 мл и 2 семпла в подарок'}
+                      ? 'Доставка по РФ и СНГ за наш счет (СДЭК / Яндекс / Почта)'
+                      : 'При заказе от 15 000 ₽ доставка по РФ и СНГ бесплатна'}
                   </div>
                 </div>
               </div>
@@ -134,35 +134,6 @@ export const CartPage: React.FC = () => {
           </div>
 
           <div className="divide-y divide-zinc-200 border border-zinc-200 rounded-none bg-white overflow-hidden shadow-xs">
-            {/* Free Gift Row if unlocked */}
-            {isFreeShippingUnlocked && (
-              <div className="p-4 sm:p-5 flex items-start gap-4 bg-zinc-50/70 border-b border-zinc-200">
-                <div className="w-16 h-20 sm:w-20 sm:h-24 rounded-none bg-black text-white border border-zinc-900 flex flex-col items-center justify-center shrink-0">
-                  <Gift className="w-8 h-8 text-white" />
-                  <span className="text-[9px] font-bold uppercase tracking-widest mt-1">Подарок</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-                    Бонус к заказу от 15 000 ₽
-                  </div>
-                  <div className="font-semibold text-sm sm:text-base text-zinc-950 mt-0.5 truncate">
-                    Фирменный тревел-атомайзер (10 мл) + 2 нишевых семпла
-                  </div>
-                  <div className="text-xs text-zinc-500 mt-1">
-                    Металлический футляр Soft-touch со стеклянной колбой и микрораспылителем
-                  </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-black text-white text-[10px] font-bold uppercase tracking-wider font-mono">
-                      <Check className="w-3 h-3" /> Включено в заказ
-                    </span>
-                    <div className="flex items-center gap-2 font-mono">
-                      <span className="text-xs text-zinc-400 line-through">1 200 ₽</span>
-                      <span className="text-sm font-bold text-black">0 ₽</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {cart.map(item => (
               <div key={item.id} className="p-4 sm:p-5 flex items-start gap-4">
@@ -251,7 +222,7 @@ export const CartPage: React.FC = () => {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="PARFUM10 или WELCOME"
+                  placeholder="Введите промокод"
                   value={promoCode}
                   onChange={e => setPromoCode(e.target.value)}
                   className="flex-1 uppercase bg-white border border-zinc-300 text-xs px-3.5 py-2.5 rounded-none outline-none focus:border-black font-mono"
