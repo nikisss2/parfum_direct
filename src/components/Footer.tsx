@@ -34,12 +34,12 @@ export const Footer: React.FC = () => {
 
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-none bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-white">
-              <CheckCircle2 className="w-5 h-5" />
+              <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-bold text-xs uppercase tracking-wider text-white">Оплата по факту сборки</div>
+              <div className="font-bold text-xs uppercase tracking-wider text-white">Контроль качества</div>
               <div className="text-xs text-zinc-400 mt-1 leading-relaxed">
-                Никакой предоплаты вслепую: оплачиваете после подтверждения и проверки фото.
+                Бережная герметичная упаковка каждого атомайзера и флакона в фирменный бокс.
               </div>
             </div>
           </div>
@@ -81,7 +81,6 @@ export const Footer: React.FC = () => {
                 <Send className="w-3.5 h-3.5" />
                 Telegram: @nikisss2
               </a>
-              <span className="text-[11px] text-zinc-500 font-mono">12 400+ подписчиков</span>
             </div>
           </div>
 
@@ -91,7 +90,8 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-zinc-400">
               <li><Link to="/catalog" className="hover:text-white transition-colors">Все ароматы</Link></li>
               <li><Link to="/aromabox" className="hover:text-white transition-colors text-amber-300 font-medium">Собери аромабокс (−15%)</Link></li>
-              <li><Link to="/catalog?type=decant" className="hover:text-white transition-colors">Распивы (3, 5, 10 мл)</Link></li>
+              <li><Link to="/catalog?category=decants" className="hover:text-white transition-colors">Распивы (1–20 мл)</Link></li>
+              <li><Link to="/certificates" className="hover:text-white transition-colors text-white font-medium">Подарочные сертификаты</Link></li>
               <li><Link to="/catalog?category=niche" className="hover:text-white transition-colors">Нишевая парфюмерия</Link></li>
               <li><Link to="/catalog?category=arabian" className="hover:text-white transition-colors">Арабская парфюмерия</Link></li>
               <li><Link to="/catalog?category=luxury" className="hover:text-white transition-colors">Люксовая парфюмерия</Link></li>
@@ -103,14 +103,17 @@ export const Footer: React.FC = () => {
           <div className="space-y-3">
             <div className="font-semibold text-white tracking-wide uppercase text-[11px]">Сервис и Помощь</div>
             <ul className="space-y-2 text-zinc-400">
+              <li><Link to="/why-cheaper" className="hover:text-white transition-colors text-amber-300 font-semibold">Почему у нас дешевле, чем в ЗЯ?</Link></li>
+              <li><Link to="/loyalty" className="hover:text-white transition-colors text-white font-medium">Бонусная карта (Кешбэк до 10%)</Link></li>
               <li><Link to="/gallery" className="hover:text-white transition-colors text-white font-medium">Галерея заказов (Фотоотчеты)</Link></li>
               <li><Link to="/reviews" className="hover:text-white transition-colors text-amber-300 font-medium">Отзывы покупателей (★ 5.0)</Link></li>
               <li><Link to="/faq" className="hover:text-white transition-colors">Ответы на вопросы (FAQ)</Link></li>
-              <li><Link to="/contacts" className="hover:text-white transition-colors">Контакты и шоурум</Link></li>
+              <li><Link to="/contacts" className="hover:text-white transition-colors">Контакты</Link></li>
               <li><Link to="/how-to-decant" className="hover:text-white transition-colors">Как устроен распив</Link></li>
               <li><Link to="/delivery" className="hover:text-white transition-colors">Доставка и оплата</Link></li>
-              <li><Link to="/about" className="hover:text-white transition-colors">О компании</Link></li>
-              <li><Link to="/privacy" className="hover:text-white transition-colors">Конфиденциальность</Link></li>
+              <li><Link to="/terms" className="hover:text-white transition-colors">Пользовательское соглашение</Link></li>
+              <li><Link to="/offer" className="hover:text-white transition-colors">Публичная оферта</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors">Конфиденциальность (152-ФЗ)</Link></li>
             </ul>
           </div>
 
@@ -120,16 +123,15 @@ export const Footer: React.FC = () => {
             <div className="space-y-2.5 text-zinc-400">
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-                <a href="tel:+78005553590" className="hover:text-white font-medium text-white">8 (800) 555-35-90</a>
+                <a href="tel:+79122879486" className="hover:text-white font-medium text-white">8 (912) 287-94-86</a>
               </div>
-              <div className="text-[11px] text-zinc-500">Ежедневно: 09:00 — 21:00 (МСК)</div>
+              <div className="text-[11px] text-zinc-500">Telegram / WhatsApp: @nikisss2</div>
               <div className="flex items-center gap-2 pt-1">
                 <Mail className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
                 <a href="mailto:order@maisonarome.ru" className="hover:text-white">order@maisonarome.ru</a>
               </div>
-              <div className="flex items-start gap-2 pt-1 text-[11px]">
-                <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0 mt-0.5" />
-                <span>Москва, Пресненская наб., 12 (Шоурум выдачи)</span>
+              <div className="text-[11px] text-zinc-400 pt-1">
+                Склад в Москве · Доставка по РФ от 50 ₽
               </div>
             </div>
           </div>
@@ -156,10 +158,12 @@ export const Footer: React.FC = () => {
         {/* Bottom copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
           <div>© {new Date().getFullYear()} Maison Arôme. Все права защищены. 100% оригинальная парфюмерия.</div>
-          <div className="flex items-center gap-4">
-            <Link to="/privacy" className="hover:text-zinc-300">Политика конфиденциальности</Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link to="/terms" className="hover:text-zinc-300">Пользовательское соглашение</Link>
             <span>·</span>
-            <span>Оферта</span>
+            <Link to="/offer" className="hover:text-zinc-300">Публичная оферта</Link>
+            <span>·</span>
+            <Link to="/privacy" className="hover:text-zinc-300">Конфиденциальность (152-ФЗ)</Link>
           </div>
         </div>
       </div>

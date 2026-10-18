@@ -14,6 +14,9 @@
     "images:fetch": "tsx scripts/fetch-curated-images.ts",
     "dev:all": "tsx scripts/dev-all.ts",
     "preview": "vite preview",
+    "first-opt:dev": "npm --prefix first-opt run dev",
+    "first-opt:build": "npm --prefix first-opt run build",
+    "first-opt:preview": "npm --prefix first-opt run preview",
     "clean": "rm -rf dist dist-server",
     "lint": "tsc --noEmit",
     "postinstall": "npm run build"

@@ -12,7 +12,8 @@ import {
   Droplet,
   Sparkles,
   ArrowRight,
-  Star
+  Star,
+  CreditCard
 } from 'lucide-react';
 import { FAQSection } from '../components/FAQSection';
 
@@ -129,7 +130,7 @@ export const AboutPage: React.FC = () => {
               name: 'Максим Т.',
               city: 'Казань',
               fragrance: 'Tom Ford Tobacco Vanille & Oud Wood',
-              text: '«Упаковано намертво в 5 слоев пупырки. Оплата только после фотоотчета. Стойкость табакованили — двое суток.»',
+              text: '«Упаковано намертво в 5 слоев пупырки. Прислали подробный фотоотчет перед отправкой. Стойкость табакованили — двое суток.»',
             },
           ].map((item, idx) => (
             <div
@@ -181,61 +182,77 @@ export const DeliveryPage: React.FC = () => {
       {/* Оплата */}
       <div className="p-6 sm:p-8 rounded-none bg-zinc-50 border border-zinc-200 space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-none bg-black text-amber-400 flex items-center justify-center">
-            <Camera className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-none bg-black text-white flex items-center justify-center">
+            <CreditCard className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-bold uppercase tracking-wide text-zinc-950">Оплата по факту сборки заказа</h2>
-            <div className="text-xs text-zinc-500 font-light">Без предоплаты вслепую</div>
+            <h2 className="text-base font-bold uppercase tracking-wide text-zinc-950">Условия оплаты и фотоконтроль</h2>
+            <div className="text-xs text-zinc-500 font-light">Предоплата 30% и фотоотчет собранного заказа</div>
           </div>
         </div>
 
-        <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-light">
-          После оформления заказа на сайте наш специалист собирает ваш набор, фотографирует флаконы, наклеенные этикетки, атомайзеры и бланк посылки с трек-номером. Фотоотчет отправляется вам в Telegram или WhatsApp. Только после вашего одобрения вы оплачиваете заказ через Систему быстрых платежей (СБП), банковской картой или безналичным расчетом.
-        </p>
+        <div className="space-y-3 text-xs sm:text-sm text-zinc-600 leading-relaxed font-light">
+          <p>
+            При оформлении заказа предусмотрена предоплата <strong>30%</strong> после подтверждения наличия позиций и согласования деталей с персональным менеджером.
+          </p>
+          <p>
+            Перед отправкой наш специалист собирает ваш заказ, делает подробные фотографии каждого флакона, отливантов, наклеенных этикеток и бланка отправления с трек-номером. Фотоотчет направляется вам в Telegram или WhatsApp. Оставшаяся часть (70%) оплачивается после согласования фото перед передачей посылки в курьерскую службу или при получении.
+          </p>
+          <p className="text-xs text-zinc-500 font-mono">
+            Способы оплаты: Система быстрых платежей (СБП), банковский перевод, безналичный расчет.
+          </p>
+        </div>
       </div>
 
       {/* Службы доставки */}
       <div className="space-y-4">
-        <h2 className="text-lg font-normal font-serif text-zinc-950 uppercase tracking-wide">
-          Службы доставки и тарифы
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-zinc-200">
+          <h2 className="text-lg font-normal font-serif text-zinc-950 uppercase tracking-wide">
+            Службы доставки и тарифы
+          </h2>
+          <span className="text-xs font-bold text-zinc-900 bg-amber-100/80 px-2.5 py-1 border border-amber-300">
+            📦 Склад находится в Москве · Доставка от 0 ₽ (Бесплатно от 25 000 ₽ до 2 500 км)
+          </span>
+        </div>
+        <p className="text-xs sm:text-sm text-zinc-600 font-light leading-relaxed">
+          Стоимость доставки — <strong>от 0 ₽</strong> (при заказе от 25 000 ₽ и расстоянии до 2 500 км от Москвы — <strong>бесплатно</strong>). При меньшей сумме или доставке свыше 2 500 км стоимость рассчитывается по минимальным тарифам ТК и согласуется менеджером перед отправкой.
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">СДЭК (ПВЗ или курьер)</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">350 ₽</span>
+              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
-              Срок: 2–4 рабочих дня. Самая разветвленная сеть пунктов выдачи по всей РФ и ЕАЭС.
+              Срок: 2–4 рабочих дня. Самая разветвленная сеть пунктов выдачи по всей РФ и ЕАЭС. Бесплатно от 25 000 ₽ (до 2 500 км).
             </p>
           </div>
 
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Яндекс Доставка</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">390 ₽</span>
+              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
-              Срок: 1–2 дня. Быстрая доставка в ПВЗ Яндекс Маркета или экспресс до двери.
+              Срок: 1–2 дня. Быстрая доставка в ПВЗ Яндекс Маркета или экспресс до двери из склада в Москве. Бесплатно от 25 000 ₽.
             </p>
           </div>
 
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Ozon Доставка</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">290 ₽</span>
+              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
-              Срок: 2–3 дня. Выдача в любом отделении Ozon прямо у вашего дома.
+              Срок: 2–3 дня. Выдача в любом отделении Ozon прямо у вашего дома. Бесплатно от 25 000 ₽ (до 2 500 км).
             </p>
           </div>
 
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">5POST (Пятёрочка)</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">280 ₽</span>
+              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 2–4 дня. Получение в постаматах и на кассах магазинов «Пятёрочка» и «Перекрёсток».
@@ -245,7 +262,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Почта России (1 класс)</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">320 ₽</span>
+              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 3–6 дней. Авиа-доставка в любые удаленные населенные пункты РФ.
@@ -255,7 +272,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Авито Доставка</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">300 ₽</span>
+              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 2–5 дней. Безопасная партнерская сделка с отслеживанием через сервис Авито.
@@ -379,7 +396,7 @@ export const ContactsPage: React.FC = () => {
           Связь с нами
         </span>
         <h1 className="text-3xl sm:text-4xl font-normal font-serif text-zinc-950 uppercase tracking-wide">
-          Контакты и шоурум
+          Контакты
         </h1>
         <p className="text-sm text-zinc-600 leading-relaxed font-light">
           Мы всегда на связи и с радостью поможем подобрать аромат под ваш вкус или сезон.
@@ -389,13 +406,13 @@ export const ContactsPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Info */}
         <div className="space-y-6">
-          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-4">
+          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
             <div className="flex items-start gap-3">
               <Phone className="w-5 h-5 text-black shrink-0 mt-0.5" />
               <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Бесплатный звонок по РФ:</div>
-                <a href="tel:+78005553590" className="text-base font-bold text-zinc-950 hover:underline">
-                  8 (800) 555-35-90
+                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Телефон / WhatsApp:</div>
+                <a href="tel:+79122879486" className="text-base font-bold text-zinc-950 hover:underline">
+                  8 (912) 287-94-86
                 </a>
               </div>
             </div>
@@ -417,19 +434,6 @@ export const ContactsPage: React.FC = () => {
                 <a href="mailto:order@maisonarome.ru" className="text-sm font-bold text-zinc-900 hover:underline">
                   order@maisonarome.ru
                 </a>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-black shrink-0 mt-0.5" />
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Шоурум и пункт выдачи:</div>
-                <div className="text-xs font-bold uppercase tracking-wide text-zinc-900 mt-1">
-                  Москва, Пресненская наб., 12, Башня «Федерация», этаж 3
-                </div>
-                <div className="text-[11px] text-zinc-500 mt-1 font-light">
-                  Ежедневно с 10:00 до 21:00 (по предварительной записи)
-                </div>
               </div>
             </div>
           </div>
@@ -495,33 +499,9 @@ export const ContactsPage: React.FC = () => {
   );
 };
 
-/* 5. Политика конфиденциальности */
-export const PrivacyPage: React.FC = () => {
-  return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 space-y-6 text-xs sm:text-sm text-zinc-600 leading-relaxed">
-      <h1 className="text-2xl sm:text-3xl font-bold font-serif text-zinc-950">
-        Политика обработки персональных данных
-      </h1>
-      <p className="text-zinc-500">Дата публикации: 4 октября 2026 г.</p>
+import { LegalPages } from './LegalPages';
 
-      <p>
-        Настоящая Политика регламентирует обработку и защиту персональных данных пользователей интернет-магазина Maison Arôme в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».
-      </p>
-
-      <h2 className="text-base font-bold text-zinc-900 pt-2">1. Сбор информации</h2>
-      <p>
-        Мы собираем исключительно те данные, которые необходимы для выполнения заказа и отправки посылки: имя получателя, номер телефона, адрес электронной почты и адрес доставки.
-      </p>
-
-      <h2 className="text-base font-bold text-zinc-900 pt-2">2. Использование данных</h2>
-      <p>
-        Данные используются для связи с клиентом, отправки фотоотчетов собранных заказов в Telegram/WhatsApp, оформления накладных транспортных компаний (СДЭК, Яндекс, Почта России) и уведомлений об изменении статуса доставки.
-      </p>
-
-      <h2 className="text-base font-bold text-zinc-900 pt-2">3. Безопасность и третьи лица</h2>
-      <p>
-        Мы не передаем персональные данные третьим лицам за исключением уполномоченных служб доставки исключительно в рамках исполнения конкретного заказа.
-      </p>
-    </div>
-  );
-};
+/* 5. Правовые документы (152-ФЗ, Оферта, Соглашение) */
+export const TermsPage: React.FC = () => <LegalPages initialTab="terms" />;
+export const OfferPage: React.FC = () => <LegalPages initialTab="offer" />;
+export const PrivacyPage: React.FC = () => <LegalPages initialTab="privacy" />;

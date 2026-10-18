@@ -8,6 +8,7 @@ export interface VolumeOption {
   label: string;
   volumeMl: number;
   price: number;
+  costPrice?: number;
   inStock: boolean;
 }
 

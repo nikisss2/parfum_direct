@@ -18,7 +18,10 @@ import {
   Camera,
   Truck,
   Star,
-  ArrowRight
+  ArrowRight,
+  Check,
+  Gift,
+  CreditCard
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -32,6 +35,10 @@ export const Header: React.FC = () => {
   const [brandSearchQuery, setBrandSearchQuery] = useState('');
   const [selectedLetter, setSelectedLetter] = useState<string>('ALL');
 
+  // "Клиентам" dropdown menu state
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+
   // Search autocomplete state
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -42,6 +49,7 @@ export const Header: React.FC = () => {
   useEffect(() => {
     setNavDrawerTab(null);
     setSearchOpen(false);
+    setMoreMenuOpen(false);
   }, [location.pathname, location.search]);
 
   useEffect(() => {
@@ -49,17 +57,21 @@ export const Header: React.FC = () => {
       if (e.key === 'Escape') {
         setNavDrawerTab(null);
         setSearchOpen(false);
+        setMoreMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Click outside to close search dropdown
+  // Click outside to close search, city, and client dropdowns
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setSearchOpen(false);
+      }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setMoreMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -94,7 +106,14 @@ export const Header: React.FC = () => {
     const q = brandSearchQuery.trim().toLowerCase();
     return UNIQUE_PURE_BRANDS.filter(b => {
       if (!isPureBrand(b.name)) return false;
-      if (q && !b.name.toLowerCase().includes(q)) return false;
+      if (q) {
+        const bName = b.name.toLowerCase();
+        const bQuery = b.searchQuery.toLowerCase();
+        const isLvSearch = q.includes('vitton') || q.includes('vuitton') || q.includes('виттон') || q.includes('витон') || q.includes('луи');
+        const isLvBrand = bName.includes('vuitton') || bName.includes('vitton');
+        const matches = bName.includes(q) || bQuery.includes(q) || (isLvSearch && isLvBrand);
+        if (!matches) return false;
+      }
       if (selectedLetter !== 'ALL') {
         const first = b.name[0]?.toUpperCase();
         if (selectedLetter === '#') {
@@ -125,20 +144,27 @@ export const Header: React.FC = () => {
   return (
     <>
       <header className="sticky top-0 z-40 bg-white border-b border-zinc-200">
-        {/* Main Bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between gap-4 sm:gap-6 relative">
-          {/* Left section: Hamburger (Mobile) + Logo */}
-          <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+        {/* Row 1: City selector (Left) | Centered Logo (Center) | 4 Clean Icons (Right) */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4 relative">
+          {/* Left section: Hamburger (Mobile) */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-[40px] sm:min-w-[170px]">
             <button
+              type="button"
               onClick={() => setNavDrawerTab(navDrawerTab ? null : 'catalog')}
-              className="lg:hidden p-1.5 text-zinc-800 hover:text-black transition-colors"
+              className="md:hidden p-1.5 text-zinc-800 hover:text-black transition-colors cursor-pointer"
               aria-label="Меню навигации"
             >
               {navDrawerTab ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
+          </div>
 
-            {/* Logo: Single prominent logo (логотип_2.png) */}
-            <Link to="/" className="flex items-center select-none group py-1" aria-label="Maison Arôme — На главную">
+          {/* Center section: Logo Centered prominently */}
+          <div className="flex-1 flex justify-center items-center">
+            <Link
+              to="/"
+              className="flex items-center justify-center select-none group py-1"
+              aria-label="Maison Arôme — На главную"
+            >
               <img
                 src="/assets/branding/логотип_2.png"
                 alt="Maison Arôme"
@@ -147,294 +173,60 @@ export const Header: React.FC = () => {
             </Link>
           </div>
 
-          {/* Desktop ЗЯ Primary Triggers: каталог, бренды, скидки, галерея, другое, конструктор */}
-          {!searchOpen && (
-            <div className="hidden lg:flex items-center gap-6">
-              <button
-                type="button"
-                onClick={() => setNavDrawerTab(navDrawerTab === 'catalog' ? null : 'catalog')}
-                className={`text-base font-medium tracking-normal transition-colors py-2 relative lowercase select-none ${
-                  navDrawerTab === 'catalog'
-                    ? 'text-black font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black'
-                    : 'text-zinc-800 hover:text-black'
-                }`}
-              >
-                каталог
-              </button>
+          {/* Right section: 4 Clean Icons: Search, Wishlist, Account, Cart */}
+          <div className="flex items-center gap-0.5 sm:gap-2 shrink-0 min-w-[120px] sm:min-w-[170px] justify-end">
+            {/* 1. Search Icon */}
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="p-2 sm:p-2.5 text-zinc-900 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
+              aria-label="Поиск по ароматам"
+              title="Поиск"
+            >
+              <Search className="w-5 h-5 stroke-[1.7]" />
+            </button>
 
-              <button
-                type="button"
-                onClick={() => setNavDrawerTab(navDrawerTab === 'brands' ? null : 'brands')}
-                className={`text-base font-medium tracking-normal transition-colors py-2 relative lowercase select-none ${
-                  navDrawerTab === 'brands'
-                    ? 'text-black font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black'
-                    : 'text-zinc-800 hover:text-black'
-                }`}
-              >
-                бренды
-              </button>
-
-              <Link
-                to="/catalog?filter=sale"
-                className="text-base font-medium tracking-normal text-zinc-800 hover:text-black transition-colors py-2 lowercase select-none"
-              >
-                скидки
-              </Link>
-
-              <Link
-                to="/gallery"
-                className="text-base font-medium tracking-normal text-zinc-800 hover:text-black transition-colors py-2 lowercase select-none"
-              >
-                галерея
-              </Link>
-
-              {/* "Другое" Dropdown: FAQ and Contacts */}
-              <div className="relative group">
-                <button
-                  type="button"
-                  className="text-base font-medium tracking-normal text-zinc-800 hover:text-black transition-colors py-2 lowercase select-none flex items-center gap-1"
-                >
-                  <span>другое</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-zinc-400 group-hover:text-black transition-transform group-hover:rotate-180" />
-                </button>
-
-                <div className="absolute left-0 top-full hidden group-hover:block pt-1 z-50">
-                  <div className="bg-white border border-black shadow-2xl py-2 min-w-[220px] animate-in fade-in">
-                    <Link
-                      to="/gallery"
-                      className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 hover:bg-zinc-100 transition-colors flex items-center justify-between"
-                    >
-                      <span>Галерея заказов</span>
-                      <span className="text-[10px] font-mono text-zinc-400 font-normal">Фото</span>
-                    </Link>
-                    <Link
-                      to="/faq"
-                      className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 hover:bg-zinc-100 transition-colors"
-                    >
-                      Ответы на вопросы
-                    </Link>
-                    <Link
-                      to="/contacts"
-                      className="block px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-950 hover:bg-zinc-100 transition-colors"
-                    >
-                      Контакты
-                    </Link>
-                    <div className="my-1 border-t border-zinc-100" />
-                    <Link
-                      to="/how-to-decant"
-                      className="block px-4 py-2 text-xs text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors"
-                    >
-                      Как устроен распив
-                    </Link>
-                    <Link
-                      to="/delivery"
-                      className="block px-4 py-2 text-xs text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors"
-                    >
-                      Доставка и оплата
-                    </Link>
-                    <Link
-                      to="/about"
-                      className="block px-4 py-2 text-xs text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors"
-                    >
-                      О бутике
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <Link
-                to="/aromabox"
-                className="bg-black text-white hover:bg-zinc-800 px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors select-none inline-flex items-center gap-1.5 shadow-xs"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-white" />
-                <span>Конструктор ароматов</span>
-              </Link>
-            </div>
-          )}
-
-          {/* Desktop Search Bar: Expands across header to cover navigation when focused/clicked */}
-          <div
-            ref={searchRef}
-            className={`hidden md:block relative transition-all duration-200 ${
-              searchOpen ? 'flex-1 mx-4' : 'w-64 lg:w-72'
-            }`}
-          >
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-              <input
-                type="text"
-                placeholder="Поиск по аромату, бренду или ноте..."
-                value={searchValue}
-                autoFocus={searchOpen}
-                onFocus={() => setSearchOpen(true)}
-                onChange={e => {
-                  setSearchValue(e.target.value);
-                  setSearchOpen(true);
-                }}
-                className={`w-full bg-[#f4f4f5] hover:bg-white focus:bg-white text-xs text-zinc-900 placeholder:text-zinc-400 pl-9 ${
-                  searchOpen ? 'pr-24 py-2.5 border-2 border-black' : 'pr-4 py-2.5 border border-zinc-200 focus:border-black'
-                } outline-none transition-all`}
-              />
-              <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-
-              {searchOpen && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  {searchValue && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearchValue('');
-                        setSearchResults([]);
-                      }}
-                      className="p-1 text-zinc-400 hover:text-black text-xs"
-                      title="Очистить"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setSearchOpen(false)}
-                    className="px-2.5 py-1 bg-zinc-200 hover:bg-zinc-300 text-zinc-900 text-[11px] font-bold uppercase tracking-wider transition-colors"
-                  >
-                    Закрыть
-                  </button>
-                </div>
-              )}
-            </form>
-
-            {/* Autocomplete Dropdown */}
-            {searchOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1 bg-white shadow-2xl border border-zinc-200 overflow-hidden z-50 animate-in fade-in">
-                {searchValue.trim() ? (
-                  searchResults.length > 0 ? (
-                    <div className="divide-y divide-zinc-100">
-                      <div className="p-2.5 bg-zinc-50 text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center justify-between border-b border-zinc-100">
-                        <span>Результаты поиска ({searchResults.length})</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchValue('');
-                            setSearchResults([]);
-                          }}
-                          className="text-zinc-400 hover:text-black text-[10px] uppercase font-bold tracking-wider"
-                        >
-                          Очистить
-                        </button>
-                      </div>
-                      {searchResults.map(perf => (
-                        <Link
-                          key={perf.id}
-                          to={`/product/${perf.slug}`}
-                          onClick={() => setSearchOpen(false)}
-                          className="p-3 flex items-center gap-3 hover:bg-zinc-50 transition-colors"
-                        >
-                          <img
-                            src={perf.images[0]}
-                            alt=""
-                            className="w-10 h-10 object-contain bg-[#f4f4f5] border border-zinc-200 shrink-0 p-1"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider truncate">
-                              {perf.brand}
-                            </div>
-                            <div className="text-xs font-semibold text-zinc-950 truncate">
-                              {perf.name}
-                            </div>
-                            <div className="text-[11px] text-zinc-600 font-sans">
-                              {perf.volumes[0]?.label} {perf.volumes[0]?.price.toLocaleString('ru-RU')} ₽
-                            </div>
-                          </div>
-                          <ChevronRight className="w-4 h-4 text-zinc-400 shrink-0" />
-                        </Link>
-                      ))}
-                      <div className="p-2.5 bg-zinc-50 text-center border-t border-zinc-100">
-                        <button
-                          onClick={handleSearchSubmit}
-                          className="text-xs font-bold uppercase tracking-wider text-black hover:underline"
-                        >
-                          Смотреть все результаты в каталоге →
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="p-6 text-center text-xs text-zinc-500">
-                      По запросу «{searchValue}» ничего не найдено.
-                    </div>
-                  )
-                ) : (
-                  <div className="p-4 space-y-3">
-                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                      Популярные запросы
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {[
-                        'Baccarat 540',
-                        'Creed Aventus',
-                        'Tom Ford',
-                        'Ganymede',
-                        'Lattafa Khamrah',
-                        'Delina',
-                        'Fleur Narcotique'
-                      ].map(chip => (
-                        <button
-                          key={chip}
-                          type="button"
-                          onClick={() => {
-                            setSearchValue(chip);
-                            setSearchOpen(true);
-                          }}
-                          className="px-3 py-1.5 border border-zinc-200 hover:border-black bg-white text-xs text-zinc-900 font-medium transition-colors"
-                        >
-                          {chip}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Action Icons */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            {/* Wishlist */}
+            {/* 2. Wishlist Icon */}
             <Link
               to="/wishlist"
-              className="p-2.5 border border-transparent hover:border-zinc-200 hover:bg-zinc-50 text-zinc-900 transition-colors relative"
+              className="p-2 sm:p-2.5 text-zinc-900 hover:text-black hover:bg-zinc-100 transition-colors relative"
               aria-label="Избранное"
+              title="Избранное"
             >
-              <Heart className="w-5 h-5 stroke-[1.5]" />
+              <Heart className="w-5 h-5 stroke-[1.7]" />
               {wishlist.length > 0 && (
-                <span className="absolute top-1 right-1 px-1.5 py-0.2 bg-black text-[9px] text-white font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-black text-[10px] text-white font-bold flex items-center justify-center leading-none rounded-none shadow-xs">
                   {wishlist.length}
                 </span>
               )}
             </Link>
 
-            {/* Account */}
+            {/* 3. Account / Profile Icon */}
             <Link
               to="/account"
-              className="p-2.5 border border-transparent hover:border-zinc-200 hover:bg-zinc-50 text-zinc-900 transition-colors flex items-center gap-1.5"
+              className="p-2 sm:p-2.5 text-zinc-900 hover:text-black hover:bg-zinc-100 transition-colors flex items-center gap-1.5"
               aria-label="Личный кабинет"
+              title="Профиль"
             >
-              <UserIcon className="w-5 h-5 stroke-[1.5]" />
+              <UserIcon className="w-5 h-5 stroke-[1.7]" />
               {user && (
-                <span className="hidden xl:inline text-xs font-semibold uppercase tracking-wider text-zinc-900 max-w-[100px] truncate">
+                <span className="hidden xl:inline text-xs font-semibold uppercase tracking-wider text-zinc-900 max-w-[90px] truncate">
                   {user.fullName.split(' ')[0]}
                 </span>
               )}
             </Link>
 
-            {/* Cart (Sharp Black Rectangle Button) */}
+            {/* 4. Cart Button */}
             <Link
               to="/cart"
-              className="p-2.5 sm:px-4 sm:py-2.5 bg-black text-white hover:bg-zinc-800 border border-black transition-colors flex items-center gap-2"
+              className="p-2 sm:px-3 sm:py-2 bg-black text-white hover:bg-zinc-800 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
               aria-label="Корзина"
+              title="Корзина"
             >
               <div className="relative">
                 <ShoppingBag className="w-4 h-4" />
                 {cartTotalCount > 0 && (
-                  <span className="absolute -top-2 -right-2 px-1 py-0.2 bg-[#5A6B32] text-white text-[9px] font-bold flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 bg-[#5A6B32] text-white text-[10px] font-bold flex items-center justify-center leading-none rounded-none shadow-xs">
                     {cartTotalCount}
                   </span>
                 )}
@@ -446,37 +238,329 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Search Input */}
-        <div className="md:hidden px-4 pb-3">
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input
-              type="text"
-              placeholder="Поиск по аромату, бренду..."
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
-              className="w-full bg-[#f4f4f5] text-xs text-zinc-900 pl-9 pr-4 py-2 border border-zinc-200 outline-none focus:border-black"
-            />
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          </form>
+        {/* Row 2: Clean Golden Apple Style Navigation Bar - Centered & Compact, NO horizontal scrolling */}
+        <div className="hidden md:block border-t border-zinc-100 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <nav className="flex items-center justify-center gap-7 lg:gap-10 py-2.5 text-sm lg:text-[15px] tracking-wide select-none">
+              {/* 1. КАТАЛОГ */}
+              <button
+                type="button"
+                onClick={() => setNavDrawerTab(navDrawerTab === 'catalog' ? null : 'catalog')}
+                className={`transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1 lowercase ${
+                  navDrawerTab === 'catalog' ? 'text-black font-bold' : 'text-zinc-800 hover:text-black font-medium'
+                }`}
+              >
+                <span>каталог</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${navDrawerTab === 'catalog' ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* 2. БРЕНДЫ */}
+              <button
+                type="button"
+                onClick={() => setNavDrawerTab(navDrawerTab === 'brands' ? null : 'brands')}
+                className={`transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1 lowercase ${
+                  navDrawerTab === 'brands' ? 'text-black font-bold' : 'text-zinc-800 hover:text-black font-medium'
+                }`}
+              >
+                <span>бренды</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${navDrawerTab === 'brands' ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* 3. КОНСТРУКТОР */}
+              <Link
+                to="/aromabox"
+                className="text-zinc-800 hover:text-black transition-colors whitespace-nowrap flex items-center gap-1.5 lowercase font-medium"
+              >
+                <span>конструктор</span>
+                <span className="text-[9px] bg-black text-white px-1 py-0.2 uppercase font-bold tracking-wider">box</span>
+              </Link>
+
+              {/* 4. АКЦИИ */}
+              <Link
+                to="/catalog?filter=sale"
+                className="text-zinc-800 hover:text-black transition-colors whitespace-nowrap lowercase font-medium"
+              >
+                акции
+              </Link>
+
+              {/* 5. РАСПИВЫ */}
+              <Link
+                to="/catalog?category=decants"
+                className="text-zinc-800 hover:text-black transition-colors whitespace-nowrap lowercase font-medium"
+              >
+                распивы
+              </Link>
+
+              {/* 6. ГРУППА: КЛИЕНТАМ (Сертификаты, карта лояльности, почему дешевле, отзывы, галерея, доставка) */}
+              <div ref={moreMenuRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                  onMouseEnter={() => setMoreMenuOpen(true)}
+                  className={`transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1 lowercase font-medium py-1 ${
+                    moreMenuOpen ? 'text-black font-bold' : 'text-zinc-800 hover:text-black'
+                  }`}
+                >
+                  <span>клиентам</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${moreMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Dropdown Popover */}
+                {moreMenuOpen && (
+                  <div
+                    onMouseLeave={() => setMoreMenuOpen(false)}
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-72 bg-white border border-zinc-200 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                  >
+                    <div className="px-4 py-2 border-b border-zinc-100 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Сервисы и привилегии
+                    </div>
+
+                    <Link
+                      to="/certificates"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <Gift className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Подарочные сертификаты</div>
+                        <div className="text-[11px] text-zinc-500">Электронные от 3 000 ₽</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/loyalty"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <CreditCard className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Бонусная карта</div>
+                        <div className="text-[11px] text-zinc-500">Кэшбэк до 10% за заказы</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/why-cheaper"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <Sparkles className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Почему дешевле?</div>
+                        <div className="text-[11px] text-zinc-500">Прямой импорт без наценок</div>
+                      </div>
+                    </Link>
+
+                    <div className="my-1 border-t border-zinc-100"></div>
+
+                    <Link
+                      to="/reviews"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <Star className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Отзывы покупателей</div>
+                        <div className="text-[11px] text-zinc-500">Рейтинг 5.0★ от клиентов</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/gallery"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <Camera className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Галерея заказов</div>
+                        <div className="text-[11px] text-zinc-500">Фото готовых посылок</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/delivery"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <Truck className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Доставка и оплата</div>
+                        <div className="text-[11px] text-zinc-500">СДЭК и Яндекс по всей РФ</div>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
         </div>
       </header>
+
+      {/* ========================================================================= */}
+      {/* GOLDEN APPLE (ЗЯ) SEARCH OVERLAY (DESKTOP & MOBILE WITH FULL AUTOCOMPLETE) */}
+      {/* ========================================================================= */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs animate-in fade-in duration-300 flex flex-col justify-start">
+          <div
+            ref={searchRef}
+            className="bg-white border-b border-black shadow-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-top duration-300 ease-out"
+          >
+            {/* Search Input Bar */}
+            <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-3 flex items-center gap-3">
+              <form onSubmit={handleSearchSubmit} className="relative flex-1">
+                <Search className="w-5 h-5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Поиск по аромату, бренду или нотам..."
+                  value={searchValue}
+                  onChange={e => setSearchValue(e.target.value)}
+                  className="w-full pl-11 pr-10 py-3 bg-zinc-100 border border-zinc-300 focus:border-black text-sm text-zinc-950 outline-none rounded-none"
+                />
+                {searchValue && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchValue('');
+                      setSearchResults([]);
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-black cursor-pointer"
+                    title="Очистить"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </form>
+              <button
+                type="button"
+                onClick={() => setSearchOpen(false)}
+                className="px-4 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+              >
+                Закрыть
+              </button>
+            </div>
+
+            {/* Results or Popular Queries */}
+            <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pb-6 overflow-y-auto">
+              {searchValue.trim() ? (
+                searchResults.length > 0 ? (
+                  <div className="divide-y divide-zinc-100 pt-2">
+                    <div className="py-2 text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex justify-between">
+                      <span>Результаты поиска ({searchResults.length})</span>
+                      <button
+                        type="button"
+                        onClick={handleSearchSubmit}
+                        className="text-black hover:underline cursor-pointer font-bold"
+                      >
+                        Смотреть все в каталоге →
+                      </button>
+                    </div>
+                    {searchResults.map(perf => (
+                      <Link
+                        key={perf.id}
+                        to={`/product/${perf.slug}`}
+                        onClick={() => setSearchOpen(false)}
+                        className="py-3 px-2 flex items-center gap-3 hover:bg-zinc-50 transition-colors group"
+                      >
+                        <img
+                          src={perf.images[0] || '/assets/placeholder-product.svg'}
+                          alt=""
+                          className="w-12 h-12 object-contain bg-zinc-50 border border-zinc-200 shrink-0 p-1"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider truncate">
+                            {perf.brand}
+                          </div>
+                          <div className="text-sm font-semibold text-zinc-950 truncate group-hover:text-black">
+                            {perf.name}
+                          </div>
+                          <div className="text-xs text-zinc-600 mt-0.5">
+                            {perf.volumes?.[0]?.label} · от {(perf.minPrice || 0).toLocaleString('ru-RU')} ₽
+                          </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-black shrink-0" />
+                      </Link>
+                    ))}
+                    <div className="pt-3 text-center">
+                      <button
+                        type="button"
+                        onClick={handleSearchSubmit}
+                        className="w-full py-2.5 bg-zinc-100 hover:bg-zinc-200 text-xs font-bold uppercase tracking-wider text-black transition-colors cursor-pointer"
+                      >
+                        Показать все результаты для «{searchValue}»
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-12 text-center text-sm text-zinc-500">
+                    По запросу «{searchValue}» ничего не найдено.
+                  </div>
+                )
+              ) : (
+                <div className="pt-2 space-y-3">
+                  <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                    Популярные запросы
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      'Baccarat Rouge 540',
+                      'Creed Aventus',
+                      'Tom Ford Tobacco Vanille',
+                      'Ganymede',
+                      'Lattafa Khamrah',
+                      'Delina',
+                      'Fleur Narcotique',
+                      'Lost Cherry',
+                      'Angels Share',
+                      'Le Labo Santal 33'
+                    ].map(chip => (
+                      <button
+                        key={chip}
+                        type="button"
+                        onClick={() => {
+                          setSearchValue(chip);
+                        }}
+                        className="px-3 py-1.5 border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 text-xs text-zinc-900 transition-colors cursor-pointer"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* FULL GOLDEN APPLE (ЗЯ) NAVIGATION MEGA-MENU DRAWER (Screenshot 2 style)   */}
       {/* ========================================================================= */}
       {navDrawerTab && (
-        <div className="fixed inset-0 top-[72px] z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-start animate-in fade-in duration-200">
+        <div className="fixed inset-0 top-[64px] md:top-[105px] z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-start animate-in fade-in duration-300">
           <div
-            className="w-full bg-white border-b border-zinc-200 shadow-2xl max-h-[82vh] flex flex-col overflow-hidden"
+            className="w-full bg-white border-b border-zinc-200 shadow-2xl max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-top duration-300 ease-out"
             onClick={e => e.stopPropagation()}
           >
-            {/* Top Navigation Tabs Header (Screenshot 2: каталог | бренды | акции) */}
+            {/* Top Navigation Tabs Header (каталог | бренды | конструктор | акции) */}
             <div className="border-b border-zinc-200 px-4 sm:px-8 bg-white flex items-center justify-between">
-              <div className="flex items-center gap-8 sm:gap-12">
+              <div className="flex items-center gap-6 sm:gap-10">
                 <button
                   type="button"
                   onClick={() => setNavDrawerTab('catalog')}
-                  className={`py-4 text-base sm:text-lg tracking-tight lowercase transition-all select-none relative ${
+                  className={`py-3.5 sm:py-4 text-base sm:text-lg tracking-tight lowercase transition-all select-none relative cursor-pointer ${
                     navDrawerTab === 'catalog'
                       ? 'font-bold text-black after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-black'
                       : 'font-normal text-zinc-500 hover:text-black'
@@ -488,7 +572,7 @@ export const Header: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setNavDrawerTab('brands')}
-                  className={`py-4 text-base sm:text-lg tracking-tight lowercase transition-all select-none relative ${
+                  className={`py-3.5 sm:py-4 text-base sm:text-lg tracking-tight lowercase transition-all select-none relative cursor-pointer ${
                     navDrawerTab === 'brands'
                       ? 'font-bold text-black after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-black'
                       : 'font-normal text-zinc-500 hover:text-black'
@@ -498,27 +582,20 @@ export const Header: React.FC = () => {
                 </button>
 
                 <Link
-                  to="/gallery"
+                  to="/aromabox"
                   onClick={() => setNavDrawerTab(null)}
-                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
+                  className="py-3.5 sm:py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none flex items-center gap-1"
                 >
-                  галерея заказов
+                  <span>конструктор</span>
+                  <span className="text-[9px] bg-black text-white px-1 py-0.2 uppercase font-bold tracking-wider">box</span>
                 </Link>
 
                 <Link
-                  to="/faq"
+                  to="/catalog?filter=sale"
                   onClick={() => setNavDrawerTab(null)}
-                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
+                  className="py-3.5 sm:py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
                 >
-                  вопросы
-                </Link>
-
-                <Link
-                  to="/contacts"
-                  onClick={() => setNavDrawerTab(null)}
-                  className="py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
-                >
-                  контакты
+                  акции
                 </Link>
               </div>
 
@@ -526,7 +603,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setNavDrawerTab(null)}
-                className="p-2 text-zinc-400 hover:text-black transition-colors"
+                className="p-2 text-zinc-400 hover:text-black transition-colors cursor-pointer"
                 aria-label="Закрыть меню"
               >
                 <X className="w-5 h-5" />
@@ -738,6 +815,18 @@ export const Header: React.FC = () => {
                     >
                       Собрать бокс
                     </Link>
+                  </div>
+
+                  {/* Quick links to services in drawer */}
+                  <div className="mt-6 pt-4 border-t border-zinc-100 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium text-zinc-600">
+                    <Link to="/certificates" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Подарочные сертификаты</Link>
+                    <Link to="/loyalty" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Бонусная карта</Link>
+                    <Link to="/why-cheaper" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Почему дешевле?</Link>
+                    <Link to="/reviews" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Отзывы покупателей</Link>
+                    <Link to="/gallery" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Галерея заказов</Link>
+                    <Link to="/delivery" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Доставка и оплата</Link>
+                    <Link to="/faq" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Вопросы и ответы</Link>
+                    <Link to="/contacts" onClick={() => setNavDrawerTab(null)} className="hover:text-black transition-colors">Контакты</Link>
                   </div>
                 </div>
               </div>

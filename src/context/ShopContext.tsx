@@ -42,6 +42,7 @@ interface ShopContextType {
     address?: string;
   }) => Promise<User>;
   logout: () => void;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<{ ok: boolean; message: string }>;
   updateProfile: (data: Partial<Pick<User, 'fullName' | 'phone' | 'city' | 'defaultAddress'>>) => void;
   addSavedAddress: (address: Omit<SavedAddress, 'id'>) => SavedAddress[];
   deleteSavedAddress: (addressId: string) => SavedAddress[];
@@ -67,13 +68,13 @@ interface ShopContextType {
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('parfum_direct_cart');
-    return saved ? JSON.parse(saved) : [];
-  });
-
   const [user, setUser] = useState<User | null>(() => {
     return db.getActiveUser();
+  });
+
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    const active = db.getActiveUser();
+    return db.getUserCart(active?.id);
   });
 
   const [wishlist, setWishlist] = useState<string[]>(() => {
@@ -90,10 +91,10 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Sync cart to localStorage
+  // Sync cart to isolated account storage
   useEffect(() => {
-    localStorage.setItem('parfum_direct_cart', JSON.stringify(cart));
-  }, [cart]);
+    db.saveUserCart(user?.id, cart);
+  }, [cart, user?.id]);
 
   // Sync wishlist to user's storage in db
   useEffect(() => {
@@ -244,8 +245,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Authentication & Profile
   const login = async (email: string, password = 'password123'): Promise<User> => {
-    const loggedUser = db.login(email, password);
+    const loggedUser = await db.login(email, password);
     setUser(loggedUser);
+    // Switch to isolated cart of this user
+    const userCart = db.getUserCart(loggedUser.id);
+    setCart(userCart);
     setWishlist(db.getUserWishlist(loggedUser.id));
     setAllOrders(db.getAllOrders());
     showToast('Успешный вход', `С возвращением, ${loggedUser.fullName}!`, 'success');
@@ -260,8 +264,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     city?: string;
     address?: string;
   }): Promise<User> => {
-    const newUser = db.register(data);
+    const newUser = await db.register(data);
     setUser(newUser);
+    // New registered account gets clean cart
+    setCart([]);
+    db.saveUserCart(newUser.id, []);
     setWishlist([]);
     setAllOrders(db.getAllOrders());
     showToast('Регистрация успешна', `Добро пожаловать в Maison Arôme, ${newUser.fullName}!`, 'success');
@@ -269,10 +276,21 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    if (user) {
+      db.saveUserCart(user.id, cart);
+    }
     db.logout();
     setUser(null);
+    // Switch to guest cart
+    setCart(db.getUserCart('guest'));
     setWishlist([]);
     showToast('Выход', 'Вы вышли из личного кабинета', 'info');
+  };
+
+  const changePassword = async (oldPassword: string, newPassword: string) => {
+    const result = await db.changePassword(oldPassword, newPassword);
+    showToast('Пароль изменен', result.message || 'Пароль успешно обновлен', 'success');
+    return result;
   };
 
   const updateProfile = (data: Partial<Pick<User, 'fullName' | 'phone' | 'city' | 'defaultAddress'>>) => {
@@ -385,6 +403,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
+        changePassword,
         updateProfile,
         addSavedAddress,
         deleteSavedAddress,

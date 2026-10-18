@@ -7,15 +7,28 @@ import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
+import { calculateRetailPrice } from '../server/pricing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const OUT_PATH = path.join(ROOT, 'data', 'catalog.json');
 
-const DEFAULT_CSV =
-  process.env.PRICE_FILE ||
-  process.argv[2] ||
-  path.join(ROOT, 'data', 'source', 'price-list.csv');
+function resolvePriceFile(): string {
+  if (process.env.PRICE_FILE) return path.resolve(process.env.PRICE_FILE);
+  if (process.argv[2]) return path.resolve(process.argv[2]);
+  const sourceDir = path.join(ROOT, 'data', 'source');
+  const xlsxPath = path.join(sourceDir, 'price-list.xlsx');
+  if (fs.existsSync(xlsxPath)) return xlsxPath;
+  const csvPath = path.join(sourceDir, 'price-list.csv');
+  if (fs.existsSync(csvPath)) return csvPath;
+  if (fs.existsSync(sourceDir)) {
+    const files = fs.readdirSync(sourceDir).filter(f => (f.endsWith('.xlsx') || f.endsWith('.csv')) && !f.startsWith('.'));
+    if (files.length > 0) return path.join(sourceDir, files[0]);
+  }
+  return csvPath;
+}
+
+const DEFAULT_CSV = resolvePriceFile();
 
 type ProductKind = 'perfume' | 'skincare' | 'haircare' | 'makeup' | 'bodycare' | 'other';
 type Gender = 'unisex' | 'female' | 'male';
@@ -202,19 +215,23 @@ function buildProduct(row: { sku: string; name: string; price: number }) {
   const slug = `${slugify(brand)}-${slugify(row.name)}-${row.sku}`.slice(0, 180);
   const id = `p-${hash}-${row.sku}`;
 
+  const isPerfume = kind === 'perfume';
+  const { category, categoryName } = isPerfume ? perfumeCategory(brand) : { category: undefined, categoryName: KIND_LABELS[kind] };
+  const costPrice = Math.round(row.price);
+  const retailPrice = calculateRetailPrice(costPrice, kind, category, brand, row.name);
+
   const volumes = [
     {
       type: vol?.type ?? 'unit',
       label: vol?.label ?? '1 шт.',
       volumeMl: vol?.volumeMl ?? 1,
-      price: Math.round(row.price),
+      price: retailPrice,
+      costPrice,
       inStock: true,
     },
   ];
 
   const minPrice = volumes[0].price;
-  const isPerfume = kind === 'perfume';
-  const { category, categoryName } = isPerfume ? perfumeCategory(brand) : { category: undefined, categoryName: KIND_LABELS[kind] };
 
   const displayName = row.name
     .replace(/^!+\s*ОГРАНИЧЕННОЕ ПРЕДЛОЖЕНИЕ!!!\s*>?\s*/i, '')

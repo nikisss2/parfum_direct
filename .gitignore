@@ -7,18 +7,50 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
-*.local
+dist-server
 
-# Editor directories and files
+# Environment and secrets
+*.local
+.env
+.env.*
+!.env.example
+data/telegram.config.json
+ADMIN_CREDENTIALS.txt
+
+# Databases and runtime data
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.sqlite*
+
+# Local customer exports and spreadsheets
+*.xlsx
+
+# Editor and OS files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+*/.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Unrelated nested projects in this workspace folder
+ects-portal/
+first-opt/
+urpc-portal/
+сайт/

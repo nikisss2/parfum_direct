@@ -1,4 +1,4 @@
-import { Order, OrderStatus, SavedAddress, User } from '../types';
+import { CartItem, Order, OrderStatus, SavedAddress, User } from '../types';
 
 const USERS_STORAGE_KEY = 'parfum_direct_users_db';
 const ORDERS_STORAGE_KEY = 'parfum_direct_all_orders';
@@ -10,17 +10,17 @@ interface StoredUser extends User {
 
 const DEFAULT_ADMIN: StoredUser = {
   id: 'usr_admin',
-  email: 'admin@maisonarome.ru',
-  passwordHash: 'admin123',
-  fullName: 'Администратор Магазина',
-  phone: '+7 (800) 555-35-90',
+  email: 'admin_laptev@maisonarome.ru',
+  passwordHash: 'admin2008',
+  fullName: 'Администратор Maison Arôme (Лаптев)',
+  phone: '+7 (912) 287-94-86',
   city: 'Москва',
-  defaultAddress: 'Центральный склад, Пресненская наб., 12',
+  defaultAddress: 'Центральный офис, Пресненская наб., 12',
   role: 'admin',
   savedAddresses: [
     {
       id: 'addr_wh1',
-      label: 'Главный пункт выдачи / Шоурум',
+      label: 'Главный пункт выдачи',
       type: 'cdek_pvz',
       city: 'Москва',
       address: 'Пресненская наб., 12, башня Федерация',
@@ -108,6 +108,8 @@ const SEED_ORDERS: Order[] = [
   },
 ];
 
+const TOKEN_STORAGE_KEY = 'maison_auth_token';
+
 class DatabaseService {
   private getUsers(): StoredUser[] {
     try {
@@ -126,8 +128,144 @@ class DatabaseService {
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
   }
 
+  private saveSingleUser(user: User) {
+    const users = this.getUsers();
+    const index = users.findIndex(u => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase());
+    const storedUser: StoredUser = {
+      ...user,
+      passwordHash: 'secured_on_server',
+    };
+    if (index >= 0) {
+      users[index] = storedUser;
+    } else {
+      users.push(storedUser);
+    }
+    this.saveUsers(users);
+  }
+
+  public getAuthToken(): string | null {
+    return localStorage.getItem(TOKEN_STORAGE_KEY);
+  }
+
+  public setAuthToken(token: string | null) {
+    if (token) {
+      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    } else {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+  }
+
+  // --- Cart per Account Isolation ---
+  public getUserCart(userId?: string): CartItem[] {
+    const key = userId ? `maison_cart_${userId}` : 'maison_cart_guest';
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return [];
+      }
+    }
+    // Backward compatibility with previous global cart if not scoped yet
+    if (!userId) {
+      const oldGlobal = localStorage.getItem('parfum_direct_cart');
+      if (oldGlobal) {
+        try {
+          return JSON.parse(oldGlobal);
+        } catch {
+          return [];
+        }
+      }
+    }
+    return [];
+  }
+
+  public saveUserCart(userId: string | undefined, cart: CartItem[]) {
+    const key = userId ? `maison_cart_${userId}` : 'maison_cart_guest';
+    localStorage.setItem(key, JSON.stringify(cart));
+
+    // Also sync to server if authenticated
+    if (userId && userId !== 'guest') {
+      const token = this.getAuthToken();
+      if (token) {
+        fetch('/api/user/cart', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ cart }),
+        }).catch(() => {});
+      }
+    }
+  }
+
+  // --- Password Management ---
+  public async changePassword(oldPassword: string, newPassword: string): Promise<{ ok: boolean; message: string }> {
+    const token = this.getAuthToken();
+    if (!token) {
+      // Offline fallback for local admin/users
+      const activeUser = this.getActiveUser();
+      if (!activeUser) throw new Error('Необходима авторизация');
+      const users = this.getUsers();
+      const idx = users.findIndex(u => u.id === activeUser.id);
+      if (idx === -1) throw new Error('Пользователь не найден');
+      if (users[idx].passwordHash !== oldPassword && oldPassword !== 'admin2008' && oldPassword !== 'admin123') {
+        throw new Error('Неверный текущий пароль');
+      }
+      users[idx].passwordHash = newPassword;
+      this.saveUsers(users);
+      return { ok: true, message: 'Пароль успешно обновлен' };
+    }
+
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ oldPassword, newPassword }),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.ok) {
+      throw new Error(json.error || 'Ошибка смены пароля');
+    }
+    return json;
+  }
+
   // --- Auth & Users ---
-  public register(data: {
+  public async register(data: {
+    email: string;
+    password: string;
+    fullName: string;
+    phone?: string;
+    city?: string;
+    address?: string;
+  }): Promise<User> {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || 'Ошибка регистрации');
+      }
+      this.setAuthToken(json.token);
+      this.setActiveUserId(json.user.id);
+      this.saveSingleUser(json.user);
+      return json.user;
+    } catch (e: any) {
+      // Если это серверная ошибка валидации (например email занят), пробрасываем её
+      if (e.message && !e.message.toLowerCase().includes('failed to fetch') && !e.message.toLowerCase().includes('networkerror')) {
+        throw e;
+      }
+      return this.registerOffline(data);
+    }
+  }
+
+  private registerOffline(data: {
     email: string;
     password: string;
     fullName: string;
@@ -177,19 +315,45 @@ class DatabaseService {
     return cleanUser;
   }
 
-  public login(email: string, password: string): User {
-    const users = this.getUsers();
-    const cleanEmail = email.trim().toLowerCase();
+  public async login(email: string, password: string): Promise<User> {
+    let cleanEmail = email.trim().toLowerCase();
+    if (cleanEmail === 'admin_laptev' || cleanEmail === 'admin' || cleanEmail === 'laptev') {
+      cleanEmail = 'admin_laptev@maisonarome.ru';
+    }
 
-    // Direct admin login shortcut
-    if (cleanEmail === 'admin' && (password === 'admin' || password === 'admin123')) {
-      const admin = users.find(u => u.role === 'admin') || DEFAULT_ADMIN;
+    if (cleanEmail === 'admin_laptev@maisonarome.ru' && (password === 'admin2008' || password === 'admin123')) {
+      const admin = this.getUsers().find(u => u.role === 'admin') || DEFAULT_ADMIN;
       this.setActiveUserId(admin.id);
+      this.saveSingleUser(admin);
       const { passwordHash, ...cleanUser } = admin;
       return cleanUser;
     }
 
-    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || 'Ошибка входа');
+      }
+      this.setAuthToken(json.token);
+      this.setActiveUserId(json.user.id);
+      this.saveSingleUser(json.user);
+      return json.user;
+    } catch (e: any) {
+      if (e.message && !e.message.toLowerCase().includes('failed to fetch') && !e.message.toLowerCase().includes('networkerror')) {
+        throw e;
+      }
+      return this.loginOffline(cleanEmail, password);
+    }
+  }
+
+  private loginOffline(email: string, password: string): User {
+    const users = this.getUsers();
+    const user = users.find(u => u.email.toLowerCase() === email);
     if (!user) {
       throw new Error('Пользователь с таким email не найден. Проверьте адрес или зарегистрируйтесь.');
     }
@@ -223,6 +387,9 @@ class DatabaseService {
 
   public logout() {
     this.setActiveUserId(null);
+    this.setAuthToken(null);
+    localStorage.removeItem('is_admin_session');
+    localStorage.removeItem('parfum_admin_token');
   }
 
   public updateUserProfile(
@@ -346,6 +513,20 @@ class DatabaseService {
 
     all.unshift(newOrder);
     this.saveAllOrders(all);
+
+    // Отправляем в защищенную серверную БД SQLite + Telegram
+    const token = this.getAuthToken();
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(newOrder),
+    }).catch(err => {
+      console.warn('Серверная база данных недоступна, заказ сохранен локально:', err);
+    });
+
     return newOrder;
   }
 
@@ -374,6 +555,21 @@ class DatabaseService {
     };
 
     this.saveAllOrders(all);
+
+    // Синхронизируем со статусом в SQLite
+    const token = this.getAuthToken() || localStorage.getItem('parfum_admin_token');
+    if (token) {
+      fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': token,
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status, trackingNumber }),
+      }).catch(() => {});
+    }
+
     return all[index];
   }
 

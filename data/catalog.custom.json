@@ -30,140 +30,159 @@
       "isNew": false,
       "rating": 4.8,
       "reviewsCount": 2,
-      "minPrice": 658,
+      "minPrice": 1122,
       "volumes": [
         {
           "type": "vol_1_мл_decant",
           "label": "1 мл (отливант)",
           "volumeMl": 1,
-          "price": 658,
-          "inStock": true
+          "price": 1358,
+          "inStock": true,
+          "costPrice": 658
         },
         {
           "type": "vol_1.7_мл_bottle",
           "label": "1.7 мл",
           "volumeMl": 1.7,
-          "price": 467,
-          "inStock": true
+          "price": 1167,
+          "inStock": true,
+          "costPrice": 467
         },
         {
           "type": "vol_2_мл_decant",
           "label": "2 мл (отливант)",
           "volumeMl": 2,
-          "price": 422,
-          "inStock": true
+          "price": 1122,
+          "inStock": true,
+          "costPrice": 422
         },
         {
           "type": "vol_3_мл_decant",
           "label": "3 мл (отливант)",
           "volumeMl": 3,
-          "price": 627,
-          "inStock": true
+          "price": 1327,
+          "inStock": true,
+          "costPrice": 627
         },
         {
           "type": "vol_5_мл_decant",
           "label": "5 мл (отливант)",
           "volumeMl": 5,
-          "price": 1034,
-          "inStock": true
+          "price": 1734,
+          "inStock": true,
+          "costPrice": 1034
         },
         {
           "type": "vol_10_мл_decant",
           "label": "10 мл (отливант)",
           "volumeMl": 10,
-          "price": 1907,
-          "inStock": true
+          "price": 2607,
+          "inStock": true,
+          "costPrice": 1907
         },
         {
           "type": "vol_10_мл_bottle",
           "label": "10 мл",
           "volumeMl": 10,
-          "price": 8009,
-          "inStock": true
+          "price": 10009,
+          "inStock": true,
+          "costPrice": 8009
         },
         {
           "type": "vol_15_мл_decant",
           "label": "15 мл (отливант)",
           "volumeMl": 15,
-          "price": 5344,
-          "inStock": true
+          "price": 7344,
+          "inStock": true,
+          "costPrice": 5344
         },
         {
           "type": "vol_20_мл_decant",
           "label": "20 мл (отливант)",
           "volumeMl": 20,
-          "price": 7156,
-          "inStock": true
+          "price": 9156,
+          "inStock": true,
+          "costPrice": 7156
         },
         {
           "type": "vol_30_мл_decant",
           "label": "30 мл (отливант)",
           "volumeMl": 30,
-          "price": 5451,
-          "inStock": true
+          "price": 7451,
+          "inStock": true,
+          "costPrice": 5451
         },
         {
           "type": "vol_30_мл_bottle",
           "label": "30 мл (флакон)",
           "volumeMl": 30,
-          "price": 18710,
-          "inStock": true
+          "price": 22710,
+          "inStock": true,
+          "costPrice": 18710
         },
         {
           "type": "vol_50_мл_bottle",
           "label": "50 мл (флакон)",
           "volumeMl": 50,
-          "price": 19709,
-          "inStock": true
+          "price": 23709,
+          "inStock": true,
+          "costPrice": 19709
         },
         {
           "type": "vol_50_мл_tester",
           "label": "50 мл (тестер)",
           "volumeMl": 50,
-          "price": 23473,
-          "inStock": true
+          "price": 27973,
+          "inStock": true,
+          "costPrice": 23473
         },
         {
           "type": "vol_100_мл_tester",
           "label": "100 мл (тестер)",
           "volumeMl": 100,
-          "price": 26120,
-          "inStock": true
+          "price": 31120,
+          "inStock": true,
+          "costPrice": 26120
         },
         {
           "type": "vol_100_мл_bottle",
           "label": "100 мл (флакон)",
           "volumeMl": 100,
-          "price": 27969,
-          "inStock": true
+          "price": 32969,
+          "inStock": true,
+          "costPrice": 27969
         },
         {
           "type": "vol_240_мл_tester",
           "label": "240 мл (тестер)",
           "volumeMl": 240,
-          "price": 61405,
-          "inStock": true
+          "price": 67405,
+          "inStock": true,
+          "costPrice": 61405
         },
         {
           "type": "vol_240_мл_bottle",
           "label": "240 мл (флакон)",
           "volumeMl": 240,
-          "price": 62491,
-          "inStock": true
+          "price": 68491,
+          "inStock": true,
+          "costPrice": 62491
         },
         {
           "type": "vol_500_мл_tester",
           "label": "500 мл (тестер)",
           "volumeMl": 500,
-          "price": 98801,
-          "inStock": true
+          "price": 104801,
+          "inStock": true,
+          "costPrice": 98801
         },
         {
           "type": "vol_500_мл_bottle",
           "label": "500 мл (флакон)",
           "volumeMl": 500,
-          "price": 105859,
-          "inStock": true
+          "price": 111859,
+          "inStock": true,
+          "costPrice": 105859
         }
       ],
       "sourceName": "Creed Aventus Мужской парфюмерная вода (без спрея) 500 мл",

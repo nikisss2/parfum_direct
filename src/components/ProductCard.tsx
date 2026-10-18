@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Perfume, VolumeOption } from '../types';
 import { useShop } from '../context/ShopContext';
-import { Heart, ShoppingBag, Check } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Plus, Minus } from 'lucide-react';
 
 const PLACEHOLDER = '/assets/placeholder-product.svg';
 
@@ -21,7 +21,7 @@ const getShortVolumeLabel = (vol: VolumeOption): string => {
 };
 
 export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
-  const { addToCart, isInWishlist, toggleWishlist } = useShop();
+  const { cart, addToCart, updateCartQuantity, removeFromCart, isInWishlist, toggleWishlist } = useShop();
 
   const defaultVolume: VolumeOption = perfume.volumes?.[0] || {
     type: 'standard',
@@ -41,12 +41,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
     }
   }, [perfume.id, perfume.volumes]);
 
+  const cartItemId = `${perfume.id}-${selectedVolume.type}`;
+  const cartItem = cart.find(item => item.id === cartItemId);
+  const inCartCount = cartItem?.quantity || 0;
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(perfume, selectedVolume, 1);
     setIsAddedAnim(true);
     setTimeout(() => setIsAddedAnim(false), 1600);
+  };
+
+  const handleDecrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (inCartCount <= 1) {
+      removeFromCart(cartItemId);
+    } else {
+      updateCartQuantity(cartItemId, -1);
+    }
+  };
+
+  const handleIncrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    updateCartQuantity(cartItemId, 1);
   };
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
@@ -57,10 +77,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
 
   const currentPrice = selectedVolume?.price ?? perfume.minPrice ?? 0;
 
+  const isDecantCategory = perfume.category === 'decants' || perfume.category === 'decant' || perfume.kindLabel === 'РАСПИВ';
+
   // Дедуплицируем объемы по миллилитрам, чтобы не было "2 мл" и "2 мл (отливант)" одновременно
   const uniqueVolumes = React.useMemo(() => {
     const map = new Map<number, VolumeOption>();
     for (const v of perfume.volumes || []) {
+      if (isDecantCategory && v.volumeMl > 30) continue;
       const ml = Math.round(v.volumeMl);
       const existing = map.get(ml);
       if (!existing || v.price < existing.price) {
@@ -68,7 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
       }
     }
     return Array.from(map.values()).sort((a, b) => a.volumeMl - b.volumeMl || a.price - b.price);
-  }, [perfume.volumes]);
+  }, [perfume.volumes, isDecantCategory]);
 
   // На карточке товара в каталоге показываем максимум 3-4 ключевых объема, чтобы не загромождать карточку 16 кнопками
   const displayedVolumes = React.useMemo(() => {
@@ -76,13 +99,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
       return uniqueVolumes;
     }
     // Если объемов много, отдаем приоритет популярным распивам (3, 5, 10) и полноразмерному флакону
-    const priority = [3, 5, 10, 50, 100];
+    const priority = isDecantCategory ? [3, 5, 10, 15, 20, 30] : [3, 5, 10, 50, 100];
     const picked = uniqueVolumes.filter(v => priority.includes(Math.round(v.volumeMl)));
     if (picked.length >= 3) {
       return picked.slice(0, 4);
     }
     return uniqueVolumes.slice(0, 4);
-  }, [uniqueVolumes]);
+  }, [uniqueVolumes, isDecantCategory]);
 
   const remainingVolumesCount = uniqueVolumes.length - displayedVolumes.length;
 
@@ -194,7 +217,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           ) : (perfume.rating || 0) > 0 ? (
             /* Or Star Rating Line (5.0 ★★★★★ — 1) */
             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-900 mb-1.5">
-              <span>{(Number(perfume.rating) || 5).toFixed(1)}</span>
+              <span>{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
               <span className="text-amber-400 tracking-tight text-xs">★★★★★</span>
               <span className="text-zinc-400">— {perfume.reviewsCount || 1}</span>
             </div>
@@ -241,29 +264,54 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           </div>
         </div>
 
-        {/* Row 6: Buy CTA Button with text "В корзину" (Solid Black / Green Added) */}
+        {/* Row 6: Buy CTA Button with text "В корзину" or Quantity Counter [- N +] */}
         <div className="mt-3 pt-2">
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className={`w-full py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors rounded-none cursor-pointer ${
-              isAddedAnim
-                ? 'bg-emerald-700 border-emerald-700 text-white'
-                : 'border-black bg-black text-white hover:bg-zinc-800'
-            }`}
-          >
-            {isAddedAnim ? (
-              <>
-                <Check className="w-3.5 h-3.5" />
-                <span>В корзине</span>
-              </>
-            ) : (
-              <>
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span>В корзину</span>
-              </>
-            )}
-          </button>
+          {inCartCount > 0 ? (
+            <div className="w-full h-9 border border-black bg-white flex items-center justify-between transition-all duration-200 animate-in fade-in">
+              <button
+                type="button"
+                onClick={handleDecrement}
+                className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 active:scale-95 transition-all cursor-pointer"
+                aria-label="Уменьшить количество"
+              >
+                <Minus className="w-3.5 h-3.5 stroke-[2.5]" />
+              </button>
+              <div className="flex items-center gap-1.5 select-none font-bold text-xs tracking-wider text-black">
+                <span>{inCartCount}</span>
+                <span className="text-[10px] text-zinc-500 font-normal">шт.</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleIncrement}
+                className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 active:scale-95 transition-all cursor-pointer"
+                aria-label="Увеличить количество"
+              >
+                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className={`w-full py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] rounded-none cursor-pointer ${
+                isAddedAnim
+                  ? 'bg-emerald-700 border-emerald-700 text-white shadow-xs'
+                  : 'border-black bg-black text-white hover:bg-zinc-800 shadow-xs'
+              }`}
+            >
+              {isAddedAnim ? (
+                <>
+                  <Check className="w-3.5 h-3.5 animate-in zoom-in-75 duration-200" />
+                  <span>В корзине</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>В корзину</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

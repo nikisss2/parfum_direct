@@ -23,12 +23,17 @@ import {
   Check,
   Star,
   Settings,
-  Lock
+  Lock,
+  LayoutDashboard,
+  CreditCard,
+  Coins,
+  ExternalLink,
+  Download,
 } from 'lucide-react';
 
 export const AccountPage: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get('tab') as 'orders' | 'wishlist' | 'addresses' | 'profile' | null;
+  const initialTab = searchParams.get('tab') as 'orders' | 'wishlist' | 'addresses' | 'profile' | 'loyalty' | null;
 
   const {
     user,
@@ -41,12 +46,33 @@ export const AccountPage: React.FC = () => {
     addSavedAddress,
     deleteSavedAddress,
     setDefaultAddress,
+    changePassword,
     showToast,
   } = useShop();
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'profile'>(
+  const [activeTab, setActiveTab] = useState<'orders' | 'wishlist' | 'addresses' | 'profile' | 'loyalty'>(
     initialTab || 'orders'
   );
+
+  const [bonusCard, setBonusCard] = useState<{
+    cardNumber: string;
+    balance: number;
+    tier: string;
+    cashback_percent?: number;
+    cashbackPercent?: number;
+    total_spent?: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetch(`/api/loyalty/card?userId=${encodeURIComponent(user.id)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.cardNumber) setBonusCard(data);
+        })
+        .catch(() => {});
+    }
+  }, [user?.id, orders.length]);
 
   // Auth form states
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -64,6 +90,99 @@ export const AccountPage: React.FC = () => {
   const [profilePhone, setProfilePhone] = useState(user?.phone || '');
   const [profileCity, setProfileCity] = useState(user?.city || '');
   const [profileAddress, setProfileAddress] = useState(user?.defaultAddress || '');
+
+  // Password change states
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
+  const handleChangePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (!oldPassword) {
+      setPasswordError('Укажите ваш текущий старый пароль');
+      return;
+    }
+    if (!newPassword || newPassword.length < 4) {
+      setPasswordError('Новый пароль должен содержать минимум 4 символа');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Новый пароль и подтверждение не совпадают');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      await changePassword(oldPassword, newPassword);
+      setPasswordSuccess('Пароль успешно изменен');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      setPasswordError(err.message || 'Ошибка смены пароля');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  // 152-ФЗ / GDPR: Выгрузка и удаление персональных данных
+  const [exportLoading, setExportLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const handleExportData = async () => {
+    setExportLoading(true);
+    try {
+      const token = localStorage.getItem('parfum_auth_token');
+      const res = await fetch('/api/user/export-data', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error('Не удалось выгрузить данные');
+      const json = await res.json();
+      const blob = new Blob([JSON.stringify(json.data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `maison-arome-user-data-${user?.id || 'export'}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert(err.message || 'Ошибка выгрузки данных');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm('Вы действительно хотите отозвать согласие на обработку данных и удалить аккаунт? Все личные данные будут безвозвратно удалены в соответствии со ст. 21 Федерального закона № 152-ФЗ.')) {
+      return;
+    }
+    setDeleteLoading(true);
+    try {
+      const token = localStorage.getItem('parfum_auth_token');
+      const res = await fetch('/api/user/delete-account', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Ошибка удаления аккаунта');
+      alert(data.message || 'Аккаунт и персональные данные успешно удалены');
+      logout();
+    } catch (err: any) {
+      alert(err.message || 'Ошибка удаления аккаунта');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   // Add new address form states
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
@@ -240,11 +359,13 @@ export const AccountPage: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1.5">Email *</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1.5">
+                {authMode === 'login' ? 'Email или логин *' : 'Email *'}
+              </label>
               <input
-                type="email"
+                type={authMode === 'login' ? 'text' : 'email'}
                 required
-                placeholder="name@example.com"
+                placeholder={authMode === 'login' ? 'name@example.com или логин' : 'name@example.com'}
                 value={authEmail}
                 onChange={e => setAuthEmail(e.target.value)}
                 className="w-full text-xs px-3.5 py-3 rounded-none border border-zinc-300 outline-none focus:border-black transition-colors"
@@ -252,7 +373,19 @@ export const AccountPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1.5">Пароль *</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700">Пароль *</label>
+                {authMode === 'login' && (
+                  <a
+                    href="https://t.me/nikisss2?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%AF%20%D0%B7%D0%B0%D0%B1%D1%8B%D0%BB%20%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8C%20%D0%BE%D1%82%20%D0%B0%D0%BA%D0%BA%D0%B0%D1%83%D0%BD%D1%82%D0%B0%20Maison%20Ar%C3%B4me.%20%D0%9F%D0%BE%D0%BC%D0%BE%D0%B3%D0%B8%D1%82%D0%B5%20%D0%B2%D0%BE%D1%81%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C%20%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-zinc-500 hover:text-black underline transition-colors cursor-pointer"
+                  >
+                    Забыли пароль?
+                  </a>
+                )}
+              </div>
               <input
                 type="password"
                 required
@@ -269,6 +402,20 @@ export const AccountPage: React.FC = () => {
               </div>
             )}
 
+            {authMode === 'register' && (
+              <div className="text-[11px] text-zinc-500 leading-tight">
+                Создавая учетную запись, вы соглашаетесь с условиями{' '}
+                <Link to="/terms" target="_blank" className="underline text-black font-semibold">
+                  Пользовательского соглашения
+                </Link>{' '}
+                и даете согласие на{' '}
+                <Link to="/privacy" target="_blank" className="underline text-black font-semibold">
+                  обработку персональных данных (152-ФЗ)
+                </Link>
+                .
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={authLoading}
@@ -276,24 +423,6 @@ export const AccountPage: React.FC = () => {
             >
               {authLoading ? 'Проверка...' : authMode === 'login' ? 'Войти в аккаунт' : 'Создать аккаунт'}
             </button>
-
-            {/* Quick Demo Accounts */}
-            <div className="pt-3 border-t border-zinc-100 flex flex-col gap-2 text-center">
-              <button
-                type="button"
-                onClick={() => login('client@maisonarome.ru', 'password123')}
-                className="text-xs text-black hover:underline font-bold uppercase tracking-wider"
-              >
-                Быстрый вход: Тестовый клиент
-              </button>
-              <button
-                type="button"
-                onClick={() => login('admin@maisonarome.ru', 'admin123')}
-                className="text-xs text-zinc-500 hover:text-black font-medium tracking-wide"
-              >
-                Вход администратора (Управление заказами)
-              </button>
-            </div>
           </form>
         </div>
       </div>
@@ -337,15 +466,24 @@ export const AccountPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
           {user.role === 'admin' && (
-            <Link
-              to="/admin"
-              className="px-4 py-2.5 rounded-none bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-xs"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Панель управления заказами</span>
-            </Link>
+            <>
+              <Link
+                to="/admin/crm"
+                className="px-4 py-2.5 rounded-none bg-amber-400 hover:bg-amber-300 text-black text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>CRM-система</span>
+              </Link>
+              <Link
+                to="/admin"
+                className="px-3.5 py-2.5 rounded-none bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors border border-white/20"
+              >
+                <Settings className="w-3.5 h-3.5" />
+                <span>Заказы</span>
+              </Link>
+            </>
           )}
 
           <button
@@ -357,6 +495,34 @@ export const AccountPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Admin CRM Quick Access Banner - Only visible to admin */}
+      {user.role === 'admin' && (
+        <div className="p-6 bg-gradient-to-r from-zinc-950 via-zinc-900 to-black text-white border-2 border-amber-400/40 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-amber-400 text-black text-[10px] font-black uppercase tracking-widest">
+                Админ-доступ
+              </span>
+              <span className="text-xs text-amber-300/80 font-mono">SQLite WAL · Scrypt · Role Guard</span>
+            </div>
+            <h3 className="text-lg font-serif tracking-wide text-white">
+              Корпоративная CRM-система Maison d'Arôme
+            </h3>
+            <p className="text-xs text-zinc-400 font-light max-w-2xl leading-relaxed">
+              Управление заказами, воронка статусов (Новый → В сборке → Отправлен → Доставлен), база клиентов с расчётом LTV, трек-номера СДЭК, ручное оформление заказов из Telegram/WhatsApp и аудит безопасности.
+            </p>
+          </div>
+          <Link
+            to="/admin/crm"
+            className="shrink-0 px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-black font-black text-xs uppercase tracking-widest transition-all shadow-lg flex items-center gap-2 hover:translate-x-0.5"
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            <span>Открыть CRM-систему</span>
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Link>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex flex-wrap border-b border-zinc-200 gap-2 sm:gap-6 text-xs uppercase tracking-wider font-bold">
@@ -406,6 +572,18 @@ export const AccountPage: React.FC = () => {
         >
           <UserIcon className="w-4 h-4" />
           <span>Личные данные</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('loyalty')}
+          className={`pb-3 px-2 border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === 'loyalty'
+              ? 'border-black text-black'
+              : 'border-transparent text-zinc-400 hover:text-black'
+          }`}
+        >
+          <CreditCard className="w-4 h-4 text-amber-500" />
+          <span>Бонусная карта ({bonusCard ? `${bonusCard.balance} ₽` : '500 ₽'})</span>
         </button>
       </div>
 
@@ -842,6 +1020,308 @@ export const AccountPage: React.FC = () => {
                 </button>
               </div>
             </form>
+
+            {/* Безопасность и смена пароля */}
+            <div className="pt-6 border-t border-zinc-200 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-zinc-800" />
+                    Безопасность и смена пароля
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5 font-light">
+                    Для смены пароля введите ваш текущий (старый) пароль
+                  </p>
+                </div>
+                <a
+                  href="https://t.me/nikisss2?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%AF%20%D0%B7%D0%B0%D0%B1%D1%8B%D0%BB%20%D1%81%D1%82%D0%B0%D1%80%D1%8B%D0%B9%20%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8C%20%D0%BE%D1%82%20%D0%B0%D0%BA%D0%BA%D0%B0%D1%83%D0%BD%D1%82%D0%B0%20Maison%20Ar%C3%B4me.%20%D0%9F%D0%BE%D0%BC%D0%BE%D0%B3%D0%B8%D1%82%D0%B5%20%D0%B2%D0%BE%D1%81%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-zinc-500 hover:text-black underline transition-colors cursor-pointer shrink-0"
+                >
+                  Забыли пароль?
+                </a>
+              </div>
+
+              <form onSubmit={handleChangePasswordSubmit} className="space-y-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                    Текущий (старый) пароль *
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={oldPassword}
+                    onChange={e => setOldPassword(e.target.value)}
+                    className="w-full text-xs px-3.5 py-2.5 rounded-none border border-zinc-300 outline-none focus:border-black transition-colors"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                      Новый пароль *
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="Новый пароль"
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
+                      className="w-full text-xs px-3.5 py-2.5 rounded-none border border-zinc-300 outline-none focus:border-black transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                      Повторите новый пароль *
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="Повтор пароля"
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      className="w-full text-xs px-3.5 py-2.5 rounded-none border border-zinc-300 outline-none focus:border-black transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {passwordError && (
+                  <div className="text-xs text-rose-600 font-medium p-2.5 bg-rose-50 border border-rose-200">
+                    {passwordError}
+                  </div>
+                )}
+
+                {passwordSuccess && (
+                  <div className="text-xs text-emerald-700 font-medium p-2.5 bg-emerald-50 border border-emerald-200 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{passwordSuccess}</span>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-1">
+                  <button
+                    type="submit"
+                    disabled={passwordLoading}
+                    className="px-6 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50"
+                  >
+                    {passwordLoading ? 'Сохранение...' : 'Обновить пароль'}
+                  </button>
+
+                  <a
+                    href="https://t.me/nikisss2?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%AF%20%D0%B7%D0%B0%D0%B1%D1%8B%D0%BB%20%D1%81%D1%82%D0%B0%D1%80%D1%8B%D0%B9%20%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8C%20%D0%BE%D1%82%20%D0%B0%D0%BA%D0%BA%D0%B0%D1%83%D0%BD%D1%82%D0%B0%20Maison%20Ar%C3%B4me.%20%D0%9F%D0%BE%D0%BC%D0%BE%D0%B3%D0%B8%D1%82%D0%B5%20%D0%B2%D0%BE%D1%81%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-zinc-500 hover:text-black flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>Забыли пароль? Написать в Telegram @nikisss2</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </form>
+            </div>
+
+            {/* 152-ФЗ и GDPR: Управление персональными данными */}
+            <div className="bg-white border border-zinc-200 p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4 text-zinc-900" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-zinc-900">
+                    Управление данными и безопасность (152-ФЗ)
+                  </h3>
+                  <p className="text-xs text-zinc-500">
+                    Ваши права на доступ, выгрузку и отзыв согласия на обработку персональных данных
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs text-zinc-600 leading-relaxed mb-6">
+                В соответствии с требованиями Федерального закона РФ № 152-ФЗ «О персональных данных» и регламента GDPR, ваши данные хранятся в защищенном виде. Вы имеете законное право в любой момент скачать структурированный архив со всеми своими данными либо отозвать согласие и полностью удалить профиль.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleExportData}
+                  disabled={exportLoading}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-xs font-semibold border border-zinc-300 transition-colors disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  {exportLoading ? 'Формирование архива...' : 'Скачать мои данные (JSON)'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDeleteAccount}
+                  disabled={deleteLoading}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold border border-red-200 transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {deleteLoading ? 'Удаление...' : 'Отозвать согласие и удалить аккаунт'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Loyalty Card Tab */}
+        {activeTab === 'loyalty' && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            {/* Virtual Card Showcase */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Virtual Card Visual */}
+              <div className="lg:col-span-5">
+                <div className="relative overflow-hidden rounded-2xl p-7 text-white shadow-2xl bg-gradient-to-br from-zinc-950 via-zinc-900 to-black border border-white/10 aspect-[1.58/1] flex flex-col justify-between">
+                  <div className="absolute top-0 right-0 -mr-16 -mt-16 w-56 h-56 rounded-full bg-gradient-to-br from-amber-400/20 to-transparent blur-2xl pointer-events-none" />
+                  
+                  <div className="flex items-center justify-between z-10">
+                    <div>
+                      <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-amber-400/90 block">
+                        Privilège Club
+                      </span>
+                      <span className="font-serif text-lg tracking-wider text-white">
+                        Maison d'Arôme
+                      </span>
+                    </div>
+                    <span className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-black rounded-full">
+                      {orders.length >= 15 ? 'VIP 10%' : orders.length >= 5 ? 'Постоянный 7%' : 'Базовый 5%'}
+                    </span>
+                  </div>
+
+                  {/* Chip & Number */}
+                  <div className="z-10 my-auto">
+                    <div className="w-10 h-7 rounded-sm bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 border border-amber-500/30 mb-4 opacity-90 shadow-inner" />
+                    <div className="font-mono text-base tracking-[0.25em] text-zinc-200 font-medium">
+                      {bonusCard?.cardNumber || '7789 •••• •••• 4201'}
+                    </div>
+                  </div>
+
+                  {/* Card Footer: Holder & Balance */}
+                  <div className="flex items-end justify-between z-10">
+                    <div>
+                      <div className="text-[9px] uppercase tracking-wider text-zinc-400 font-mono">Владелец</div>
+                      <div className="text-xs uppercase font-bold tracking-wider text-white">
+                        {user.fullName || 'Клубный клиент'}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[9px] uppercase tracking-wider text-zinc-400 font-mono">Бонусный баланс</div>
+                      <div className="text-xl font-bold font-mono text-amber-300">
+                        {(bonusCard?.balance ?? 500).toLocaleString('ru-RU')} ₽
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between text-xs text-zinc-500 px-1">
+                  <span>1 бонус = 1 рубль скидки</span>
+                  <Link to="/loyalty" className="text-black font-bold hover:underline flex items-center gap-1">
+                    Правила программы <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Tier Progress & Rules */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="bg-white p-6 rounded-none border border-zinc-200 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-950">
+                        Ваш статус: {orders.length >= 15 ? 'VIP Privilège' : orders.length >= 5 ? 'Постоянный клиент' : 'Базовый'}
+                      </h3>
+                      <p className="text-xs text-zinc-500 mt-0.5">
+                        {orders.length >= 15
+                          ? 'Максимальный кэшбэк 10% на все покупки и персональный консультант'
+                          : orders.length >= 5
+                          ? 'Повышенный кэшбэк 7% и доступ к закрытым спецпредложениям'
+                          : 'Кэшбэк 5% на все заказы. Сделайте ещё покупки для перехода на уровень 7%'}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold font-mono text-black">
+                        {orders.length >= 15 ? '10%' : orders.length >= 5 ? '7%' : '5%'}
+                      </span>
+                      <span className="block text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Кэшбэк</span>
+                    </div>
+                  </div>
+
+                  {/* Orders counter progress */}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex justify-between text-xs font-mono">
+                      <span className="text-zinc-600">Оформлено заказов: <strong>{orders.length}</strong></span>
+                      <span className="text-zinc-500">
+                        {orders.length < 5
+                          ? `До статуса «Постоянный»: ещё ${5 - orders.length} зак.`
+                          : orders.length < 15
+                          ? `До статуса «VIP»: ещё ${15 - orders.length} зак.`
+                          : 'Максимальный уровень достигнут!'}
+                      </span>
+                    </div>
+
+                    <div className="w-full bg-zinc-100 h-2.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-black h-full rounded-full transition-all duration-500 ease-out"
+                        style={{
+                          width: `${
+                            orders.length >= 15
+                              ? 100
+                              : orders.length >= 5
+                              ? 33 + ((orders.length - 5) / 10) * 67
+                              : (orders.length / 5) * 33
+                          }%`,
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex justify-between text-[10px] text-zinc-400 font-mono pt-1">
+                      <span>Базовый (от 0)</span>
+                      <span>Постоянный (от 5 заказов)</span>
+                      <span>VIP (от 15 заказов)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Privileges Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-1">
+                    <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-400">Оплата баллами</div>
+                    <div className="text-sm font-bold text-zinc-900">До 30% заказа</div>
+                    <p className="text-[11px] text-zinc-500 font-light">Списывайте накопленные рубли прямо в корзине</p>
+                  </div>
+
+                  <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-1">
+                    <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-400">Приветственный бонус</div>
+                    <div className="text-sm font-bold text-zinc-900">500 ₽ на счёт</div>
+                    <p className="text-[11px] text-zinc-500 font-light">Начисляются сразу при первой регистрации</p>
+                  </div>
+
+                  <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-1">
+                    <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-400">День рождения</div>
+                    <div className="text-sm font-bold text-zinc-900">+1000 бонусов</div>
+                    <p className="text-[11px] text-zinc-500 font-light">Подарочные баллы действуют 30 дней</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 pt-2">
+                  <Link
+                    to="/catalog"
+                    className="px-6 py-3.5 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest transition-colors"
+                  >
+                    Перейти в каталог
+                  </Link>
+                  <Link
+                    to="/loyalty"
+                    className="px-6 py-3.5 border border-zinc-300 hover:border-black text-black text-xs font-bold uppercase tracking-widest transition-colors"
+                  >
+                    Все привилегии программы
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

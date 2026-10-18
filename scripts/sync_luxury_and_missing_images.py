@@ -78,6 +78,32 @@ DESIGNERS = [
     ('Prada', 'https://www.fragrantica.ru/designers/Prada.html', ['prada']),
     ('Jean Paul Gaultier', 'https://www.fragrantica.ru/designers/Jean-Paul-Gaultier.html', ['gaultier', 'jean paul gaultier']),
     ('Rabanne', 'https://www.fragrantica.ru/designers/Rabanne.html', ['rabanne', 'paco rabanne']),
+    ('Ormonde Jayne', 'https://www.fragrantica.ru/designers/Ormonde-Jayne.html', ['ormonde', 'ormonde jayne']),
+    ('Les Liquides Imaginaires', 'https://www.fragrantica.ru/designers/Les-Liquides-Imaginaires.html', ['liquides imaginaires', 'les liquides', 'liquides']),
+    ('The House of Oud', 'https://www.fragrantica.ru/designers/The-House-of-Oud.html', ['the house of oud', 'house of oud', 'thoo']),
+    ('Franck Boclet', 'https://www.fragrantica.ru/designers/Franck-Boclet.html', ['franck boclet', 'boclet']),
+    ('M.Micallef', 'https://www.fragrantica.ru/designers/M-Micallef.html', ['m.micallef', 'micallef', 'm micallef']),
+    ('Boadicea the Victorious', 'https://www.fragrantica.ru/designers/Boadicea-the-Victorious.html', ['boadicea', 'boadicea the victorious']),
+    ('Loewe', 'https://www.fragrantica.ru/designers/Loewe.html', ['loewe']),
+    ('Pierre Guillaume Paris', 'https://www.fragrantica.ru/designers/Pierre-Guillaume-Paris.html', ['pierre guillaume', 'guillaume']),
+    ('Antonio Banderas', 'https://www.fragrantica.ru/designers/Antonio-Banderas.html', ['antonio banderas', 'banderas']),
+    ('Maison Alhambra', 'https://www.fragrantica.ru/designers/Maison-Alhambra.html', ['alhambra', 'maison alhambra']),
+    ('Salvatore Ferragamo', 'https://www.fragrantica.ru/designers/Salvatore-Ferragamo.html', ['ferragamo', 'salvatore ferragamo']),
+    ('Laboratorio Olfattivo', 'https://www.fragrantica.ru/designers/Laboratorio-Olfattivo.html', ['laboratorio olfattivo']),
+    ('Gritti', 'https://www.fragrantica.ru/designers/Gritti.html', ['dr gritti', 'gritti']),
+    ('Lalique', 'https://www.fragrantica.ru/designers/Lalique.html', ['lalique']),
+    ('Geparlys', 'https://www.fragrantica.ru/designers/Geparlys.html', ['geparlys']),
+    ('Antonio Maretti', 'https://www.fragrantica.ru/designers/Antonio-Maretti.html', ['antonio maretti', 'maretti']),
+    ('Trussardi', 'https://www.fragrantica.ru/designers/Trussardi.html', ['trussardi']),
+    ('Estee Lauder', 'https://www.fragrantica.ru/designers/Estee-Lauder.html', ['estee lauder', 'lauder']),
+    ('Boucheron', 'https://www.fragrantica.ru/designers/Boucheron.html', ['boucheron']),
+    ('Van Cleef & Arpels', 'https://www.fragrantica.ru/designers/Van-Cleef-Arpels.html', ['van cleef', 'arpels']),
+    ('Carner Barcelona', 'https://www.fragrantica.ru/designers/Carner-Barcelona.html', ['carner barcelona', 'carner']),
+    ('Essential Parfums', 'https://www.fragrantica.ru/designers/Essential-Parfums.html', ['essential parfums']),
+    ('State of Mind', 'https://www.fragrantica.ru/designers/State-of-Mind.html', ['state of mind']),
+    ('Frederic Malle', 'https://www.fragrantica.ru/designers/Frederic-Malle.html', ['frederic malle', 'malle']),
+    ('Serge Lutens', 'https://www.fragrantica.ru/designers/Serge-Lutens.html', ['serge lutens', 'lutens']),
+    ('Penhaligons', 'https://www.fragrantica.ru/designers/Penhaligon-s.html', ['penhaligon', 'penhaligons']),
 ]
 
 BRAND_KEY_MAP = {}
@@ -186,7 +212,7 @@ catalog_models = {}
 for p in catalog['products']:
     if 'аналог' in p.get('name', '').lower() or 'мотив' in p.get('name', '').lower():
         continue
-    b_raw = p.get('brand', '').lower()
+    b_raw = (p.get('brand', '') + ' ' + p.get('name', '')).lower()
     matched_fbrand = None
     for f_brand, patterns in BRAND_KEY_MAP.items():
         if any(pat in b_raw for pat in patterns):

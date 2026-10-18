@@ -364,6 +364,403 @@ function loadAllRules(): ProductRule[] {
 
 const ALL_PRODUCT_RULES = loadAllRules();
 
+// Индексация всех 3500+ файлов изображений из public/assets/products для быстрого интеллектуального поиска
+interface IndexedProductFile {
+  file: string;
+  tokens: string[];
+}
+
+function loadAllProductFiles(): IndexedProductFile[] {
+  const dir = path.join(PUBLIC, 'assets', 'products');
+  if (!fs.existsSync(dir)) return [];
+  try {
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.jpg') || f.endsWith('.png'));
+    return files.map(f => {
+      const base = f.replace(/\.(jpg|png)$/, '');
+      const tokens = base.split('-').filter(t => t.length > 1 && !/^\d+$/.test(t));
+      return { file: f, tokens };
+    });
+  } catch {
+    return [];
+  }
+}
+
+const INDEXED_PRODUCT_FILES = loadAllProductFiles();
+
+// Эталонные флаконы для ключевых парфюмерных брендов (если конкретный фланкер не найден)
+const BRAND_SIGNATURE_FLACONS: Record<string, string> = {
+  'dior': '/assets/products/dior-sauvage.jpg',
+  'christian dior': '/assets/products/dior-sauvage.jpg',
+  'armani': '/assets/products/armani-acqua-di-gio.jpg',
+  'giorgio armani': '/assets/products/armani-acqua-di-gio.jpg',
+  'carolina herrera': '/assets/products/carolina-herrera-good-girl-supreme.jpg',
+  'guerlain': '/assets/products/guerlain-mon-guerlain.jpg',
+  'givenchy': '/assets/products/givenchy-l-interdit.jpg',
+  'chanel': '/assets/products/chanel-bleu-de-chanel.jpg',
+  'tom ford': '/assets/products/tom-ford-lost-cherry.jpg',
+  'creed': '/assets/products/creed-aventus.jpg',
+  'xerjoff': '/assets/products/xerjoff-erba-pura.jpg',
+  'byredo': '/assets/products/byredo-bal-d-afrique.jpg',
+  'amouage': '/assets/products/amouage-guidance.jpg',
+  'kilian': '/assets/products/by-kilian-angels-share.jpg',
+  'by kilian': '/assets/products/by-kilian-angels-share.jpg',
+  'ex nihilo': '/assets/products/ex-nihilo-fleur-narcotique.jpg',
+  'kurkdjian': '/assets/products/mfk-baccarat-540.jpg',
+  'maison francis kurkdjian': '/assets/products/mfk-baccarat-540.jpg',
+  'replica': '/assets/products/replica-jazz-club.jpg',
+  'maison margiela': '/assets/products/replica-jazz-club.jpg',
+  'mancera': '/assets/products/mancera-cedrat-boise.jpg',
+  'montale': '/assets/products/montale-roses-musk.jpg',
+  'barrois': '/assets/products/barrois-ganymede.jpg',
+  'marc-antoine barrois': '/assets/products/barrois-ganymede.jpg',
+  'parfums de marly': '/assets/products/pdm-delina.jpg',
+  'marly': '/assets/products/pdm-delina.jpg',
+  'initio': '/assets/products/initio-oud-for-greatness.jpg',
+  'initio parfums': '/assets/products/initio-oud-for-greatness.jpg',
+  'roja': '/assets/products/roja-dove-elysium-pour-femme.jpg',
+  'roja dove': '/assets/products/roja-dove-elysium-pour-femme.jpg',
+  'le labo': '/assets/products/le-labo-santal-33.jpg',
+  'vilhelm': '/assets/products/vilhelm-parfumerie-mango-skin.jpg',
+  'vilhelm parfumerie': '/assets/products/vilhelm-parfumerie-mango-skin.jpg',
+  'jo malone': '/assets/products/jo-malone-wood-sage-sea-salt.jpg',
+  'lattafa': '/assets/products/lattafa-khamrah.jpg',
+  'lattafa perfumes': '/assets/products/lattafa-khamrah.jpg',
+  'afnan': '/assets/products/afnan-9pm.jpg',
+  'armaf': '/assets/products/armaf-club-de-nuit.jpg',
+  'calvin klein': '/assets/products/calvin-klein-ck-one.jpg',
+  'lancome': '/assets/products/lancome-la-vie-est-belle.jpg',
+  'cartier': '/assets/products/cartier-declaration.jpg',
+  'chloe': '/assets/products/chloe-eau-de-parfum.jpg',
+  'victorias secret': '/assets/products/victorias-secret-bombshell.jpg',
+  'victoria`s': '/assets/products/victorias-secret-bombshell.jpg',
+  'kenzo': '/assets/products/kenzo-l-eau-kenzo.jpg',
+  'versace': '/assets/products/versace-bright-crystal.jpg',
+  'burberry': '/assets/products/burberry-her.jpg',
+  'paco rabanne': '/assets/products/rabanne-1-million.jpg',
+  'rabanne': '/assets/products/rabanne-1-million.jpg',
+  'jean paul gaultier': '/assets/products/jean-paul-gaultier-le-male.jpg',
+  'gaultier': '/assets/products/jean-paul-gaultier-le-male.jpg',
+  'ysl': '/assets/products/ysl-libre.jpg',
+  'yves saint laurent': '/assets/products/ysl-libre.jpg',
+  'hermes': '/assets/products/hermes-terre-d-hermes.jpg',
+  'boss': '/assets/products/boss-bottled.jpg',
+  'hugo boss': '/assets/products/boss-bottled.jpg',
+  'louis vuitton': '/assets/products/louis-vuitton-afternoon-swim.jpg',
+  'louis vitton': '/assets/products/louis-vuitton-afternoon-swim.jpg',
+  'louis': '/assets/products/louis-vuitton-afternoon-swim.jpg',
+  'gritti': '/assets/products/gritti-adele.jpg',
+  'dr gritti': '/assets/products/gritti-adele.jpg',
+  'dr': '/assets/products/gritti-adele.jpg',
+  'ormonde': '/assets/products/ormonde-jayne-montabaco.jpg',
+  'ormonde jayne': '/assets/products/ormonde-jayne-montabaco.jpg',
+  'liquides': '/assets/products/les-liquides-imaginaires-fortis.jpg',
+  'les liquides': '/assets/products/les-liquides-imaginaires-fortis.jpg',
+  'les liquides imaginaires': '/assets/products/les-liquides-imaginaires-fortis.jpg',
+  'house of oud': '/assets/products/the-house-of-oud-dates-delight.jpg',
+  'the house of oud': '/assets/products/the-house-of-oud-dates-delight.jpg',
+  'house': '/assets/products/the-house-of-oud-dates-delight.jpg',
+  'boclet': '/assets/products/franck-boclet-cocaine.jpg',
+  'franck boclet': '/assets/products/franck-boclet-cocaine.jpg',
+  'franck': '/assets/products/franck-boclet-cocaine.jpg',
+  'micallef': '/assets/products/m-micallef-ananda.jpg',
+  'm.micallef': '/assets/products/m-micallef-ananda.jpg',
+  'boadicea': '/assets/products/boadicea-the-victorious-blue-sapphire.jpg',
+  'boadicea the victorious': '/assets/products/boadicea-the-victorious-blue-sapphire.jpg',
+  'loewe': '/assets/products/loewe-001-man.jpg',
+  'pierre guillaume': '/assets/products/pierre-guillaume-paris-musc-maori.jpg',
+  'guillaume': '/assets/products/pierre-guillaume-paris-musc-maori.jpg',
+  'banderas': '/assets/products/antonio-banderas-blue-seduction.jpg',
+  'antonio banderas': '/assets/products/antonio-banderas-blue-seduction.jpg',
+  'antonio': '/assets/products/antonio-banderas-blue-seduction.jpg',
+  'maretti': '/assets/products/antonio-maretti-almost-a-virgin.jpg',
+  'antonio maretti': '/assets/products/antonio-maretti-almost-a-virgin.jpg',
+  'alhambra': '/assets/products/maison-alhambra-tobacco-touch.jpg',
+  'maison alhambra': '/assets/products/maison-alhambra-tobacco-touch.jpg',
+  'ferragamo': '/assets/products/salvatore-ferragamo-uomo.jpg',
+  'salvatore ferragamo': '/assets/products/salvatore-ferragamo-uomo.jpg',
+  'laboratorio olfattivo': '/assets/products/laboratorio-olfattivo-needle.jpg',
+  'lalique': '/assets/products/lalique-encre-noire.jpg',
+  'trussardi': '/assets/products/trussardi-donna.jpg',
+  'estee lauder': '/assets/products/estee-lauder-pleasures.jpg',
+  'boucheron': '/assets/products/boucheron-quatre.jpg',
+  'van cleef': '/assets/products/van-cleef-arpels-bois-d-iris.jpg',
+  'carner barcelona': '/assets/products/carner-barcelona-tardes.jpg',
+  'essential parfums': '/assets/products/essential-parfums-bois-imperial.jpg',
+  'state of mind': '/assets/products/state-of-mind-aesthetic-turbulence.jpg',
+  'frederic malle': '/assets/products/frederic-malle-portrait-of-a-lady.jpg',
+  'serge lutens': '/assets/products/serge-lutens-chergui.jpg',
+  'penhaligon': '/assets/products/penhaligons-the-tragedy-of-lord-george.jpg',
+};
+
+function resolveCategoryFallback(kind: string | undefined, hay: string, nameLower: string, brandLower: string): string {
+  // === 1. MAKEUP / КОСМЕТИКА ===
+  if (kind === 'makeup') {
+    // Ошибочно попавший стайлинг для волос (например, American Crew Cream Pomade)
+    if (/(american crew|укладк|для волос|помада для волос|волос)/i.test(nameLower) || brandLower.includes('american')) {
+      return '/assets/categories/american-crew-pomade.jpg';
+    }
+
+    // Byredo Makeup
+    if (brandLower.includes('byredo')) {
+      if (/(eyeshadow|тени|палетк|5 colours)/i.test(nameLower)) return '/assets/categories/byredo-eyeshadow.jpg';
+      if (/(balm|бальзам)/i.test(nameLower)) return '/assets/categories/byredo-lip-balm.jpg';
+      return '/assets/categories/byredo-lipstick.jpg';
+    }
+
+    // Charlotte Tilbury
+    if (brandLower.includes('charlotte')) {
+      if (/(powder|пудра|flawless|airbrush)/i.test(nameLower)) return '/assets/categories/charlotte-tilbury-powder.jpg';
+      return '/assets/categories/charlotte-tilbury-lipstick.jpg';
+    }
+
+    // Kiko Milano
+    if (brandLower.includes('kiko')) {
+      if (/(double touch|блеск|gloss)/i.test(nameLower)) return '/assets/categories/kiko-double-touch.jpg';
+      return '/assets/categories/kiko-lipstick.jpg';
+    }
+
+    // Collistar
+    if (brandLower.includes('collistar')) {
+      if (/(powder|пудра|бронзер|terra)/i.test(nameLower)) return '/assets/categories/collistar-powder.jpg';
+      if (/(mascara|тушь|infinito|ресниц)/i.test(nameLower)) return '/assets/categories/collistar-mascara.jpg';
+      if (/(подводк|лайнер|liner|eyeliner|карандаш|pencil|glitter)/i.test(nameLower)) return '/assets/categories/makeup-brow-pencil.jpg';
+      if (/(помада|lipstick|rouge|губ|lip|блеск|gloss)/i.test(nameLower)) return '/assets/categories/kiko-lipstick.jpg';
+      return '/assets/categories/collistar-mascara.jpg';
+    }
+
+    // Delilah
+    if (brandLower.includes('delilah')) {
+      if (/(foundation|time frame|тональн)/i.test(nameLower)) return '/assets/categories/delilah-foundation.jpg';
+      return '/assets/categories/delilah-lipstick.jpg';
+    }
+
+    // YSL
+    if (brandLower.includes('yves') || brandLower.includes('ysl')) {
+      if (/(mascara|тушь|lash clash)/i.test(nameLower)) return '/assets/categories/ysl-mascara.jpg';
+      return '/assets/categories/ysl-lipstick.jpg';
+    }
+
+    // Kilian
+    if (brandLower.includes('kilian')) {
+      return '/assets/categories/kilian-lipstick.jpg';
+    }
+
+    // По типу косметического средства
+    if (/(подводк|лайнер|liner|eyeliner|карандаш|pencil|kajal|каял)/i.test(nameLower)) return '/assets/categories/makeup-brow-pencil.jpg';
+    if (/(тушь|mascara|ресниц)/i.test(nameLower)) return '/assets/categories/collistar-mascara.jpg';
+    if (/(блеск|lipgloss|gloss|тинт|масло для губ)/i.test(nameLower)) return '/assets/categories/kiko-double-touch.jpg';
+    if (/(помада|lipstick|rouge|губн|lip\b|бальзам для губ)/i.test(nameLower)) return '/assets/categories/charlotte-tilbury-lipstick.jpg';
+    if (/(тональн|foundation|флюид|кушон|bb|cc|concealer|консилер)/i.test(nameLower)) return '/assets/categories/delilah-foundation.jpg';
+    if (/(пудра|powder)/i.test(nameLower)) return '/assets/categories/collistar-powder.jpg';
+    if (/(тени|eyeshadow|shadow|палетк)/i.test(nameLower)) return '/assets/categories/byredo-eyeshadow.jpg';
+    if (/(румян|blush|бронзер|хайлайтер)/i.test(nameLower)) return '/assets/categories/makeup-blush-palette.jpg';
+    if (/(бров|brow)/i.test(nameLower)) return '/assets/categories/makeup-brow-pencil.jpg';
+
+    return '/assets/categories/delilah-lipstick.jpg';
+  }
+
+  // === 2. HAIRCARE / УХОД ЗА ВОЛОСАМИ ===
+  if (kind === 'haircare') {
+    // Wella
+    if (brandLower.includes('wella')) {
+      if (/(color|краска|краситель|koleston|color touch|ме\+|me\+)/i.test(nameLower)) return '/assets/categories/wella-color.jpg';
+      if (/(масло|oil|reflections)/i.test(nameLower)) return '/assets/categories/wella-oil.jpg';
+      return '/assets/categories/wella-care.jpg';
+    }
+
+    // Kerastase
+    if (brandLower.includes('kerastase')) {
+      if (/(chronologiste|хронолоджист|маска|mask)/i.test(nameLower)) return '/assets/categories/kerastase-chronologiste.jpg';
+      return '/assets/categories/kerastase-shampoo.jpg';
+    }
+
+    // Schwarzkopf
+    if (brandLower.includes('schwarzkopf')) {
+      if (/(igora|игора|color|краска)/i.test(nameLower)) return '/assets/categories/schwarzkopf-igora.jpg';
+      if (/(osis|стайлинг|воск|паста|глина)/i.test(nameLower)) return '/assets/categories/schwarzkopf-osis.jpg';
+      return '/assets/categories/schwarzkopf-bonacure.jpg';
+    }
+
+    // Estel
+    if (brandLower.includes('estel')) {
+      if (/(de luxe|essex|color|краска)/i.test(nameLower)) return '/assets/categories/estel-deluxe.jpg';
+      return '/assets/categories/estel-curex.jpg';
+    }
+
+    // Redken
+    if (brandLower.includes('redken')) {
+      if (/(all soft|мягкост|питание)/i.test(nameLower)) return '/assets/categories/redken-all-soft.jpg';
+      return '/assets/categories/redken-extreme.jpg';
+    }
+
+    // Londa
+    if (brandLower.includes('londa')) {
+      return '/assets/categories/londa-color.jpg';
+    }
+
+    // Lebel
+    if (brandLower.includes('lebel')) {
+      return '/assets/categories/lebel-iau.jpg';
+    }
+
+    // Goldwell
+    if (brandLower.includes('goldwell')) {
+      return '/assets/categories/goldwell-topchic.jpg';
+    }
+
+    // L'Oreal Professionnel
+    if (brandLower.includes('loreal') || brandLower.includes("l'oreal")) {
+      return '/assets/categories/loreal-serie-expert.jpg';
+    }
+
+    // OLLIN
+    if (brandLower.includes('ollin')) {
+      return '/assets/categories/ollin-perfect-hair.jpg';
+    }
+
+    // American Crew
+    if (brandLower.includes('american crew') || brandLower.includes('american')) {
+      if (/(fiber|файбер)/i.test(nameLower)) return '/assets/categories/american-crew-fiber.jpg';
+      return '/assets/categories/american-crew-pomade.jpg';
+    }
+
+    // Moroccanoil
+    if (brandLower.includes('moroccanoil')) {
+      return '/assets/categories/moroccanoil-treatment.jpg';
+    }
+
+    // Kydra
+    if (brandLower.includes('kydra') || nameLower.includes('kydra')) {
+      return '/assets/categories/goldwell-topchic.jpg';
+    }
+
+    // Revlon & Revlonissimo
+    if (brandLower.includes('revlon') || nameLower.includes('revlon')) {
+      if (/(color|краска|краситель)/i.test(nameLower)) return '/assets/categories/schwarzkopf-igora.jpg';
+      return '/assets/categories/loreal-serie-expert.jpg';
+    }
+
+    // Общие правила по назначению средства
+    if (/(помада|pomade|глина|clay|воск|wax|паста|paste|american crew|крем-помада|стайлинг)/i.test(nameLower)) return '/assets/categories/american-crew-pomade.jpg';
+    if (/(краска|краситель|color|igora|koleston|estel|londa|matrix)/i.test(nameLower)) return '/assets/categories/wella-color.jpg';
+    if (/(маска|mask|chronologiste)/i.test(nameLower)) return '/assets/categories/kerastase-chronologiste.jpg';
+    if (/(масло|oil|сыворотка|serum|эликсир|флюид)/i.test(nameLower)) return '/assets/categories/wella-oil.jpg';
+    if (/(спрей|spray|лак|мусс|термозащит|пена|perfect hair)/i.test(nameLower)) return '/assets/categories/ollin-perfect-hair.jpg';
+    if (/(бальзам|кондиционер|conditioner|balm)/i.test(nameLower)) return '/assets/categories/redken-all-soft.jpg';
+    if (/(шампунь|shampoo)/i.test(nameLower)) return '/assets/categories/wella-care.jpg';
+
+    return '/assets/categories/wella-care.jpg';
+  }
+
+  // === 3. SKINCARE / УХОД ЗА КОЖЕЙ ===
+  if (kind === 'skincare') {
+    // Aesop
+    if (brandLower.includes('aesop')) {
+      if (/(eye|век|глаз)/i.test(nameLower)) return '/assets/categories/aesop-eye-serum.jpg';
+      if (/(cream|крем|лосьон|hydrator)/i.test(nameLower)) return '/assets/categories/aesop-cream.jpg';
+      return '/assets/categories/aesop-serum.jpg';
+    }
+
+    // Elemis
+    if (brandLower.includes('elemis')) {
+      if (/(balm|бальзам|cleansing)/i.test(nameLower)) return '/assets/categories/elemis-cleansing-balm.jpg';
+      return '/assets/categories/elemis-marine-cream.jpg';
+    }
+
+    // Valmont
+    if (brandLower.includes('valmont')) {
+      return '/assets/categories/valmont-prime-pack.jpg';
+    }
+
+    // ARAVIA
+    if (brandLower.includes('aravia')) {
+      return '/assets/categories/aravia-anti-acne.jpg';
+    }
+
+    // Paula's Choice
+    if (brandLower.includes('paula')) {
+      return '/assets/categories/paulas-choice-bha.jpg';
+    }
+
+    // Gehwol
+    if (brandLower.includes('gehwol')) {
+      return '/assets/categories/gehwol-fusskraft.jpg';
+    }
+
+    // La Roche-Posay
+    if (brandLower.includes('la roche') || brandLower.includes('roche-posay')) {
+      return '/assets/categories/la-roche-posay-b5.jpg';
+    }
+
+    // Dr. Jart+ / Cicapair / Ceramidin
+    if (brandLower.includes('dr') || nameLower.includes('jart') || nameLower.includes('cicapair') || nameLower.includes('ceramidin')) {
+      return '/assets/categories/paulas-choice-bha.jpg';
+    }
+
+    // По типу ухода за кожей
+    if (/(сыворотк|serum|ампул|концентрат)/i.test(nameLower)) return '/assets/categories/aesop-serum.jpg';
+    if (/(век|глаз|eye|патчи)/i.test(nameLower)) return '/assets/categories/aesop-eye-serum.jpg';
+    if (/(тоник|toner|лосьон|эссенци)/i.test(nameLower)) return '/assets/categories/aravia-anti-acne.jpg';
+    if (/(пенк|гель для умыван|cleanser|мицеллярн|очищен|умыван)/i.test(nameLower)) return '/assets/categories/elemis-cleansing-balm.jpg';
+    if (/(маск|mask)/i.test(nameLower)) return '/assets/categories/valmont-prime-pack.jpg';
+    if (/(крем|cream|эмульси|флюид)/i.test(nameLower)) return '/assets/categories/elemis-marine-cream.jpg';
+
+    return '/assets/categories/elemis-marine-cream.jpg';
+  }
+
+  // === 4. BODYCARE / УХОД ЗА ТЕЛОМ ===
+  if (kind === 'bodycare') {
+    // Nesti Dante
+    if (brandLower.includes('nesti') || nameLower.includes('nesti')) {
+      return '/assets/categories/nesti-dante-soap.jpg';
+    }
+
+    // Baylis & Harding
+    if (brandLower.includes('baylis')) {
+      return '/assets/categories/baylis-harding-lotion.jpg';
+    }
+
+    // Acqua di Parma
+    if (brandLower.includes('acqua')) {
+      return '/assets/categories/acqua-di-parma-body.jpg';
+    }
+
+    // Jo Malone
+    if (brandLower.includes('jo malone')) {
+      return '/assets/categories/jo-malone-body-creme.jpg';
+    }
+
+    // Byredo
+    if (brandLower.includes('byredo')) {
+      return '/assets/categories/byredo-body-wash.jpg';
+    }
+
+    // Replica
+    if (brandLower.includes('replica') || brandLower.includes('margiela')) {
+      return '/assets/categories/replica-shower-gel.jpg';
+    }
+
+    // Diptyque
+    if (brandLower.includes('diptyque')) {
+      return '/assets/categories/diptyque-body.jpg';
+    }
+
+    // L'Occitane
+    if (brandLower.includes('occitane')) {
+      return '/assets/categories/loccitane-hand-cream.jpg';
+    }
+
+    if (/(мыло|soap)/i.test(nameLower)) return '/assets/categories/nesti-dante-soap.jpg';
+    if (/(душ|shower|гель для душа|пена для ванн)/i.test(nameLower)) return '/assets/categories/byredo-body-wash.jpg';
+    if (/(рук|hand)/i.test(nameLower)) return '/assets/categories/loccitane-hand-cream.jpg';
+    if (/(лосьон|lotion|молочко|масло для тела|крем для тела)/i.test(nameLower)) return '/assets/categories/baylis-harding-lotion.jpg';
+
+    return '/assets/categories/baylis-harding-lotion.jpg';
+  }
+
+  return '/assets/categories/perfume-luxury-flacon.jpg';
+}
+
 export function resolveProductImage(p: {
   name: string;
   brand: string;
@@ -375,20 +772,36 @@ export function resolveProductImage(p: {
   const stored = p.images?.[0];
   if (stored && p.custom && !isGenericStock(stored)) return stored;
 
-  // 2. Если уже указан локальный файл продукта в assets/products
-  if (stored && stored.startsWith('/assets/products/')) {
+  // 2. Если уже указан локальный файл продукта в assets/
+  if (stored && (stored.startsWith('/assets/products/') || stored.startsWith('/assets/categories/'))) {
     const loc = localIfExists(stored);
     if (loc) return loc;
   }
 
-  // 3. Если уже есть не стоковая ссылка (не unsplash и не старый бренд-сток)
+  // 3. Если уже есть прямая валидная ссылка (не сток и не старая заглушка)
   if (stored && !isGenericStock(stored) && !stored.startsWith('/assets/brands/')) {
     return stored;
   }
 
-  // 4. Поиск по каталогу популярных ароматов
   const hay = normalizeHaystack(p);
+  const nameLower = p.name.toLowerCase();
+  const brandLower = (p.brand || '').toLowerCase().trim();
 
+  // 4. НЕ-ПАРФЮМЕРИЯ: косметика, волосы, уход за кожей и телом НИКОГДА не должны получать фото флаконов духов!
+  if (p.kind && p.kind !== 'perfume') {
+    return resolveCategoryFallback(p.kind, hay, nameLower, brandLower);
+  }
+  if (brandLower.includes('gehwol') || /(фусскрафт|fusskraft|крем для ног|бальзам для ног)/i.test(nameLower)) {
+    return resolveCategoryFallback('bodycare', hay, nameLower, brandLower);
+  }
+  if (brandLower.includes('kydra') || brandLower.includes('revlonissimo') || (brandLower.includes('revlon') && !hay.includes('charlie')) || /(краска для волос|окрашиван|тонирующ|оттеночн)/i.test(nameLower)) {
+    return resolveCategoryFallback('haircare', hay, nameLower, brandLower);
+  }
+  if (brandLower.includes('paula') || brandLower.includes('aravia') || /(dr\.\s*jart|cicapair|ceramidin)/i.test(nameLower)) {
+    return resolveCategoryFallback('skincare', hay, nameLower, brandLower);
+  }
+
+  // 5. ПАРФЮМЕРИЯ: поиск точного соответствия среди ручных правил (фланкеры)
   for (const rule of ALL_PRODUCT_RULES) {
     if (rule.anyBrand && !rule.anyBrand.some(b => hay.includes(b))) {
       continue;
@@ -405,9 +818,40 @@ export function resolveProductImage(p: {
     }
   }
 
-  // Внимание: Брендовые одинаковые заглушки удалены намеренно!
-  // Все товары, для которых нет конкретного фото, получают заглушку "Здесь скоро будет фотография".
-  return PLACEHOLDER_IMAGE;
+  // 6. Интеллектуальный поиск по токенам среди всех 3500+ файлов оригинальных продуктов
+  const hayTokens = new Set(hay.split(/\s+/).filter(t => t.length > 1));
+  let bestFile: string | null = null;
+  let bestScore = 0;
+
+  for (const item of INDEXED_PRODUCT_FILES) {
+    let hits = 0;
+    for (const t of item.tokens) {
+      if (hayTokens.has(t)) hits++;
+    }
+    if (hits >= 2 && hits > bestScore) {
+      const ratio = hits / item.tokens.length;
+      if (ratio >= 0.5) {
+        bestScore = hits;
+        bestFile = item.file;
+      }
+    }
+  }
+
+  if (bestFile) {
+    const loc = localIfExists(`/assets/products/${bestFile}`);
+    if (loc) return loc;
+  }
+
+  // 7. Поиск эталонного флакона парфюмерного дома
+  for (const [brandKey, flaconPath] of Object.entries(BRAND_SIGNATURE_FLACONS)) {
+    if (brandLower.includes(brandKey) || hay.includes(brandKey)) {
+      const loc = localIfExists(flaconPath);
+      if (loc) return loc;
+    }
+  }
+
+  // 8. Если для редкого парфюма нет индивидуального фото в базе — отдаем эталонный флакон селектива
+  return '/assets/categories/perfume-luxury-flacon.jpg';
 }
 
 export function withResolvedImage<

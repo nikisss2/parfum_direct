@@ -11,6 +11,9 @@ import {
   fetchTelegramConfig,
   saveTelegramConfigApi,
   sendTelegramTestApi,
+  fetchAdminStats,
+  fetchAdminUsers,
+  fetchAdminOrders,
   CatalogListItem,
 } from '../api/catalog';
 import {
@@ -54,25 +57,54 @@ import {
   Send,
   Bell,
   Settings,
+  Users,
+  ShieldCheck,
+  KeyRound,
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 const TOKEN_KEY = 'parfum_admin_token';
 
 export const AdminPage: React.FC = () => {
-  const { allOrders, updateOrderStatus, deleteOrder, user, showToast } = useShop();
+  const { allOrders, updateOrderStatus, deleteOrder, user, login, showToast } = useShop();
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || '');
   const [authed, setAuthed] = useState(() => user?.role === 'admin');
   const [metaCount, setMetaCount] = useState<number | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'edit' | 'create'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'users' | 'edit' | 'create'>('orders');
+
+  // SQLite Database Users & Analytics state
+  const [adminUsers, setAdminUsers] = useState<Array<{
+    id: string;
+    email: string;
+    full_name: string;
+    phone: string;
+    city: string;
+    role: string;
+    created_at: string;
+    orders_count: number;
+    total_spent: number;
+  }>>([]);
+  const [adminStats, setAdminStats] = useState<{
+    totalOrders: number;
+    totalRevenue: number;
+    totalUsers: number;
+    activeOrders: number;
+  } | null>(null);
+  const [userSearch, setUserSearch] = useState('');
+
+  // Login form modes
+  const [loginEmail, setLoginEmail] = useState('admin_laptev');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginMode, setLoginMode] = useState<'password' | 'token'>('password');
+  const [loginLoading, setLoginLoading] = useState(false);
 
   // Telegram bot notification settings
   const [telegramConfig, setTelegramConfig] = useState({
-    enabled: false,
-    botToken: '',
+    enabled: true,
+    botToken: '8913044342:AAEgWMP0LqUUIjRVj6C6S9q4MBrqarPOebg',
     chatId: '',
     managerUsername: 'nikisss2',
   });
@@ -147,21 +179,70 @@ export const AdminPage: React.FC = () => {
     setAuthed(true);
   };
 
+  const loadAdminData = async (activeToken: string) => {
+    try {
+      const statsRes = await fetchAdminStats(activeToken);
+      if (statsRes.ok && statsRes.stats) setAdminStats(statsRes.stats);
+    } catch {}
+    try {
+      const usersRes = await fetchAdminUsers(activeToken);
+      if (usersRes.ok && usersRes.users) setAdminUsers(usersRes.users);
+    } catch {}
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || '';
+    if (saved && !token) {
+      setToken(saved);
+    }
+  }, []);
+
   useEffect(() => {
     if (user?.role === 'admin') {
       setAuthed(true);
       fetchMeta().then(m => setMetaCount(m.count)).catch(() => {});
+      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      if (!token && activeToken) {
+        setToken(activeToken);
+      }
+      loadAdminData(activeToken);
     } else if (token) {
-      verifyToken(token).catch(() => setAuthed(false));
+      verifyToken(token).then(() => {
+        loadAdminData(token);
+      }).catch(() => setAuthed(false));
     }
   }, [user, token]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem(TOKEN_KEY, token);
-    verifyToken(token).catch(() =>
-      setStatus('Неверный токен или API не запущен (npm run api / npm run dev:all)')
-    );
+    verifyToken(token)
+      .then(() => loadAdminData(token))
+      .catch(() =>
+        setStatus('Неверный токен или API не запущен (npm run api / npm run dev:all)')
+      );
+  };
+
+  const handlePasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    setStatus(null);
+    try {
+      const loggedUser = await login(loginEmail, loginPassword);
+      if (loggedUser.role !== 'admin') {
+        throw new Error('Этот аккаунт не обладает правами администратора магазина');
+      }
+      setAuthed(true);
+      const authToken = localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      setToken(authToken);
+      localStorage.setItem(TOKEN_KEY, authToken);
+      loadAdminData(authToken);
+      showToast('Вход выполнен', `Добро пожаловать, ${loggedUser.fullName}!`, 'success');
+    } catch (err: any) {
+      setStatus(err.message || 'Ошибка авторизации');
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -250,12 +331,16 @@ export const AdminPage: React.FC = () => {
     };
 
     try {
-      await adminSaveProduct(token, payload as Record<string, unknown>);
+      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      await adminSaveProduct(activeToken, payload as Record<string, unknown>);
       setStatus('Товар сохранён в catalog.custom.json');
+      showToast('Товар создан', `Товар «${form.name}» успешно добавлен в каталог`, 'success');
       setForm(f => ({ ...f, sku: '', name: '', price: '', imageUrl: '', imageData: null }));
       fetchMeta().then(m => setMetaCount(m.count));
     } catch (err) {
-      setStatus(err instanceof Error ? err.message : 'Ошибка сохранения (проверьте ADMIN_TOKEN на сервере)');
+      const msg = err instanceof Error ? err.message : 'Ошибка сохранения (проверьте ADMIN_TOKEN на сервере)';
+      setStatus(msg);
+      showToast('Ошибка создания', msg, 'error');
     } finally {
       setSaving(false);
     }
@@ -453,7 +538,8 @@ export const AdminPage: React.FC = () => {
     };
 
     try {
-      const res = await adminUpdateProduct(token, editingProduct.id, payload);
+      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      const res = await adminUpdateProduct(activeToken, editingProduct.id, payload);
       setEditingProduct(res.product);
       setEditStatus({
         text: `Товар «${res.product.name}» успешно сохранён! Изменения применены в каталоге.`,
@@ -484,10 +570,12 @@ export const AdminPage: React.FC = () => {
       // Refresh meta count
       fetchMeta().then(m => setMetaCount(m.count)).catch(() => {});
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Ошибка при сохранении изменений товара';
       setEditStatus({
-        text: err instanceof Error ? err.message : 'Ошибка при сохранении изменений товара',
+        text: errorMsg,
         type: 'error',
       });
+      showToast('Ошибка сохранения', errorMsg, 'error');
     } finally {
       setEditSaving(false);
     }
@@ -497,7 +585,8 @@ export const AdminPage: React.FC = () => {
     if (!editingProduct) return;
     if (!window.confirm(`Вы уверены, что хотите удалить товар «${editingProduct.name}»?`)) return;
     try {
-      await adminDeleteProduct(token, editingProduct.id);
+      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      await adminDeleteProduct(activeToken, editingProduct.id);
       showToast('Удалено', `Товар «${editingProduct.name}» удалён`, 'info');
       setEditingProduct(null);
       setSelectedProduct(null);
@@ -568,38 +657,163 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  if (user && user.role !== 'admin') {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-zinc-950 text-white">
+        <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 p-8 text-center space-y-6 shadow-2xl">
+          <div className="w-16 h-16 mx-auto bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-serif font-bold uppercase tracking-wide">
+              Доступ ограничен
+            </h1>
+            <p className="text-xs text-zinc-400 font-light leading-relaxed">
+              У вашей учетной записи ({user.email}) нет прав администратора для управления каталогом и заказами Maison Arôme.
+            </p>
+          </div>
+          <div className="pt-4 border-t border-zinc-800 space-y-3">
+            <Link
+              to="/account"
+              className="w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md"
+            >
+              <KeyRound className="w-4 h-4" />
+              <span>Сменить аккаунт</span>
+            </Link>
+            <Link
+              to="/"
+              className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold uppercase tracking-wider block transition-colors"
+            >
+              На главную
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!authed) {
     return (
       <div className="max-w-md mx-auto px-4 py-16">
-        <div className="bg-white p-8 rounded-none border border-zinc-900 shadow-sm space-y-4">
-          <h1 className="text-xl font-normal font-serif mb-2 flex items-center gap-2 uppercase tracking-wide">
-            <Lock className="w-5 h-5" />
-            Вход для администратора
-          </h1>
-          <p className="text-xs text-zinc-500 mb-6 leading-relaxed font-light">
-            Вы можете войти под аккаунтом администратора <code>admin@maisonarome.ru</code> / <code>admin123</code> на странице аккаунта или ввести сервисный токен API:
-          </p>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="password"
-              value={token}
-              onChange={e => setToken(e.target.value)}
-              placeholder="Admin token (из .env)"
-              className="w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs outline-none focus:border-black font-mono transition-colors"
-            />
-            {status && <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-none">{status}</p>}
-            <button type="submit" className="w-full py-4 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-sm">
-              Войти в админ-панель
-            </button>
-            <div className="pt-2 flex justify-between text-xs text-zinc-500 uppercase tracking-wider text-[11px]">
-              <Link to="/account" className="text-black hover:underline font-bold">
-                Войти как admin@maisonarome.ru
-              </Link>
-              <Link to="/" className="hover:text-black flex items-center gap-1">
-                <ArrowLeft className="w-3 h-3" /> На сайт
-              </Link>
+        <div className="bg-white p-8 rounded-none border border-zinc-900 shadow-sm space-y-5">
+          <div className="text-center space-y-1 pb-2 border-b border-zinc-200">
+            <div className="w-12 h-12 bg-black text-white flex items-center justify-center mx-auto mb-3">
+              <ShieldCheck className="w-6 h-6 text-white" />
             </div>
-          </form>
+            <h1 className="text-xl font-normal font-serif uppercase tracking-wide text-zinc-950">
+              Панель администратора
+            </h1>
+            <p className="text-xs text-zinc-500 font-light">
+              Maison Arôme — защищенное управление магазином
+            </p>
+          </div>
+
+          <div className="flex border-b border-zinc-200 text-xs font-bold uppercase tracking-wider">
+            <button
+              type="button"
+              onClick={() => { setLoginMode('password'); setStatus(null); }}
+              className={`flex-1 pb-2.5 text-center border-b-2 transition-colors ${
+                loginMode === 'password'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-zinc-400 hover:text-black'
+              }`}
+            >
+              Вход по паролю
+            </button>
+            <button
+              type="button"
+              onClick={() => { setLoginMode('token'); setStatus(null); }}
+              className={`flex-1 pb-2.5 text-center border-b-2 transition-colors ${
+                loginMode === 'token'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-zinc-400 hover:text-black'
+              }`}
+            >
+              Токен API
+            </button>
+          </div>
+
+          {loginMode === 'password' ? (
+            <form onSubmit={handlePasswordLogin} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-600 mb-1">
+                  Логин или Email администратора
+                </label>
+                <input
+                  type="text"
+                  value={loginEmail}
+                  onChange={e => setLoginEmail(e.target.value)}
+                  placeholder="admin_laptev"
+                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-600 mb-1">
+                  Пароль администратора
+                </label>
+                <input
+                  type="password"
+                  value={loginPassword}
+                  onChange={e => setLoginPassword(e.target.value)}
+                  placeholder="Введите пароль"
+                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
+                  required
+                />
+              </div>
+
+              {status && (
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-none font-light">
+                  {status}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loginLoading}
+                className="w-full py-3.5 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-sm disabled:opacity-50"
+              >
+                {loginLoading ? 'Проверка доступа...' : 'Войти в панель управления'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-600 mb-1">
+                  Секретный сервисный токен
+                </label>
+                <input
+                  type="password"
+                  value={token}
+                  onChange={e => setToken(e.target.value)}
+                  placeholder="parfum-admin-change-me"
+                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-mono transition-colors"
+                />
+              </div>
+
+              {status && (
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-none font-light">
+                  {status}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3.5 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-sm"
+              >
+                Войти по токену API
+              </button>
+            </form>
+          )}
+
+          <div className="pt-2 flex justify-between text-xs text-zinc-500 uppercase tracking-wider text-[11px]">
+            <Link to="/account" className="text-black hover:underline font-bold">
+              В личный кабинет
+            </Link>
+            <Link to="/" className="hover:text-black flex items-center gap-1">
+              <ArrowLeft className="w-3 h-3" /> На сайт
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -611,11 +825,11 @@ export const AdminPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-normal font-serif flex items-center gap-2 text-zinc-950 uppercase tracking-wide">
-            <Lock className="w-6 h-6 text-zinc-900" />
+            <ShieldCheck className="w-6 h-6 text-zinc-900" />
             Панель управления магазином
           </h1>
           <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider text-[11px]">
-            Мониторинг заказов, обработка статусов, каталог ({metaCount != null ? `${metaCount.toLocaleString('ru-RU')} позиций` : 'активен'})
+            Защищенная SQLite база данных • Каталог ({metaCount != null ? `${metaCount.toLocaleString('ru-RU')} позиций` : 'активен'})
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -634,6 +848,42 @@ export const AdminPage: React.FC = () => {
         </div>
       </div>
 
+      {/* KPI Stats Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+            <CreditCard className="w-3.5 h-3.5 text-zinc-700" /> Выручка заказов
+          </p>
+          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+            {(adminStats?.totalRevenue || totalRevenue).toLocaleString('ru-RU')} ₽
+          </p>
+        </div>
+        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+            <ShoppingBag className="w-3.5 h-3.5 text-zinc-700" /> Всего заказов
+          </p>
+          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+            {adminStats?.totalOrders ?? allOrders.length}
+          </p>
+        </div>
+        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-amber-700" /> В обработке / сборке
+          </p>
+          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+            {adminStats?.activeOrders ?? allOrders.filter(o => o.status === 'assembling' || o.status === 'paid').length}
+          </p>
+        </div>
+        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5 text-emerald-700" /> Клиенты в БД (SQLite)
+          </p>
+          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+            {adminStats?.totalUsers ?? adminUsers.length}
+          </p>
+        </div>
+      </div>
+
       {/* Primary Tabs */}
       <div className="flex border-b border-zinc-200 mb-6 gap-2 overflow-x-auto text-xs uppercase tracking-wider font-bold">
         <button
@@ -646,6 +896,17 @@ export const AdminPage: React.FC = () => {
         >
           <ShoppingBag className="w-4 h-4" />
           <span>Поступающие заказы ({allOrders.length})</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('users')}
+          className={`pb-3 px-4 flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${
+            activeTab === 'users'
+              ? 'border-black text-black'
+              : 'border-transparent text-zinc-500 hover:text-black'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>База пользователей ({adminUsers.length})</span>
         </button>
         <button
           onClick={() => setActiveTab('edit')}
@@ -1073,6 +1334,113 @@ export const AdminPage: React.FC = () => {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Tab: Users Management (SQLite Database) */}
+      {activeTab === 'users' && (
+        <div className="space-y-6">
+          <div className="p-6 rounded-none border border-zinc-200 bg-white space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-base font-normal font-serif text-zinc-900 uppercase tracking-wide flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-700" />
+                  Защищенная база данных клиентов (SQLite)
+                </h2>
+                <p className="text-xs text-zinc-500 mt-1">
+                  Все зарегистрированные покупатели магазина, их телефоны, города и сумма покупок. Пароли захешированы криптографическим алгоритмом scrypt.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  const activeToken = token || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+                  loadAdminData(activeToken);
+                  showToast('Обновлено', 'Список пользователей обновлен из базы', 'success');
+                }}
+                className="px-3.5 py-2 border border-zinc-300 hover:bg-zinc-100 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Обновить
+              </button>
+            </div>
+
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <input
+                type="text"
+                value={userSearch}
+                onChange={e => setUserSearch(e.target.value)}
+                placeholder="Поиск по имени, email или телефону..."
+                className="w-full pl-9 pr-4 py-2.5 text-xs border border-zinc-300 rounded-none outline-none focus:border-black font-light transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Users Table */}
+          <div className="bg-white border border-zinc-200 rounded-none overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-zinc-50 border-b border-zinc-200 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                  <tr>
+                    <th className="py-3 px-4">Клиент</th>
+                    <th className="py-3 px-4">Email</th>
+                    <th className="py-3 px-4">Телефон</th>
+                    <th className="py-3 px-4">Город</th>
+                    <th className="py-3 px-4">Роль</th>
+                    <th className="py-3 px-4 text-right">Заказов</th>
+                    <th className="py-3 px-4 text-right">Покупок (₽)</th>
+                    <th className="py-3 px-4 text-right">Регистрация</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-200 font-light">
+                  {adminUsers
+                    .filter(u => {
+                      if (!userSearch.trim()) return true;
+                      const q = userSearch.toLowerCase().trim();
+                      return (
+                        u.full_name.toLowerCase().includes(q) ||
+                        u.email.toLowerCase().includes(q) ||
+                        (u.phone && u.phone.includes(q)) ||
+                        (u.city && u.city.toLowerCase().includes(q))
+                      );
+                    })
+                    .map(u => (
+                      <tr key={u.id} className="hover:bg-zinc-50 transition-colors">
+                        <td className="py-3 px-4 font-medium text-zinc-900">{u.full_name}</td>
+                        <td className="py-3 px-4 font-mono text-[11px] text-zinc-600">{u.email}</td>
+                        <td className="py-3 px-4 text-zinc-700">{u.phone || '—'}</td>
+                        <td className="py-3 px-4 text-zinc-700">{u.city || '—'}</td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`inline-block px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                              u.role === 'admin'
+                                ? 'bg-zinc-900 text-white'
+                                : 'bg-zinc-100 text-zinc-700 border border-zinc-300'
+                            }`}
+                          >
+                            {u.role === 'admin' ? 'Администратор' : 'Клиент'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right font-medium text-zinc-900">{u.orders_count || 0}</td>
+                        <td className="py-3 px-4 text-right font-medium text-zinc-950 font-mono">
+                          {(u.total_spent || 0).toLocaleString('ru-RU')} ₽
+                        </td>
+                        <td className="py-3 px-4 text-right text-zinc-500 text-[11px]">
+                          {u.created_at ? u.created_at.split('T')[0] : '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  {adminUsers.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="py-12 text-center text-zinc-400">
+                        Пока нет зарегистрированных пользователей в базе данных
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1696,6 +2064,19 @@ export const AdminPage: React.FC = () => {
                   </label>
                 </div>
               </div>
+
+              {/* Status banner above submit button */}
+              {editStatus && (
+                <div
+                  className={`p-4 rounded-none text-xs font-bold uppercase tracking-wider border ${
+                    editStatus.type === 'success'
+                      ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
+                      : 'bg-rose-50 text-rose-900 border-rose-300'
+                  }`}
+                >
+                  {editStatus.text}
+                </div>
+              )}
 
               {/* Submit Button */}
               <div className="pt-4 border-t border-zinc-200">

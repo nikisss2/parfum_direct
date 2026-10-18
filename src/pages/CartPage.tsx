@@ -41,7 +41,7 @@ export const CartPage: React.FC = () => {
   const discountAmount = Math.round(cartTotalPrice * (discountPercent / 100));
   const finalPrice = cartTotalPrice - discountAmount;
 
-  const FREE_SHIPPING_THRESHOLD = 15000;
+  const FREE_SHIPPING_THRESHOLD = 25000;
   const remainingForGift = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotalPrice);
   const progressPercent = Math.min(100, Math.round((cartTotalPrice / FREE_SHIPPING_THRESHOLD) * 100));
   const isFreeShippingUnlocked = cartTotalPrice >= FREE_SHIPPING_THRESHOLD;
@@ -104,7 +104,7 @@ export const CartPage: React.FC = () => {
                 <div>
                   {isFreeShippingUnlocked ? (
                     <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950">
-                      🎉 Бесплатная доставка (0 ₽) активирована!
+                      🎉 Бесплатная доставка (0 ₽) активирована! (до 2 500 км от МСК)
                     </div>
                   ) : (
                     <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-900">
@@ -114,8 +114,8 @@ export const CartPage: React.FC = () => {
                   )}
                   <div className="text-[11px] text-zinc-500 mt-0.5">
                     {isFreeShippingUnlocked
-                      ? 'Доставка по РФ и СНГ за наш счет (СДЭК / Яндекс / Почта)'
-                      : 'При заказе от 15 000 ₽ доставка по РФ и СНГ бесплатна'}
+                      ? 'Доставка за наш счет СДЭК / Яндекс (до 2 500 км от склада в Москве)'
+                      : 'При заказе от 25 000 ₽ доставка бесплатна (до 2 500 км от МСК)'}
                   </div>
                 </div>
               </div>
@@ -264,7 +264,7 @@ export const CartPage: React.FC = () => {
               <div className="flex justify-between items-center text-zinc-600">
                 <span>Доставка</span>
                 <span className={isFreeShippingUnlocked ? "text-zinc-950 font-bold uppercase tracking-wider font-mono" : "text-zinc-500 font-mono"}>
-                  {isFreeShippingUnlocked ? "0 ₽ (Бесплатно)" : "от 280 ₽ (0 ₽ от 15 000 ₽)"}
+                  {isFreeShippingUnlocked ? "0 ₽ (Бесплатно)" : "от 0 ₽ (0 ₽ от 25 000 ₽)"}
                 </span>
               </div>
 
@@ -285,14 +285,14 @@ export const CartPage: React.FC = () => {
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            {/* Payment term reminder */}
+            {/* Guarantee reminder */}
             <div className="p-4 bg-white rounded-none border border-zinc-200 text-xs text-zinc-500 space-y-1.5">
               <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-zinc-900 text-[11px]">
                 <Camera className="w-3.5 h-3.5 text-zinc-900" />
-                Оплата по факту сборки
+                Фотоотчет перед отправкой
               </div>
               <p className="leading-relaxed font-light">
-                Перед оплатой мы пришлем вам подробные фото собранного заказа и флаконов в Telegram или WhatsApp.
+                Персональный менеджер пришлет вам подробные фото собранного заказа и флаконов в Telegram или WhatsApp.
               </p>
             </div>
           </div>

@@ -17,6 +17,7 @@ import {
   Gift
 } from 'lucide-react';
 import { FAQSection } from '../components/FAQSection';
+import { ORDERS_GALLERY } from '../data/ordersGalleryData';
 
 export const HomePage: React.FC = () => {
   const [hitPerfumes, setHitPerfumes] = useState<Perfume[]>([]);
@@ -175,7 +176,7 @@ export const HomePage: React.FC = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-[#A3B18A] shrink-0" />
-                  <span>Бесплатная доставка от 15 000 ₽</span>
+                  <span>Бесплатная доставка от 25 000 ₽ (до 2 500 км от МСК)</span>
                 </li>
               </ul>
             </div>
@@ -240,64 +241,46 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {[
-            {
-              src: '/assets/gallery/order-decants.jpg',
-              badge: 'Заказ №84920',
-              title: 'Сет премиальных отливантов',
-              desc: '4 флакона по 10 мл в фирменном ложементе, ручная каллиграфия с пожеланием',
-            },
-            {
-              src: '/assets/gallery/order-bottles.jpg',
-              badge: 'Фотоконтроль флаконов',
-              title: 'Проверка перед отправкой',
-              desc: 'Полноразмерные оригинальные флаконы с фиксацией состояния перед упаковкой',
-            },
-            {
-              src: '/assets/gallery/order-arabian.jpg',
-              badge: 'Заказ №84912',
-              title: 'Коллекция арабских ароматов',
-              desc: 'Флакон восточной селекции + сет дорожных спреев в крафтовом боксе с древесной стружкой',
-            },
-            {
-              src: '/assets/gallery/order-dispatch.jpg',
-              badge: 'СДЭК и курьер',
-              title: 'Бережная подготовка к отправке',
-              desc: 'Надежная многослойная защита, сургучная печать и отправка в день оформления',
-            },
-          ].map((item, idx) => (
-            <div
-              key={idx}
+          {ORDERS_GALLERY.slice(0, 4).map((item) => (
+            <Link
+              key={item.id}
+              to="/gallery"
               className="group bg-white rounded-none overflow-hidden border border-zinc-200 hover:border-black hover:shadow-xl transition-all duration-300 flex flex-col"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
                 <img
-                  src={item.src}
+                  src={item.imageUrl}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
                 <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-none font-mono">
-                  {item.badge}
+                  {item.orderNumber}
+                </span>
+                <span className="absolute bottom-3 right-3 px-2 py-0.5 bg-white/95 text-zinc-950 text-[10px] font-bold uppercase tracking-wider rounded-none font-mono shadow-xs backdrop-blur-xs">
+                  г. {item.city}
                 </span>
               </div>
               <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                 <div>
+                  <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-0.5">
+                    Заказ для {item.customerName}
+                  </div>
                   <h3 className="font-bold text-sm text-zinc-950 group-hover:underline transition-colors uppercase tracking-tight">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light">
-                    {item.desc}
+                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light line-clamp-2">
+                    {item.description}
                   </p>
                 </div>
                 <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400 font-mono">
                   <span className="flex items-center gap-1 text-black font-semibold uppercase tracking-wider text-[10px]">
                     <CheckCircle2 className="w-3.5 h-3.5" /> 100% оригинал
                   </span>
-                  <span className="text-[10px] uppercase">Клиентский заказ</span>
+                  <span className="text-[10px] uppercase text-zinc-500">{item.badge}</span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

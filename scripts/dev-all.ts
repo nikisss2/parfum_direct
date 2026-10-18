@@ -8,6 +8,10 @@ function run(cmd: string, args: string[]) {
   const child = spawn(cmd, args, {
     cwd: path.join(root, '..'),
     stdio: 'inherit',
+    env: {
+      ...process.env,
+      PATH: `/opt/homebrew/bin:/opt/homebrew/sbin:${process.env.HOME || ''}/.local/bin:${process.env.PATH || ''}`,
+    },
     shell: process.platform === 'win32',
   });
   return child;

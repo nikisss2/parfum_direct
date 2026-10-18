@@ -7,12 +7,15 @@ import { Footer } from './components/Footer';
 import { ToastContainer } from './components/Toast';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { CookieBanner } from './components/CookieBanner';
 import {
   AboutPage,
   DeliveryPage,
   HowToDecantPage,
   ContactsPage,
   PrivacyPage,
+  TermsPage,
+  OfferPage,
   FAQPage,
 } from './pages/StaticPages';
 
@@ -30,6 +33,11 @@ const OrderSuccessPage = React.lazy(() =>
 const AccountPage = React.lazy(() => import('./pages/AccountPage').then(m => ({ default: m.AccountPage })));
 const WishlistPage = React.lazy(() => import('./pages/WishlistPage').then(m => ({ default: m.WishlistPage })));
 const AdminPage = React.lazy(() => import('./pages/AdminPage').then(m => ({ default: m.AdminPage })));
+const CrmPage = React.lazy(() => import('./pages/CrmPage').then(m => ({ default: m.CrmPage })));
+const OrderTrackPage = React.lazy(() => import('./pages/OrderTrackPage').then(m => ({ default: m.OrderTrackPage })));
+const WhyCheaperPage = React.lazy(() => import('./pages/WhyCheaperPage').then(m => ({ default: m.WhyCheaperPage })));
+const GiftCertificatesPage = React.lazy(() => import('./pages/GiftCertificatesPage').then(m => ({ default: m.GiftCertificatesPage })));
+const LoyaltyPage = React.lazy(() => import('./pages/LoyaltyPage').then(m => ({ default: m.LoyaltyPage })));
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -76,12 +84,20 @@ export default function App() {
                   <Route path="/order-success/:orderNumber" element={<OrderSuccessPage />} />
                   <Route path="/account" element={<AccountPage />} />
                   <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/admin/crm" element={<CrmPage />} />
+                  <Route path="/crm" element={<CrmPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/delivery" element={<DeliveryPage />} />
                   <Route path="/how-to-decant" element={<HowToDecantPage />} />
                   <Route path="/contacts" element={<ContactsPage />} />
                   <Route path="/faq" element={<FAQPage />} />
                   <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/offer" element={<OfferPage />} />
+                  <Route path="/why-cheaper" element={<WhyCheaperPage />} />
+                  <Route path="/certificates" element={<GiftCertificatesPage />} />
+                  <Route path="/loyalty" element={<LoyaltyPage />} />
+                  <Route path="/track" element={<OrderTrackPage />} />
                   <Route path="*" element={<HomePage />} />
                 </Routes>
               </Suspense>
@@ -91,6 +107,7 @@ export default function App() {
           <Footer />
           <BackToTopButton />
           <ToastContainer />
+          <CookieBanner />
         </div>
       </ShopProvider>
     </ThemeProvider>

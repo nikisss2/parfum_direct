@@ -14,6 +14,9 @@ import {
   ChevronRight,
   Check,
   ArrowLeft,
+  Share2,
+  Plus,
+  Minus,
 } from 'lucide-react';
 
 function volumeShortLabel(vol: VolumeOption): string {
@@ -24,7 +27,7 @@ function volumeShortLabel(vol: VolumeOption): string {
 
 export const ProductPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { addToCart, isInWishlist, toggleWishlist } = useShop();
+  const { cart, addToCart, updateCartQuantity, removeFromCart, isInWishlist, toggleWishlist } = useShop();
 
   const [perfume, setPerfume] = useState<Perfume | null>(null);
   const [relatedPerfumes, setRelatedPerfumes] = useState<Perfume[]>([]);
@@ -34,6 +37,28 @@ export const ProductPage: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleShare = async () => {
+    if (!perfume) return;
+    const cleanUrl = `${window.location.origin}/#/product/${perfume.slug || perfume.id}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(cleanUrl);
+      } else {
+        const input = document.createElement('input');
+        input.value = cleanUrl;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      }
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2200);
+    } catch (e) {
+      console.warn('Share copy error:', e);
+    }
+  };
 
   // Compute unique volumes unconditionally before any early returns
   const uniqueVolumes = React.useMemo(() => {
@@ -101,6 +126,26 @@ export const ProductPage: React.FC = () => {
   const isPerfume = perfume?.kind === 'perfume';
   const pricePerMl = Math.max(1, Math.round(currentVolume.price / Math.max(currentVolume.volumeMl || 1, 1)));
 
+  const cartItemId = perfume ? `${perfume.id}-${currentVolume.type}` : '';
+  const cartItem = cart.find(item => item.id === cartItemId);
+  const inCartCount = cartItem?.quantity || 0;
+
+  const handleDecrementSticky = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!cartItemId) return;
+    if (inCartCount <= 1) {
+      removeFromCart(cartItemId);
+    } else {
+      updateCartQuantity(cartItemId, -1);
+    }
+  };
+
+  const handleIncrementSticky = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!cartItemId) return;
+    updateCartQuantity(cartItemId, 1);
+  };
+
   const handleAddToCart = () => {
     if (!perfume) return;
     addToCart(perfume, currentVolume, quantity);
@@ -160,14 +205,26 @@ export const ProductPage: React.FC = () => {
                 e.currentTarget.src = '/assets/placeholder-product.svg';
               }}
             />
-            <button
-              onClick={() => toggleWishlist(perfume.id, perfume)}
-              className={`absolute top-4 right-4 w-10 h-10 rounded-none border border-zinc-200 flex items-center justify-center transition-colors ${
-                isFavorite ? 'bg-black text-white border-black' : 'bg-white text-zinc-700 hover:border-black'
-              }`}
-            >
-              <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
-            </button>
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleShare}
+                title={copiedLink ? 'Ссылка скопирована!' : 'Поделиться короткой ссылкой'}
+                className="w-10 h-10 rounded-none border border-zinc-200 bg-white/95 text-zinc-800 hover:border-black flex items-center justify-center transition-colors shadow-xs cursor-pointer"
+              >
+                {copiedLink ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleWishlist(perfume.id, perfume)}
+                title="В избранное"
+                className={`w-10 h-10 rounded-none border border-zinc-200 flex items-center justify-center transition-colors cursor-pointer shadow-xs ${
+                  isFavorite ? 'bg-black text-white border-black' : 'bg-white/95 text-zinc-700 hover:border-black'
+                }`}
+              >
+                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -188,7 +245,7 @@ export const ProductPage: React.FC = () => {
             <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950 mt-1">{perfume.name}</h1>
             <div className="mt-3 flex items-center gap-2 text-xs font-mono">
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-zinc-900">{perfume.rating}</span>
+              <span className="font-bold text-zinc-900">{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
               <span className="text-zinc-400">({perfume.reviewsCount} отзывов)</span>
             </div>
           </div>
@@ -355,90 +412,143 @@ export const ProductPage: React.FC = () => {
       {/* Sticky Bottom Bar */}
       {showStickyBar && (
         <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/98 backdrop-blur-md border-t border-black shadow-[0_-4px_25px_rgba(0,0,0,0.12)] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 px-4 sm:px-6 animate-in slide-in-from-bottom duration-300">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
-            {/* Desktop: Product info */}
-            <div className="hidden sm:flex items-center gap-3 min-w-0">
-              <img
-                src={perfume.images[0] || '/assets/placeholder-product.svg'}
-                alt=""
-                className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-none border border-zinc-200 shrink-0"
-              />
-              <div className="min-w-0">
-                <div className="text-[10px] uppercase font-bold text-zinc-400 truncate tracking-wider">
-                  {perfume.brand}
-                </div>
-                <div className="text-xs sm:text-sm font-bold text-zinc-900 truncate">
-                  {perfume.name}
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile: Price & Selected Volume */}
-            <div className="sm:hidden flex flex-col min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] uppercase font-bold text-zinc-500 font-mono truncate">
-                  {volumeShortLabel(currentVolume)}
-                </span>
-                <span className="text-[10px] text-zinc-400">·</span>
-                <span className="text-[10px] text-emerald-600 font-mono font-bold">В наличии</span>
-              </div>
-              <div className="text-base font-black font-mono text-zinc-950 leading-tight">
-                {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
-              </div>
-            </div>
-
-            {/* Volume selector & CTA */}
-            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-              {/* Desktop volume chips */}
-              <div className="hidden md:flex items-center gap-1 bg-zinc-100 p-1 rounded-none border border-zinc-200">
-                {uniqueVolumes.map(vol => (
-                  <button
-                    key={vol.type}
-                    type="button"
-                    onClick={() => setSelectedVolume(vol)}
-                    className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-none transition-all ${
-                      currentVolume.type === vol.type
-                        ? 'bg-black text-white'
-                        : 'text-zinc-600 hover:text-black'
-                    }`}
-                  >
-                    {volumeShortLabel(vol)}
-                  </button>
-                ))}
-              </div>
-
-              {/* Mobile Volume select dropdown */}
-              <select
-                aria-label="Выбрать объём"
-                value={currentVolume.type}
-                onChange={e => {
-                  const found = uniqueVolumes.find(v => v.type === e.target.value);
-                  if (found) setSelectedVolume(found);
-                }}
-                className="md:hidden text-[11px] bg-zinc-100 border border-zinc-300 rounded-none px-2 py-2.5 font-bold uppercase tracking-wider outline-none text-zinc-900"
-              >
-                {uniqueVolumes.map(vol => (
-                  <option key={vol.type} value={vol.type}>
-                    {volumeShortLabel(vol)} — {vol.price.toLocaleString('ru-RU')} ₽
-                  </option>
-                ))}
-              </select>
-
-              <div className="text-right hidden sm:block">
-                <div className="text-sm sm:text-base font-black font-mono text-zinc-950">
+          <div className="max-w-7xl mx-auto">
+            {/* Mobile View (<640px) */}
+            <div className="flex sm:hidden items-center justify-between gap-3 w-full">
+              <div className="flex flex-col min-w-0">
+                <select
+                  aria-label="Выбрать объём"
+                  value={currentVolume.type}
+                  onChange={e => {
+                    const found = uniqueVolumes.find(v => v.type === e.target.value);
+                    if (found) setSelectedVolume(found);
+                  }}
+                  className="text-[11px] bg-zinc-100 border border-zinc-300 rounded-none px-2 py-1 font-bold uppercase tracking-wider outline-none text-zinc-900 max-w-[125px] truncate mb-0.5"
+                >
+                  {uniqueVolumes.map(vol => (
+                    <option key={vol.type} value={vol.type}>
+                      {volumeShortLabel(vol)}
+                    </option>
+                  ))}
+                </select>
+                <div className="text-base font-black font-sans text-zinc-950 leading-tight">
                   {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
                 </div>
               </div>
 
-              <button
-                onClick={handleAddToCart}
-                className={`px-5 sm:px-7 py-3 rounded-none text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-md ${
-                  addedSuccess ? 'bg-emerald-600 text-white' : 'bg-black hover:bg-zinc-800 text-white'
-                }`}
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>{addedSuccess ? 'Добавлено!' : 'В корзину'}</span>
-              </button>
+              <div className="shrink-0">
+                {inCartCount > 0 ? (
+                  <div className="h-10 border border-black bg-white flex items-center justify-between min-w-[125px]">
+                    <button
+                      type="button"
+                      onClick={handleDecrementSticky}
+                      className="w-9 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                      aria-label="Уменьшить"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="font-bold text-xs tracking-wider text-black select-none">
+                      {inCartCount} шт.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleIncrementSticky}
+                      className="w-9 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                      aria-label="Увеличить"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleAddToCart}
+                    className={`px-5 py-2.5 rounded-none text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm cursor-pointer ${
+                      addedSuccess ? 'bg-emerald-600 text-white' : 'bg-black text-white hover:bg-zinc-800'
+                    }`}
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>{addedSuccess ? 'В корзине' : 'В корзину'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Desktop View (>=640px) */}
+            <div className="hidden sm:flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <img
+                  src={perfume.images[0] || '/assets/placeholder-product.svg'}
+                  alt=""
+                  className="w-12 h-12 object-cover rounded-none border border-zinc-200 shrink-0"
+                />
+                <div className="min-w-0">
+                  <div className="text-[10px] uppercase font-bold text-zinc-400 truncate tracking-wider">
+                    {perfume.brand}
+                  </div>
+                  <div className="text-sm font-bold text-zinc-900 truncate">
+                    {perfume.name}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-none border border-zinc-200">
+                  {uniqueVolumes.map(vol => (
+                    <button
+                      key={vol.type}
+                      type="button"
+                      onClick={() => setSelectedVolume(vol)}
+                      className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-none transition-all cursor-pointer ${
+                        currentVolume.type === vol.type
+                          ? 'bg-black text-white'
+                          : 'text-zinc-600 hover:text-black'
+                      }`}
+                    >
+                      {volumeShortLabel(vol)}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="text-right">
+                  <div className="text-base font-black font-sans text-zinc-950">
+                    {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
+                  </div>
+                </div>
+
+                {inCartCount > 0 ? (
+                  <div className="h-11 border border-black bg-white flex items-center justify-between min-w-[140px]">
+                    <button
+                      type="button"
+                      onClick={handleDecrementSticky}
+                      className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                      aria-label="Уменьшить"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="font-bold text-xs tracking-wider text-black select-none">
+                      {inCartCount} шт.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleIncrementSticky}
+                      className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
+                      aria-label="Увеличить"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleAddToCart}
+                    className={`px-7 py-3 rounded-none text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-md cursor-pointer ${
+                      addedSuccess ? 'bg-emerald-600 text-white' : 'bg-black hover:bg-zinc-800 text-white'
+                    }`}
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>{addedSuccess ? 'Добавлено!' : 'В корзину'}</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

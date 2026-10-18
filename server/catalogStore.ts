@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { resolveProductImage } from './imageResolver.js';
 import { resolveNotesForProduct } from './notesData.js';
+import { applyMarkupToProduct } from './pricing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -15,6 +16,7 @@ export interface VolumeOption {
   label: string;
   volumeMl: number;
   price: number;
+  costPrice?: number;
   inStock: boolean;
 }
 
@@ -100,7 +102,8 @@ function loadFile(): CatalogFile {
     };
     const byId = new Map(main.products.map(p => [p.id, p]));
     for (const p of custom.products) {
-      byId.set(p.id, { ...p, custom: true });
+      const markedUp = applyMarkupToProduct({ ...p, custom: true });
+      byId.set(p.id, markedUp);
     }
     main.products = Array.from(byId.values());
     main.meta.count = main.products.length;
@@ -122,7 +125,7 @@ function extractVolumeOption(name: string, price: number, existing?: VolumeOptio
   }
 
   const isTester = /тестер|\(тестер\)/i.test(name) || (existing?.label ? /тестер/i.test(existing.label) : false);
-  const isDecant = (/отливант|\(отливант|пробник/i.test(name) || (existing?.label ? /отливант|пробник/i.test(existing.label) : false)) && volMl <= 30;
+  const isDecant = (/отливант|\(отливант|пробник/i.test(name) || (existing?.label ? /отливант|пробник/i.test(existing.label) : false)) && volMl <= 20;
 
   let format: 'tester' | 'decant' | 'bottle' = 'bottle';
   let label = `${volMl} ${unit}`;
@@ -143,6 +146,7 @@ function extractVolumeOption(name: string, price: number, existing?: VolumeOptio
     label,
     volumeMl: volMl,
     price: Math.round(price),
+    costPrice: existing?.costPrice,
     inStock: true,
   };
 }
@@ -174,7 +178,9 @@ export const KNOWN_HOUSES = [
   "Ojar", "Perris Monte Carlo", "Pierre Guillaume", "Plume Impression", "Ramon Monegal", "Rance 1795",
   "Reminiscence", "Simone Andreoli", "Sospiro", "Teo Cabanel", "The House of Oud", "THOO", "Une Nuit Nomade",
   "Vilhelm", "Widian", "X-Ray", "Aesop", "Yves de Sistelle", "Yves Rocher", "The 7 Virtues", "The Beautiful Mind",
-  "The Harmonist", "Parfums de Marly", "Maison 21G", "Maison Asrar", "Maison Alhambra"
+  "The Harmonist", "Parfums de Marly", "Maison 21G", "Maison Asrar", "Maison Alhambra",
+  "Louis Vuitton", "Louis Vitton", "Louis Feraud", "Louis Cardin", "Jean Paul Gaultier", "Jean Louis Scherrer",
+  "Sol de Janeiro", "Stella McCartney", "Ted Baker", "Ted Lapidus", "Tommy Hilfiger", "Urban Decay", "Vivienne Sabo"
 ];
 
 const SORTED_HOUSES = [...KNOWN_HOUSES].sort((a, b) => b.length - a.length);
@@ -188,6 +194,19 @@ export function normalizeBrand(raw: string): string {
   for (const house of SORTED_HOUSES) {
     const hLow = house.toLowerCase();
     if (lower === hLow || lower.startsWith(hLow + ' ') || lower.startsWith(hLow + "'") || lower.startsWith(hLow + '-')) {
+      if (/^louis vuitton|^louis vitton/i.test(house)) return 'Louis Vuitton';
+      if (/^louis feraud/i.test(house)) return 'Louis Feraud';
+      if (/^louis cardin/i.test(house)) return 'Louis Cardin';
+      if (/^jean paul gaultier/i.test(house)) return 'Jean Paul Gaultier';
+      if (/^jean louis scherrer/i.test(house)) return 'Jean Louis Scherrer';
+      if (/^tom ford/i.test(house)) return 'Tom Ford';
+      if (/^tommy hilfiger/i.test(house)) return 'Tommy Hilfiger';
+      if (/^sol de janeiro/i.test(house)) return 'Sol de Janeiro';
+      if (/^stella mccartney/i.test(house)) return 'Stella McCartney';
+      if (/^ted baker/i.test(house)) return 'Ted Baker';
+      if (/^ted lapidus/i.test(house)) return 'Ted Lapidus';
+      if (/^urban decay/i.test(house)) return 'Urban Decay';
+      if (/^vivienne sabo/i.test(house)) return 'Vivienne Sabo';
       if (/^kilian|^by kilian/i.test(house)) return 'Kilian';
       if (/^c\.dior|^christian dior|^dior/i.test(house)) return 'Dior';
       if (/^yves saint|^ysl/i.test(house)) return 'Yves Saint Laurent';
@@ -267,7 +286,7 @@ export function classifyProduct(p: CatalogProduct): {
 
   // 1. Check non-perfume kinds first
   if (
-    /(?:шампун|кондиционер|краска\s+для\s+волос|бальзам\s+для\s+волос|маска\s+для\s+волос|окислител|оксид|стайлинг|лак\s+для\s+волос|сыворотка\s+для\s+волос|масло\s+для\s+волос|kerastase|wella|schwarzkopf|loreal\s+prof|matrix|olaplex|redken|moroccanoil|lebel|davines|londa|dewal|bouticle|ollin|estel|concept|kapous|keune|selective|chi|tigi|goldwell|constant delight|alfaparf)/i.test(
+    /(?:шампун|кондиционер|краска|окрашиван|окраск|оттеночн|тонирующ|бальзам\s+для\s+волос|маска\s+для\s+волос|окислител|оксид|стайлинг|лак\s+для\s+волос|сыворотка\s+для\s+волос|масло\s+для\s+волос|kerastase|wella|schwarzkopf|loreal\s+prof|matrix|olaplex|redken|moroccanoil|lebel|davines|londa|dewal|bouticle|ollin|estel|concept|kapous|keune|selective|chi|tigi|goldwell|constant delight|alfaparf|kydra|revlonissimo|american\s+crew)/i.test(
       text
     )
   ) {
@@ -291,7 +310,7 @@ export function classifyProduct(p: CatalogProduct): {
     };
   }
   if (
-    /(?:крем\s+для\s+лица|сыворотк\w*\s+для\s+лица|тоник|лосьон\s+для\s+лица|маска\s+для\s+лица|скраб\s+для\s+лица|пилинг|патчи|солнцезащит|уход\s+за\s+кожей|крем\s+для\s+век|вокруг\s+глаз)/i.test(
+    /(?:cicapair|ceramidin|dr\.\s*jart|paula|aravia|крем\s+для\s+лица|сыворотк\w*\s+для\s+лица|тоник|лосьон\s+для\s+лица|маска\s+для\s+лица|скраб\s+для\s+лица|пилинг|патчи|солнцезащит|уход\s+за\s+кожей|крем\s+для\s+век|вокруг\s+глаз)/i.test(
       text
     )
   ) {
@@ -303,7 +322,7 @@ export function classifyProduct(p: CatalogProduct): {
     };
   }
   if (
-    /(?:гель\s+для\s+душа|мыло|лосьон\s+для\s+тела|крем\s+для\s+тела|скраб\s+для\s+тела|масло\s+для\s+тела|body\s+wash|shower\s+gel)/i.test(
+    /(?:gehwol|фусскрафт|fusskraft|крем\s+для\s+ног|бальзам\s+для\s+ног|гель\s+для\s+душа|мыло|лосьон\s+для\s+тела|крем\s+для\s+тела|скраб\s+для\s+тела|масло\s+для\s+тела|крем\s+для\s+рук|body\s+wash|shower\s+gel)/i.test(
       text
     )
   ) {
@@ -583,14 +602,15 @@ export function getCatalog() {
 }
 
 export function appendCustomProduct(product: CatalogProduct) {
+  const processed = applyMarkupToProduct({ ...product, custom: true });
   const cPath = customPath();
   let list: CatalogProduct[] = [];
   if (fs.existsSync(cPath)) {
     list = (JSON.parse(fs.readFileSync(cPath, 'utf-8')) as { products: CatalogProduct[] }).products;
   }
-  const idx = list.findIndex(p => p.id === product.id || p.sku === product.sku);
-  if (idx >= 0) list[idx] = product;
-  else list.push(product);
+  const idx = list.findIndex(p => p.id === processed.id || p.sku === processed.sku);
+  if (idx >= 0) list[idx] = processed;
+  else list.push(processed);
   fs.mkdirSync(path.dirname(cPath), { recursive: true });
   fs.writeFileSync(cPath, JSON.stringify({ products: list }, null, 2), 'utf-8');
   reloadCatalog();
@@ -639,7 +659,24 @@ export function queryProducts(query: ProductQuery) {
       list = list.filter(p => p.kind === query.kind);
     }
     if (query.category && query.category !== 'all') {
-      list = list.filter(p => p.category === query.category || p.kind === query.category);
+      if (query.category === 'decants' || query.category === 'decant') {
+        list = list
+          .filter(p => p.kind === 'perfume' && p.volumes?.some(v => (v.volumeMl || 0) <= 20 && (v.volumeMl || 0) >= 1))
+          .map(p => {
+            const decantVols = p.volumes.filter(v => (v.volumeMl || 0) <= 20 && (v.volumeMl || 0) >= 1);
+            const minP = Math.min(...decantVols.map(v => v.price));
+            return {
+              ...p,
+              category: 'decants',
+              categoryName: 'Распивы (до 20 мл)',
+              kindLabel: 'РАСПИВ',
+              volumes: decantVols,
+              minPrice: minP,
+            };
+          });
+      } else {
+        list = list.filter(p => p.category === query.category || p.kind === query.category);
+      }
     }
     if (query.gender && query.gender !== 'all') {
       list = list.filter(p => p.gender === query.gender);
@@ -649,7 +686,36 @@ export function queryProducts(query: ProductQuery) {
     const brandLower = brands.map(b => b.toLowerCase().trim()).filter(Boolean);
     list = list.filter(p => {
       const pb = p.brand.toLowerCase();
-      return brandLower.some(b => pb === b || pb.startsWith(b + ' ') || pb.includes(b));
+      const pn = p.name.toLowerCase();
+      return brandLower.some(b => {
+        // Direct exact or prefix match
+        if (pb === b || pb.startsWith(b + ' ') || pb.includes(b)) return true;
+        if (b.startsWith(pb + ' ') || b.includes(pb)) {
+          if (pb.length <= 4) return pn.includes(b);
+          return true;
+        }
+        // Louis Vuitton / Louis Vitton / луи виттон / луи витон / LV
+        const isLvQuery = b.includes('vuitton') || b.includes('vitton') || b === 'lv' || b.includes('виттон') || b.includes('витон');
+        const isLvProduct = pb.includes('vuitton') || pb.includes('vitton') || pn.includes('vuitton') || pn.includes('vitton');
+        if (isLvQuery && isLvProduct) return true;
+
+        // Yves Saint Laurent / YSL
+        const isYslQuery = b.includes('ysl') || b.includes('yves saint laurent');
+        const isYslProduct = pb.includes('yves saint laurent') || pn.includes('yves saint laurent') || /\bysl\b/i.test(pn);
+        if (isYslQuery && isYslProduct) return true;
+
+        // Dolce & Gabbana / D&G
+        const isDgQuery = b.includes('d&g') || b.includes('dolce');
+        const isDgProduct = pb.includes('dolce') || pn.includes('dolce');
+        if (isDgQuery && isDgProduct) return true;
+
+        // Tom Ford
+        const isTfQuery = b.includes('tom ford');
+        const isTfProduct = pb.includes('tom ford') || pn.includes('tom ford');
+        if (isTfQuery && isTfProduct) return true;
+
+        return false;
+      });
     });
   }
   if (query.notes && query.notes.length) {
@@ -682,7 +748,10 @@ const TRANSLIT_DICT: Record<string, string[]> = {
   брайт: ['bright'],
   кристал: ['crystal'],
   кристалл: ['crystal'],
-  абсолю: ['absolu'],
+  луи: ['louis'],
+  виттон: ['vuitton', 'vitton'],
+  витон: ['vuitton', 'vitton'],
+  вуиттон: ['vuitton', 'vitton'],
   том: ['tom'],
   форд: ['ford'],
   лост: ['lost'],
@@ -840,12 +909,21 @@ export function toListItem(p: CatalogProduct) {
     image,
     isHit: p.isHit,
     isNew: p.isNew,
-    rating: p.rating,
+    rating: formatStrictRating(p.rating, p.id),
     reviewsCount: p.reviewsCount,
     volumes: p.volumes,
     notes: p.notes,
     allNotes: p.allNotes,
   };
+}
+
+function formatStrictRating(rating?: number, id?: string): number {
+  if (rating && rating >= 4.8 && rating <= 5.0) {
+    return Math.round(rating * 10) / 10;
+  }
+  const charCode = (id || 'm').charCodeAt((id || 'm').length - 1) || 0;
+  const options = [4.8, 4.9, 5.0, 4.9, 5.0, 4.8];
+  return options[charCode % options.length];
 }
 
 const JUNK_BRAND_FILTER = /(?:^бренд$|^другое$|распродажа|ограниченное|специальные|тестер|пробник|уценка|скидк|акци|ликвидац|дисконт|воск|индивидуальная|парфюмерия|расходные|честный|!!!|\?\?\?)/i;
@@ -858,8 +936,16 @@ export function searchBrands(opts: { q?: string; kind?: ProductKind; limit?: num
 
   for (const p of products) {
     if (opts.kind && p.kind !== opts.kind) continue;
-    if (!p.brand || JUNK_BRAND_FILTER.test(p.brand.trim()) || p.brand.trim().length < 2) continue;
-    if (q && !p.brand.toLowerCase().includes(q)) continue;
+    if (q) {
+      const qLower = q.toLowerCase();
+      const bLower = p.brand.toLowerCase();
+      const matchesDirect = bLower.includes(qLower);
+      const isLvSearch = qLower.includes('vitton') || qLower.includes('vuitton') || qLower.includes('виттон') || qLower.includes('витон') || qLower.includes('луи');
+      const isLvBrand = bLower.includes('vuitton') || bLower.includes('vitton');
+      if (!matchesDirect && !(isLvSearch && isLvBrand)) {
+        continue;
+      }
+    }
     counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1);
   }
 

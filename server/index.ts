@@ -3,7 +3,7 @@ import compression from 'compression';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { createHash } from 'crypto';
+import { createHash, timingSafeEqual } from 'crypto';
 import {
   appendCustomProduct,
   deleteCustomProduct,
@@ -22,22 +22,233 @@ import {
   sendTelegramMessage,
   sendOrderNotification,
 } from './telegramNotifier.js';
+import { startTelegramBot } from './telegramBot.js';
+
+import {
+  registerUser,
+  loginUser,
+  validateSession,
+  destroySession,
+  updateUserProfile,
+  toClientUser,
+  createOrderInDb,
+  getUserOrdersFromDb,
+  getAllOrdersFromDb,
+  updateOrderStatusInDb,
+  deleteOrderInDb,
+  getAllUsersForAdmin,
+  getAdminStats,
+  getSecurityAudit,
+  ensureAdminAccount,
+  findOrderForTracking,
+  getOrCreateBonusCard,
+  addBonusPoints,
+  useBonusPoints,
+  exportOrdersToCsv,
+  changeUserPasswordInDb,
+  getUserCartFromDb,
+  saveUserCartInDb,
+  exportUserDataInDb,
+  deleteUserAccountInDb,
+} from './db.js';
+import { syncOrderToSpreadsheets, triggerExcelUpdate, GOOGLE_SHEET_URL } from './sheetsSync.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || process.env.API_PORT || 3001);
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'parfum-admin-change-me';
 
 const app = express();
+
+// Trust reverse proxies (Nginx / Cloudflare / Caddy)
+app.set('trust proxy', 1);
+
+// Disable Express fingerprinting
+app.disable('x-powered-by');
+
 app.set('etag', 'strong');
 app.use(compression({ level: 6 }));
+
+// OWASP Security Headers Middleware
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; media-src 'self' blob:; object-src 'none'; frame-ancestors 'self';"
+  );
+  next();
+});
+
+// JSON body parser with limit
 app.use(express.json({ limit: '15mb' }));
 
+// Input sanitization against XSS & Prototype Pollution
+function sanitizeInput(req: express.Request, _res: express.Response, next: express.NextFunction) {
+  function sanitizeValue(val: any): any {
+    if (typeof val === 'string') {
+      return val
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/javascript:[^\s"']*/gi, '')
+        .replace(/onerror\s*=\s*['"][^'"]*['"]/gi, '')
+        .replace(/onload\s*=\s*['"][^'"]*['"]/gi, '');
+    }
+    if (Array.isArray(val)) {
+      return val.map(sanitizeValue);
+    }
+    if (val !== null && typeof val === 'object') {
+      const cleanObj: Record<string, any> = {};
+      for (const [k, v] of Object.entries(val)) {
+        if (k === '__proto__' || k === 'constructor' || k === 'prototype') {
+          continue;
+        }
+        cleanObj[k] = sanitizeValue(v);
+      }
+      return cleanObj;
+    }
+    return val;
+  }
+
+  if (req.body && typeof req.body === 'object') {
+    req.body = sanitizeValue(req.body);
+  }
+  if (req.query && typeof req.query === 'object') {
+    req.query = sanitizeValue(req.query);
+  }
+  if (req.params && typeof req.params === 'object') {
+    req.params = sanitizeValue(req.params);
+  }
+  next();
+}
+app.use(sanitizeInput);
+
+// ============================================================================
+// DDoS И BRUTE-FORCE ЗАЩИТА (RATE LIMITING С АВТОМАТИЧЕСКИМ СБРОСОМ)
+// ============================================================================
+function createRateLimiter(options: {
+  windowMs: number;
+  maxRequests: number;
+  message?: string;
+  keyPrefix?: string;
+}) {
+  const hits = new Map<string, { count: number; expiresAt: number }>();
+
+  const interval = setInterval(() => {
+    const now = Date.now();
+    for (const [key, record] of hits.entries()) {
+      if (record.expiresAt <= now) {
+        hits.delete(key);
+      }
+    }
+  }, 120_000);
+  interval.unref();
+
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const rawIp =
+      (req.headers['cf-connecting-ip'] as string) ||
+      (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+      req.socket.remoteAddress ||
+      'unknown-ip';
+    const key = `${options.keyPrefix || 'rl'}:${rawIp}`;
+    const now = Date.now();
+
+    let record = hits.get(key);
+    if (!record || record.expiresAt <= now) {
+      record = { count: 1, expiresAt: now + options.windowMs };
+      hits.set(key, record);
+    } else {
+      record.count += 1;
+    }
+
+    const remaining = Math.max(0, options.maxRequests - record.count);
+    const resetSec = Math.ceil((record.expiresAt - now) / 1000);
+
+    res.setHeader('X-RateLimit-Limit', options.maxRequests);
+    res.setHeader('X-RateLimit-Remaining', remaining);
+    res.setHeader('X-RateLimit-Reset', resetSec);
+
+    if (record.count > options.maxRequests) {
+      res.setHeader('Retry-After', resetSec);
+      res.status(429).json({
+        ok: false,
+        error: options.message || 'Слишком много запросов. Пожалуйста, подождите немного перед повторной попыткой.',
+        retryAfter: resetSec,
+      });
+      return;
+    }
+
+    next();
+  };
+}
+
+const globalApiLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 300,
+  keyPrefix: 'global',
+  message: 'Превышен лимит запросов к сайту (DDoS защита). Подождите 60 секунд.',
+});
+
+export const authLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 10,
+  keyPrefix: 'auth',
+  message: 'Слишком много попыток входа/регистрации. В целях безопасности доступ временно ограничен на 1 минуту.',
+});
+
+export const orderLimiter = createRateLimiter({
+  windowMs: 5 * 60 * 1000,
+  maxRequests: 10,
+  keyPrefix: 'orders',
+  message: 'Слишком частые заказы. Пожалуйста, подождите несколько минут или оформите в Telegram.',
+});
+
+app.use('/api', globalApiLimiter);
+
+// Constant-time string comparison to prevent timing attacks
+function safeCompareStrings(a: string | undefined, b: string | undefined): boolean {
+  if (!a || !b) return false;
+  try {
+    const hashA = createHash('sha256').update(a).digest();
+    const hashB = createHash('sha256').update(b).digest();
+    return timingSafeEqual(hashA, hashB);
+  } catch {
+    return false;
+  }
+}
+
 function authAdmin(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const token = req.headers['x-admin-token'] || req.headers.authorization?.replace(/^Bearer\s+/i, '');
-  if (token !== ADMIN_TOKEN) {
-    res.status(401).json({ error: 'Unauthorized' });
+  const token = (req.headers['x-admin-token'] ||
+    req.headers.authorization?.replace(/^Bearer\s+/i, '') ||
+    req.headers['x-auth-token']) as string | undefined;
+
+  if (safeCompareStrings(token, ADMIN_TOKEN)) {
+    return next();
+  }
+  if (token) {
+    const user = validateSession(token);
+    if (user && user.role === 'admin') {
+      (req as any).user = user;
+      return next();
+    }
+  }
+  res.status(401).json({ error: 'Unauthorized: требуется доступ администратора' });
+}
+
+function authUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
+  if (!token) {
+    res.status(401).json({ error: 'Необходима авторизация' });
     return;
   }
+  const user = validateSession(token);
+  if (!user) {
+    res.status(401).json({ error: 'Сессия истекла или недействительна' });
+    return;
+  }
+  (req as any).user = user;
   next();
 }
 
@@ -52,8 +263,9 @@ app.get('/api/meta', (_req, res) => {
 });
 
 app.get('/api/products', (req, res) => {
-  const brands = req.query.brands
-    ? String(req.query.brands)
+  const brandsParam = req.query.brands || req.query.brand;
+  const brands = brandsParam
+    ? String(brandsParam)
         .split(',')
         .map(s => s.trim())
         .filter(Boolean)
@@ -265,6 +477,14 @@ app.put('/api/admin/products/:id', authAdmin, (req, res) => {
       const filePath = path.join(__dirname, '..', 'public', 'assets', 'products', filename);
       fs.mkdirSync(path.dirname(filePath), { recursive: true });
       fs.writeFileSync(filePath, Buffer.from(match[2], 'base64'));
+
+      // Also mirror to dist if exists
+      const distDir = path.join(__dirname, '..', 'dist', 'assets', 'products');
+      if (fs.existsSync(path.join(__dirname, '..', 'dist'))) {
+        fs.mkdirSync(distDir, { recursive: true });
+        fs.writeFileSync(path.join(distDir, filename), Buffer.from(match[2], 'base64'));
+      }
+
       const uploadedUrl = `/assets/products/${filename}`;
       finalImages = [uploadedUrl, ...finalImages.filter(img => img !== uploadedUrl)];
     }
@@ -332,6 +552,13 @@ app.post('/api/admin/products/:id/image', authAdmin, (req, res) => {
     const filePath = path.join(__dirname, '..', 'public', 'assets', 'products', filename);
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, Buffer.from(match[2], 'base64'));
+
+    const distDir = path.join(__dirname, '..', 'dist', 'assets', 'products');
+    if (fs.existsSync(path.join(__dirname, '..', 'dist'))) {
+      fs.mkdirSync(distDir, { recursive: true });
+      fs.writeFileSync(path.join(distDir, filename), Buffer.from(match[2], 'base64'));
+    }
+
     finalUrl = `/assets/products/${filename}`;
   } else if (imageUrl && typeof imageUrl === 'string' && imageUrl.trim()) {
     finalUrl = imageUrl.trim();
@@ -378,13 +605,355 @@ app.post('/api/admin/telegram-test', authAdmin, async (_req, res) => {
   res.json({ ok: true });
 });
 
-app.post('/api/orders/notify-telegram', async (req, res) => {
+// ============================================================================
+// БЕЗОПАСНАЯ АВТОРИЗАЦИЯ, ЛИЧНЫЙ КАБИНЕТ И СЕССИИ (SQLITE)
+// ============================================================================
+
+app.post('/api/auth/register', authLimiter, (req, res) => {
+  try {
+    const result = registerUser(req.body || {});
+    res.status(201).json({ ok: true, ...result });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка регистрации' });
+  }
+});
+
+app.post('/api/auth/login', authLimiter, (req, res) => {
+  try {
+    const clientIp = ((req.headers['x-forwarded-for'] as string)?.split(',')[0].trim() || req.ip || '') as string;
+    const { email, password } = req.body || {};
+    if (!email || !password) {
+      res.status(400).json({ ok: false, error: 'Укажите email и пароль' });
+      return;
+    }
+    const result = loginUser(email, password, clientIp);
+    res.json({ ok: true, ...result });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка входа' });
+  }
+});
+
+app.get('/api/auth/me', (req, res) => {
+  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string;
+  if (!token) {
+    res.status(401).json({ ok: false, error: 'Не авторизован' });
+    return;
+  }
+  const user = validateSession(token);
+  if (!user) {
+    res.status(401).json({ ok: false, error: 'Сессия истекла' });
+    return;
+  }
+  res.json({ ok: true, user: toClientUser(user) });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string;
+  if (token) destroySession(token);
+  res.json({ ok: true });
+});
+
+app.put('/api/auth/profile', authUser, (req, res) => {
+  try {
+    const updated = updateUserProfile((req as any).user.id, req.body || {});
+    res.json({ ok: true, user: updated });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/auth/change-password', authUser, (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body || {};
+    if (!oldPassword || !newPassword) {
+      res.status(400).json({ ok: false, error: 'Укажите текущий и новый пароль' });
+      return;
+    }
+    changeUserPasswordInDb((req as any).user.id, oldPassword, newPassword);
+    res.json({ ok: true, message: 'Пароль успешно изменен' });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка смены пароля' });
+  }
+});
+
+// Cart per-account sync
+app.get('/api/user/cart', authUser, (req, res) => {
+  try {
+    const cart = getUserCartFromDb((req as any).user.id);
+    res.json({ ok: true, cart });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message });
+  }
+});
+
+app.put('/api/user/cart', authUser, (req, res) => {
+  try {
+    const { cart } = req.body || {};
+    saveUserCartInDb((req as any).user.id, cart || []);
+    res.json({ ok: true });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message });
+  }
+});
+
+// 152-ФЗ и GDPR: Выгрузка персональных данных (Право на доступ)
+app.get('/api/user/export-data', authUser, (req, res) => {
+  try {
+    const data = exportUserDataInDb((req as any).user.id);
+    res.setHeader('Content-Disposition', 'attachment; filename="maison-arome-user-data.json"');
+    res.json({ ok: true, data });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка выгрузки данных' });
+  }
+});
+
+// 152-ФЗ и GDPR: Удаление персональных данных и отзыв согласия (ст. 21 152-ФЗ)
+app.post('/api/user/delete-account', authUser, (req, res) => {
+  try {
+    const result = deleteUserAccountInDb((req as any).user.id);
+    res.json({ ok: true, ...result });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка удаления аккаунта' });
+  }
+});
+
+// ============================================================================
+// ЗАКАЗЫ: СОХРАНЕНИЕ В СЕРВЕРНУЮ БД И ИСТОРИЯ
+// ============================================================================
+
+app.post('/api/orders', orderLimiter, async (req, res) => {
+  try {
+    const orderData = req.body;
+    if (!orderData || !orderData.items?.length) {
+      res.status(400).json({ ok: false, error: 'Корзина пуста' });
+      return;
+    }
+
+    // Если есть токен авторизации, привязываем заказ к аккаунту
+    const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
+    let userId = orderData.userId;
+    if (token) {
+      const sessionUser = validateSession(token);
+      if (sessionUser) {
+        userId = sessionUser.id;
+      }
+    }
+
+    const created = createOrderInDb({
+      ...orderData,
+      userId,
+    });
+
+    // Автоматическое списание баллов при наличии
+    if (userId && Number(orderData.bonusPointsUsed) > 0) {
+      try {
+        useBonusPoints(userId, Number(orderData.bonusPointsUsed), created.id);
+      } catch (e) {
+        console.error('Ошибка списания бонусов при заказе:', e);
+      }
+    }
+
+    // Автоматическая запись заказа в Excel (.xlsx) и Google Sheets
+    syncOrderToSpreadsheets(created).catch(e => console.warn('Spreadsheet sync error:', e));
+
+    // Отправляем мгновенное уведомление в Telegram менеджеру
+    try {
+      await sendOrderNotification(created);
+    } catch (e) {
+      console.error('Ошибка отправки уведомления в Telegram:', e);
+    }
+
+    res.status(201).json({ ok: true, order: created });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка оформления заказа' });
+  }
+});
+
+app.get('/api/user/orders', (req, res) => {
+  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
+  const user = token ? validateSession(token) : null;
+  const email = (req.query.email as string) || user?.email;
+  const userId = user?.id || (req.query.userId as string);
+
+  if (!userId && !email) {
+    res.json({ ok: true, orders: [] });
+    return;
+  }
+  const orders = getUserOrdersFromDb(userId, email);
+  res.json({ ok: true, orders });
+});
+
+// Публичный трекер заказов для клиентов (автоматизация отслеживания)
+app.get('/api/orders/track', (req, res) => {
+  const q = (req.query.q as string || '').trim();
+  if (!q) {
+    res.status(400).json({ ok: false, error: 'Укажите номер заказа или телефон' });
+    return;
+  }
+  const order = findOrderForTracking(q);
+  if (!order) {
+    res.status(404).json({ ok: false, error: 'Заказ не найден. Проверьте номер или свяжитесь с менеджером в Telegram: @nikisss2' });
+    return;
+  }
+  res.json({
+    ok: true,
+    order: {
+      orderNumber: order.orderNumber,
+      date: order.date,
+      createdAt: order.createdAt,
+      status: order.status,
+      statusLabel: order.statusLabel,
+      trackingNumber: order.trackingNumber,
+      deliveryMethod: order.deliveryMethod,
+      deliveryPrice: order.deliveryPrice,
+      totalAmount: order.totalAmount,
+      itemsCount: order.items?.length || 0,
+      items: order.items?.map((it: any) => ({
+        name: it.name,
+        brand: it.brand,
+        volumeLabel: it.volumeLabel,
+        quantity: it.quantity,
+        price: it.price,
+      })),
+      city: order.recipient?.city,
+      address: order.recipient?.address,
+      recipientName: order.recipient?.fullName?.split(' ')[0] || 'Покупатель',
+    },
+  });
+});
+
+// ============================================================================
+// АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ ЗАКАЗАМИ, ПОЛЬЗОВАТЕЛЯМИ И АНАЛИТИКА
+// ============================================================================
+
+app.get('/api/admin/orders', authAdmin, (req, res) => {
+  const limit = Number(req.query.limit) || 200;
+  const status = req.query.status as string | undefined;
+  const orders = getAllOrdersFromDb(limit, status);
+  res.json({ ok: true, orders });
+});
+
+app.put('/api/admin/orders/:id/status', authAdmin, (req, res) => {
+  try {
+    const { status, trackingNumber } = req.body || {};
+    const updated = updateOrderStatusInDb(req.params.id, status, trackingNumber);
+    // Keep Excel spreadsheet in sync with order status
+    triggerExcelUpdate();
+    res.json({ ok: true, order: updated });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message });
+  }
+});
+
+app.delete('/api/admin/orders/:id', authAdmin, (req, res) => {
+  const ok = deleteOrderInDb(req.params.id);
+  if (ok) triggerExcelUpdate();
+  res.json({ ok });
+});
+
+app.get('/api/admin/users', authAdmin, (_req, res) => {
+  const users = getAllUsersForAdmin();
+  res.json({ ok: true, users });
+});
+
+app.get('/api/admin/stats', authAdmin, (_req, res) => {
+  const stats = getAdminStats();
+  res.json({ ok: true, stats });
+});
+
+app.get('/api/admin/audit', authAdmin, (_req, res) => {
+  const audit = getSecurityAudit();
+  res.json({ ok: true, audit });
+});
+
+app.post('/api/admin/orders', authAdmin, async (req, res) => {
+  try {
+    const orderData = req.body;
+    if (!orderData || !orderData.items || !orderData.recipient) {
+      res.status(400).json({ ok: false, error: 'Необходимо указать позиции и получателя' });
+      return;
+    }
+    const created = createOrderInDb(orderData);
+    syncOrderToSpreadsheets(created).catch(() => {});
+    res.status(201).json({ ok: true, order: created });
+  } catch (err: any) {
+    res.status(400).json({ ok: false, error: err.message || 'Ошибка создания заказа' });
+  }
+});
+
+app.post('/api/orders/notify-telegram', orderLimiter, async (req, res) => {
   const order = req.body;
   if (!order) {
     res.status(400).json({ error: 'Order body required' });
     return;
   }
   const result = await sendOrderNotification(order);
+  res.json(result);
+});
+
+// Экспорт базы заказов в CSV / Excel для Google Таблиц
+app.get('/api/orders/export-csv', (req, res) => {
+  const token = (req.query.token as string) || (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
+  if (token) {
+    const user = validateSession(token);
+    if (!user || user.role !== 'admin') {
+      res.status(403).json({ ok: false, error: 'Доступ разрешен только администратору' });
+      return;
+    }
+  }
+  try {
+    const csvData = exportOrdersToCsv();
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="maison_arome_orders.csv"');
+    res.send(csvData);
+  } catch (err: any) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Скачать готовый файл Excel (.xlsx) с 4 листами и формулами
+app.get('/api/orders/download-xlsx', (req, res) => {
+  const xlsxPath = path.resolve(__dirname, '..', 'Таблица_Заказов_Maison_Arome.xlsx');
+  if (fs.existsSync(xlsxPath)) {
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="Таблица_Заказов_Maison_Arome.xlsx"');
+    res.sendFile(xlsxPath);
+  } else {
+    res.status(404).json({ ok: false, error: 'Файл Excel еще не создан' });
+  }
+});
+
+// Бонусная программа и виртуальная карта
+app.get('/api/loyalty/card', (req, res) => {
+  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
+  const user = token ? validateSession(token) : null;
+  const userId = user?.id || (req.query.userId as string);
+  if (!userId) {
+    res.status(401).json({ ok: false, error: 'Требуется авторизация' });
+    return;
+  }
+  const card = getOrCreateBonusCard(userId);
+  res.json({
+    ok: true,
+    card,
+    cardNumber: card.card_number,
+    points: card.balance,
+    tier: card.tier,
+    cashbackPercent: card.cashback_percent,
+    totalSpent: card.total_spent,
+  });
+});
+
+app.post('/api/loyalty/use', (req, res) => {
+  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
+  const user = token ? validateSession(token) : null;
+  const userId = user?.id || req.body?.userId;
+  if (!userId) {
+    res.status(401).json({ ok: false, error: 'Требуется авторизация' });
+    return;
+  }
+  const { amount, orderId } = req.body || {};
+  const result = useBonusPoints(userId, Number(amount) || 0, orderId);
   res.json(result);
 });
 
@@ -437,6 +1006,8 @@ app.get('*', (req, res, next) => {
 
 app.listen(PORT, () => {
   reloadCatalog();
+  ensureAdminAccount();
+  startTelegramBot();
   const { meta } = getCatalog();
   console.log(`API http://localhost:${PORT} — товаров: ${meta.count}`);
 });
