@@ -23,10 +23,16 @@ apt-get install -y nodejs git nginx certbot python3-certbot-nginx ufw
 npm install -g pm2
 
 # 4. Скачивание и сборка сайта
-echo "📥 Скачивание сайта из GitHub..."
-rm -rf /var/www/maison
-git clone https://github.com/nikisss2/parfum_direct.git /var/www/maison
-cd /var/www/maison
+if [ -d "/var/www/maison/.git" ]; then
+    echo "📥 Репозиторий уже скачан, обновляем..."
+    cd /var/www/maison
+    git pull
+else
+    echo "📥 Скачивание сайта из GitHub..."
+    mkdir -p /var/www
+    git clone https://github.com/nikisss2/parfum_direct.git /var/www/maison
+    cd /var/www/maison
+fi
 
 echo "🔨 Сборка проекта..."
 npm install
