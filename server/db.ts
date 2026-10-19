@@ -14,7 +14,10 @@ if (!fs.existsSync(DATA_DIR)) {
 const DB_PATH = path.join(DATA_DIR, 'maison.db');
 
 // Инициализация базы данных SQLite с включенным WAL-режимом для высокой скорости и защиты от сбоев
-const sqlite = new DatabaseSync(DB_PATH);
+export const sqlite = new DatabaseSync(DB_PATH);
+export function getDbInstance(): DatabaseSync {
+  return sqlite;
+}
 
 // Настройки безопасности и производительности SQLite
 sqlite.exec(`
@@ -389,7 +392,7 @@ export function registerUser(data: {
     cleanEmail,
     hash,
     salt,
-    data.fullName.trim() || cleanEmail.split('@')[0],
+    (data.fullName?.trim()) || cleanEmail.split('@')[0],
     data.phone?.trim() || '',
     data.city?.trim() || 'Москва',
     data.address?.trim() || '',
@@ -916,16 +919,22 @@ export function getOrCreateBonusCard(userId: string): DbBonusCard {
   const getStmt = sqlite.prepare('SELECT * FROM bonus_cards WHERE user_id = ?');
   let card = getStmt.get(userId) as any;
 
-  // Determine loyalty tier by order count: >= 15 is VIP (10%), >= 5 is Постоянный (7%), else Базовый (5%)
+  // Determine loyalty tier by order count & total spent:
+  // Platinum: >= 15 orders or >= 50 000 ₽ (10% cashback)
+  // Gold: >= 5 orders or >= 20 000 ₽ (7% cashback)
+  // Silver: base tier (5% cashback)
   const orderCountRow = sqlite.prepare("SELECT COUNT(*) as cnt FROM orders WHERE user_id = ? AND status != 'cancelled'").get(userId) as any;
-  const orderCount = orderCountRow?.cnt || 0;
+  const orderCount = Number(orderCountRow?.cnt || 0);
+
+  const spentRow = sqlite.prepare("SELECT COALESCE(SUM(total_amount), 0) as total FROM orders WHERE user_id = ? AND status != 'cancelled'").get(userId) as any;
+  const totalSpent = Number(spentRow?.total || 0);
 
   let currentTier: 'Silver' | 'Gold' | 'Platinum' = 'Silver';
   let currentCashback = 5;
-  if (orderCount >= 15) {
+  if (orderCount >= 15 || totalSpent >= 50000) {
     currentTier = 'Platinum';
     currentCashback = 10;
-  } else if (orderCount >= 5) {
+  } else if (orderCount >= 5 || totalSpent >= 20000) {
     currentTier = 'Gold';
     currentCashback = 7;
   }
@@ -940,8 +949,8 @@ export function getOrCreateBonusCard(userId: string): DbBonusCard {
 
     sqlite.prepare(`
       INSERT INTO bonus_cards (id, user_id, card_number, balance, tier, cashback_percent, total_spent, created_at, updated_at)
-      VALUES (?, ?, ?, 500, ?, ?, 0, ?, ?)
-    `).run(cardId, userId, cardNumber, currentTier, currentCashback, now, now);
+      VALUES (?, ?, ?, 500, ?, ?, ?, ?, ?)
+    `).run(cardId, userId, cardNumber, currentTier, currentCashback, totalSpent, now, now);
 
     sqlite.prepare(`
       INSERT INTO bonus_transactions (id, card_id, amount, type, reason, created_at)
@@ -949,20 +958,24 @@ export function getOrCreateBonusCard(userId: string): DbBonusCard {
     `).run('tx_' + crypto.randomBytes(6).toString('hex'), cardId, now);
 
     card = getStmt.get(userId) as any;
-  } else if (card.tier !== currentTier || card.cashback_percent !== currentCashback) {
-    // Keep tier in sync with order count
+  } else {
+    // Keep tier, cashback, and total_spent in sync
     sqlite.prepare(`
       UPDATE bonus_cards
-      SET tier = ?, cashback_percent = ?, updated_at = ?
+      SET tier = ?, cashback_percent = ?, total_spent = ?, updated_at = ?
       WHERE id = ?
-    `).run(currentTier, currentCashback, new Date().toISOString(), card.id);
+    `).run(currentTier, currentCashback, totalSpent, new Date().toISOString(), card.id);
     card.tier = currentTier;
     card.cashback_percent = currentCashback;
+    card.total_spent = totalSpent;
   }
 
   const txs = sqlite.prepare('SELECT * FROM bonus_transactions WHERE card_id = ? ORDER BY created_at DESC LIMIT 20').all(card.id) as any[];
   return {
     ...card,
+    balance: Number(card.balance ?? 500),
+    order_count: orderCount,
+    total_spent: totalSpent,
     transactions: txs,
   };
 }

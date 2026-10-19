@@ -442,7 +442,7 @@ ${itemsFormatted}
 
 💵 Товары: ${cartTotalPrice.toLocaleString('ru-RU')} ₽
 ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('ru-RU')} ₽\n` : ''}${appliedBonusPoints > 0 ? `💎 Списание бонусов: -${appliedBonusPoints.toLocaleString('ru-RU')} ₽\n` : ''}🚚 Доставка: ${isFreeShipping ? '0 ₽ (Бесплатно от 25 000 ₽)' : 'от 0 ₽ (по тарифам ТК, склад в Москве)'}
-${isFreeShipping ? '🎁 Подарок: Фирменный тревел-атомайзер 10 мл + 2 семпла (0 ₽)\n' : ''}💰 ИТОГО: ${finalTotal.toLocaleString('ru-RU')} ₽
+💰 ИТОГО: ${finalTotal.toLocaleString('ru-RU')} ₽
 
 Прошу подтвердить наличие позиций, выслать фото флаконов перед отправкой и направить реквизиты для оплаты.`;
 

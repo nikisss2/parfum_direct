@@ -68,7 +68,16 @@ export const AccountPage: React.FC = () => {
       fetch(`/api/loyalty/card?userId=${encodeURIComponent(user.id)}`)
         .then(r => r.json())
         .then(data => {
-          if (data && data.cardNumber) setBonusCard(data);
+          if (data && (data.cardNumber || data.card?.card_number)) {
+            const rawCard = data.card || {};
+            setBonusCard({
+              cardNumber: data.cardNumber || rawCard.card_number || 'MA-••••-••••',
+              balance: Number(data.balance ?? data.points ?? rawCard.balance ?? 500),
+              tier: data.tier || rawCard.tier || 'Silver',
+              cashbackPercent: data.cashbackPercent || rawCard.cashback_percent || 5,
+              total_spent: data.totalSpent ?? rawCard.total_spent ?? 0,
+            });
+          }
         })
         .catch(() => {});
     }
@@ -215,17 +224,18 @@ export const AccountPage: React.FC = () => {
       }
 
       if (authMode === 'register') {
-        if (!authName.trim()) throw new Error('Укажите ваше имя');
+        const cleanEmail = authEmail.trim();
+        const derivedName = authName.trim() || cleanEmail.split('@')[0];
         await register({
-          email: authEmail,
+          email: cleanEmail,
           password: authPassword,
-          fullName: authName,
-          phone: authPhone,
-          city: authCity,
-          address: authAddress,
+          fullName: derivedName,
+          phone: authPhone.trim(),
+          city: authCity.trim() || 'Москва',
+          address: authAddress.trim(),
         });
       } else {
-        await login(authEmail, authPassword);
+        await login(authEmail.trim(), authPassword);
       }
     } catch (err: any) {
       setAuthError(err.message || 'Ошибка авторизации');
@@ -313,11 +323,10 @@ export const AccountPage: React.FC = () => {
             {authMode === 'register' && (
               <>
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1.5">Имя и Фамилия *</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1.5">Имя (необязательно)</label>
                   <input
                     type="text"
-                    required
-                    placeholder="Екатерина Смирнова"
+                    placeholder="Екатерина (необязательно)"
                     value={authName}
                     onChange={e => setAuthName(e.target.value)}
                     className="w-full text-xs px-3.5 py-3 rounded-none border border-zinc-300 outline-none focus:border-black transition-colors"
@@ -360,12 +369,12 @@ export const AccountPage: React.FC = () => {
 
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-700 mb-1.5">
-                {authMode === 'login' ? 'Email или логин *' : 'Email *'}
+                Email *
               </label>
               <input
-                type={authMode === 'login' ? 'text' : 'email'}
+                type="email"
                 required
-                placeholder={authMode === 'login' ? 'name@example.com или логин' : 'name@example.com'}
+                placeholder="name@example.com"
                 value={authEmail}
                 onChange={e => setAuthEmail(e.target.value)}
                 className="w-full text-xs px-3.5 py-3 rounded-none border border-zinc-300 outline-none focus:border-black transition-colors"
@@ -583,7 +592,7 @@ export const AccountPage: React.FC = () => {
           }`}
         >
           <CreditCard className="w-4 h-4 text-amber-500" />
-          <span>Бонусная карта ({bonusCard ? `${bonusCard.balance} ₽` : '500 ₽'})</span>
+          <span>Бонусная карта ({Number(bonusCard?.balance ?? 500).toLocaleString('ru-RU')} ₽)</span>
         </button>
       </div>
 

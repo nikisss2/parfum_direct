@@ -131,7 +131,10 @@ export const Footer: React.FC = () => {
                 <a href="mailto:order@maisonarome.ru" className="hover:text-white">order@maisonarome.ru</a>
               </div>
               <div className="text-[11px] text-zinc-400 pt-1">
-                Склад в Москве · Доставка по РФ от 50 ₽
+                Склад в Москве · Доставка по РФ от 0 ₽
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono pt-0.5">
+                ИНН: 667221490551
               </div>
             </div>
           </div>
@@ -157,7 +160,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
-          <div>© {new Date().getFullYear()} Maison Arôme. Все права защищены. 100% оригинальная парфюмерия.</div>
+          <div>© {new Date().getFullYear()} Maison Arôme. ИНН 667221490551. Все права защищены. 100% оригинальная парфюмерия.</div>
           <div className="flex flex-wrap items-center gap-3">
             <Link to="/terms" className="hover:text-zinc-300">Пользовательское соглашение</Link>
             <span>·</span>

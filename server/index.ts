@@ -937,10 +937,12 @@ app.get('/api/loyalty/card', (req, res) => {
     ok: true,
     card,
     cardNumber: card.card_number,
-    points: card.balance,
+    balance: Number(card.balance ?? 500),
+    points: Number(card.balance ?? 500),
     tier: card.tier,
     cashbackPercent: card.cashback_percent,
     totalSpent: card.total_spent,
+    orderCount: (card as any).order_count || 0,
   });
 });
 

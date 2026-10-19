@@ -437,6 +437,19 @@ export const ContactsPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Legal Requisites Card */}
+          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-3 text-xs text-zinc-600 font-light">
+            <div className="text-xs font-bold uppercase tracking-wider text-zinc-950">
+              Реквизиты продавца
+            </div>
+            <div className="space-y-1.5 pt-1">
+              <div><strong className="text-zinc-900 font-medium">Продавец / Бренд:</strong> Maison Arôme</div>
+              <div><strong className="text-zinc-900 font-medium">ИНН:</strong> 667221490551</div>
+              <div><strong className="text-zinc-900 font-medium">Склад и отгрузка:</strong> г. Москва (доставка по всей РФ и ЕАЭС)</div>
+              <div><strong className="text-zinc-900 font-medium">Режим обработки заказов:</strong> Ежедневно с 09:00 до 21:00 (МСК)</div>
+            </div>
+          </div>
         </div>
 
         {/* Message Form */}

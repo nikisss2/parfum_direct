@@ -737,13 +737,13 @@ export const AdminPage: React.FC = () => {
             <form onSubmit={handlePasswordLogin} className="space-y-3.5">
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-600 mb-1">
-                  Логин или Email администратора
+                  Email администратора
                 </label>
                 <input
                   type="text"
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
-                  placeholder="admin_laptev"
+                  placeholder="admin_laptev@maisonarome.ru"
                   className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
                   required
                 />

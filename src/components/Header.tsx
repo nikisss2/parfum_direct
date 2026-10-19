@@ -21,7 +21,8 @@ import {
   ArrowRight,
   Check,
   Gift,
-  CreditCard
+  CreditCard,
+  HelpCircle,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -398,6 +399,20 @@ export const Header: React.FC = () => {
                       <div>
                         <div className="font-semibold text-zinc-950">Доставка и оплата</div>
                         <div className="text-[11px] text-zinc-500">СДЭК и Яндекс по всей РФ</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/faq"
+                      onClick={() => setMoreMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
+                    >
+                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                        <HelpCircle className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-zinc-950">Ответы на вопросы (FAQ)</div>
+                        <div className="text-[11px] text-zinc-500">Оригиналы, доставка, гарантии</div>
                       </div>
                     </Link>
                   </div>

@@ -199,6 +199,20 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
               5.2. В случае выявления производственного брака атомайзера (неисправность спрея) или повреждения упаковки при транспортировке, Покупатель вправе обратиться к Продавцу в течение 14 дней с момента получения с фото/видео фиксацией дефекта для бесплатной замены или возврата средств.
             </p>
           </section>
+
+          <section className="space-y-3">
+            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+              6. Реквизиты Продавца и порядок обращений
+            </h2>
+            <div className="p-4 bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-1.5 text-zinc-800">
+              <div><strong>Продавец:</strong> Интернет-бутик оригинальной парфюмерии Maison Arôme</div>
+              <div><strong>ИНН:</strong> 667221490551</div>
+              <div><strong>Склад комплектации и отгрузки:</strong> г. Москва</div>
+              <div><strong>Электронная почта:</strong> <a href="mailto:order@maisonarome.ru" className="underline">order@maisonarome.ru</a></div>
+              <div><strong>Контактный менеджер (Telegram / тел):</strong> @nikisss2 · 8 (912) 287-94-86</div>
+              <div><strong>Режим приёма заказов:</strong> Онлайн 24/7. Обработка и фотоотчеты: ежедневно с 09:00 до 22:00 (МСК)</div>
+            </div>
+          </section>
         </div>
       )}
 
@@ -256,8 +270,19 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
               4. Права субъекта персональных данных
             </h2>
             <p>
-              4.1. Субъект персональных данных имеет право в любой момент запросить сведения об обработке своих данных, потребовать их уточнения, блокирования или уничтожения, направив запрос на электронную почту <a href="mailto:order@maisonarome.ru" className="text-black underline font-mono">order@maisonarome.ru</a> либо в Telegram @nikisss2.
+              4.1. Субъект персональных данных имеет право в любой момент запросить сведения об обработке своих данных, выгрузить их в машиночитаемом формате JSON или отозвать согласие в личном кабинете, либо направив запрос на электронную почту <a href="mailto:order@maisonarome.ru" className="text-black underline font-mono">order@maisonarome.ru</a> или в Telegram @nikisss2.
             </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+              5. Реквизиты Оператора персональных данных
+            </h2>
+            <div className="p-4 bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-1.5 text-zinc-800">
+              <div><strong>Оператор:</strong> Maison Arôme (ИНН: 667221490551)</div>
+              <div><strong>Склад комплектации и отправки:</strong> г. Москва</div>
+              <div><strong>Контакты для отзыва согласия:</strong> <a href="mailto:order@maisonarome.ru" className="underline">order@maisonarome.ru</a> или Telegram @nikisss2</div>
+            </div>
           </section>
         </div>
       )}
