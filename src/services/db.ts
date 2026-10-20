@@ -110,12 +110,32 @@ const SEED_ORDERS: Order[] = [
 
 const TOKEN_STORAGE_KEY = 'maison_auth_token';
 
+function safeGetItem(key: string): string | null {
+  try {
+    return typeof window !== 'undefined' ? localStorage.getItem(key) : null;
+  } catch {
+    return null;
+  }
+}
+
+function safeSetItem(key: string, value: string): void {
+  try {
+    if (typeof window !== 'undefined') localStorage.setItem(key, value);
+  } catch {}
+}
+
+function safeRemoveItem(key: string): void {
+  try {
+    if (typeof window !== 'undefined') localStorage.removeItem(key);
+  } catch {}
+}
+
 class DatabaseService {
   private getUsers(): StoredUser[] {
     try {
-      const data = localStorage.getItem(USERS_STORAGE_KEY);
+      const data = safeGetItem(USERS_STORAGE_KEY);
       if (!data) {
-        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([DEFAULT_ADMIN]));
+        safeSetItem(USERS_STORAGE_KEY, JSON.stringify([DEFAULT_ADMIN]));
         return [DEFAULT_ADMIN];
       }
       return JSON.parse(data);
@@ -125,7 +145,7 @@ class DatabaseService {
   }
 
   private saveUsers(users: StoredUser[]) {
-    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    safeSetItem(USERS_STORAGE_KEY, JSON.stringify(users));
   }
 
   private saveSingleUser(user: User) {
@@ -144,21 +164,21 @@ class DatabaseService {
   }
 
   public getAuthToken(): string | null {
-    return localStorage.getItem(TOKEN_STORAGE_KEY);
+    return safeGetItem(TOKEN_STORAGE_KEY);
   }
 
   public setAuthToken(token: string | null) {
     if (token) {
-      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+      safeSetItem(TOKEN_STORAGE_KEY, token);
     } else {
-      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      safeRemoveItem(TOKEN_STORAGE_KEY);
     }
   }
 
   // --- Cart per Account Isolation ---
   public getUserCart(userId?: string): CartItem[] {
     const key = userId ? `maison_cart_${userId}` : 'maison_cart_guest';
-    const saved = localStorage.getItem(key);
+    const saved = safeGetItem(key);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -168,7 +188,7 @@ class DatabaseService {
     }
     // Backward compatibility with previous global cart if not scoped yet
     if (!userId) {
-      const oldGlobal = localStorage.getItem('parfum_direct_cart');
+      const oldGlobal = safeGetItem('parfum_direct_cart');
       if (oldGlobal) {
         try {
           return JSON.parse(oldGlobal);
@@ -182,7 +202,7 @@ class DatabaseService {
 
   public saveUserCart(userId: string | undefined, cart: CartItem[]) {
     const key = userId ? `maison_cart_${userId}` : 'maison_cart_guest';
-    localStorage.setItem(key, JSON.stringify(cart));
+    safeSetItem(key, JSON.stringify(cart));
 
     // Also sync to server if authenticated
     if (userId && userId !== 'guest') {
@@ -368,7 +388,7 @@ class DatabaseService {
   }
 
   public getActiveUser(): User | null {
-    const activeId = localStorage.getItem(CURRENT_USER_KEY);
+    const activeId = safeGetItem(CURRENT_USER_KEY);
     if (!activeId) return null;
     const users = this.getUsers();
     const user = users.find(u => u.id === activeId);
@@ -379,17 +399,17 @@ class DatabaseService {
 
   public setActiveUserId(userId: string | null) {
     if (userId) {
-      localStorage.setItem(CURRENT_USER_KEY, userId);
+      safeSetItem(CURRENT_USER_KEY, userId);
     } else {
-      localStorage.removeItem(CURRENT_USER_KEY);
+      safeRemoveItem(CURRENT_USER_KEY);
     }
   }
 
   public logout() {
     this.setActiveUserId(null);
     this.setAuthToken(null);
-    localStorage.removeItem('is_admin_session');
-    localStorage.removeItem('parfum_admin_token');
+    safeRemoveItem('is_admin_session');
+    safeRemoveItem('parfum_admin_token');
   }
 
   public updateUserProfile(

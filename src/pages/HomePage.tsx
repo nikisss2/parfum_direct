@@ -77,7 +77,7 @@ export const HomePage: React.FC = () => {
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-10" />
 
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-32 lg:py-36">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-24 lg:py-32">
           <div className="max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-black/60 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest text-white font-mono">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />

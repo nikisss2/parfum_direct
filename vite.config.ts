@@ -16,7 +16,7 @@ export default defineConfig(() => {
       },
     },
     build: {
-      target: 'es2020',
+      target: ['es2020', 'safari14'],
       cssCodeSplit: true,
       assetsInlineLimit: 4096,
       rollupOptions: {

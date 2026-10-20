@@ -78,14 +78,22 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const [wishlist, setWishlist] = useState<string[]>(() => {
-    const active = db.getActiveUser();
-    if (active) return db.getUserWishlist(active.id);
-    const guest = localStorage.getItem('parfum_direct_guest_wishlist');
-    return guest ? JSON.parse(guest) : [];
+    try {
+      const active = db.getActiveUser();
+      if (active) return db.getUserWishlist(active.id);
+      const guest = localStorage.getItem('parfum_direct_guest_wishlist');
+      return guest ? JSON.parse(guest) : [];
+    } catch {
+      return [];
+    }
   });
 
   const [allOrders, setAllOrders] = useState<Order[]>(() => {
-    return db.getAllOrders();
+    try {
+      return db.getAllOrders();
+    } catch {
+      return [];
+    }
   });
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -93,16 +101,20 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Sync cart to isolated account storage
   useEffect(() => {
-    db.saveUserCart(user?.id, cart);
+    try {
+      db.saveUserCart(user?.id, cart);
+    } catch {}
   }, [cart, user?.id]);
 
   // Sync wishlist to user's storage in db
   useEffect(() => {
-    if (user) {
-      db.saveUserWishlist(user.id, wishlist);
-    } else {
-      localStorage.setItem('parfum_direct_guest_wishlist', JSON.stringify(wishlist));
-    }
+    try {
+      if (user) {
+        db.saveUserWishlist(user.id, wishlist);
+      } else {
+        localStorage.setItem('parfum_direct_guest_wishlist', JSON.stringify(wishlist));
+      }
+    } catch {}
   }, [wishlist, user]);
 
   const showToast = useCallback(
