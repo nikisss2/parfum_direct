@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { fetchProducts, listItemToPerfume } from '../api/catalog';
 import { Perfume } from '../types';
+import { SEO } from '../components/SEO';
 import {
   Plus,
   X,
@@ -334,6 +335,11 @@ export const AromaBoxPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12 sm:space-y-16">
+      <SEO
+        title="Аромабокс — собери свой набор парфюмерии 3, 5 или 8 ароматов | Maison Arôme"
+        description="Соберите персональный набор парфюмерии Discovery Set в фирменном матовом футляре. Выберите 3, 5 или 8 оригинальных ароматов по 5 мл с выгодой."
+        canonical="https://maison-arome.ru/aromabox"
+      />
       {/* Editorial Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-400">

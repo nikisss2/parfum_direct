@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { ORDERS_GALLERY } from '../data/ordersGalleryData';
 import { ALL_REVIEWS_DATA, type ReviewItem } from '../data/reviewsData';
+import { SEO } from '../components/SEO';
 
 export const ReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<ReviewItem[]>(ALL_REVIEWS_DATA);
@@ -42,6 +43,11 @@ export const ReviewsPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
+      <SEO
+        title="Отзывы покупателей с фото заказов | Maison Arôme"
+        description="Реальные отзывы клиентов с фотографиями полученных заказов парфюмерии и распивов в Maison Arôme. Честный рейтинг 4.9 из 5."
+        canonical="https://maison-arome.ru/reviews"
+      />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-zinc-500">
         <Link to="/" className="hover:text-zinc-900 transition-colors">Главная</Link>

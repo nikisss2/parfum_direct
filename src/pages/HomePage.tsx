@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { FAQSection } from '../components/FAQSection';
 import { ORDERS_GALLERY } from '../data/ordersGalleryData';
+import { SEO } from '../components/SEO';
 
 export const HomePage: React.FC = () => {
   const [hitPerfumes, setHitPerfumes] = useState<Perfume[]>([]);
@@ -38,8 +39,33 @@ export const HomePage: React.FC = () => {
       .catch(() => setNewPerfumes([]));
   }, []);
 
+  const homeSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'OnlineStore',
+    name: 'Maison Arôme',
+    url: 'https://maison-arome.ru',
+    logo: 'https://maison-arome.ru/favicon-512.png',
+    description:
+      'Интернет-магазин оригинальной нишевой и люксовой парфюмерии. Распивы от 1 мл и целые флаконы с быстрой доставкой по России.',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'RU',
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://maison-arome.ru/catalog?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <div className="space-y-16 sm:space-y-24 pb-20">
+      <SEO
+        title="Maison Arôme — Оригинальная парфюмерия и распивы от 1 мл"
+        description="Интернет-магазин оригинальной парфюмерии Maison Arôme. Распивы от 1 мл и целые флаконы. Более 44 000 товаров, 100% гарантия подлинности, доставка по всей России."
+        canonical="https://maison-arome.ru"
+        schema={homeSchema}
+      />
       <section className="relative bg-zinc-950 text-white overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
           <img

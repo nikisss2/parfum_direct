@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { fetchBrands, fetchMeta, fetchProducts, fetchPopularNotes, listItemToPerfume } from '../api/catalog';
 import { ProductCard } from '../components/ProductCard';
+import { SEO } from '../components/SEO';
 import { Gender, Perfume, ProductKind, PRODUCT_KIND_OPTIONS } from '../types';
 import { isPureBrand } from '../data/brandsData';
 import { SlidersHorizontal, X, Search, RotateCcw, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
@@ -499,8 +500,25 @@ export const CatalogPage: React.FC = () => {
     </>
   );
 
+  const catalogTitle = selectedBrands.length === 1
+    ? `Парфюмерия ${selectedBrands[0]} — купить оригиналы и распивы | Maison Arôme`
+    : catalogSearch
+    ? `Поиск: ${catalogSearch} — парфюмерия | Maison Arôme`
+    : selectedCategory !== 'all'
+    ? `${selectedCategory} — каталог парфюмерии | Maison Arôme`
+    : 'Каталог парфюмерии — оригинальные духи и распивы от 1 мл | Maison Arôme';
+
+  const catalogDesc = selectedBrands.length === 1
+    ? `Оригинальная парфюмерия ${selectedBrands[0]} в интернет-магазине Maison Arôme. Распивы от 1 мл и полные флаконы. Доставка по всей России.`
+    : `Каталог оригинальной парфюмерии и уходовой косметики Maison Arôme. Более ${total.toLocaleString('ru-RU')} товаров: ниша, селектив, люкс, распивы от 1 мл. Быстрая доставка по РФ.`;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <SEO
+        title={catalogTitle}
+        description={catalogDesc}
+        canonical="https://maison-arome.ru/catalog"
+      />
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-zinc-200">
         <div>
           <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">Каталог</h1>

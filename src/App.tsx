@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ShopProvider } from './context/ShopContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
@@ -8,16 +8,15 @@ import { ToastContainer } from './components/Toast';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { CookieBanner } from './components/CookieBanner';
-import {
-  AboutPage,
-  DeliveryPage,
-  HowToDecantPage,
-  ContactsPage,
-  PrivacyPage,
-  TermsPage,
-  OfferPage,
-  FAQPage,
-} from './pages/StaticPages';
+
+const AboutPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.AboutPage })));
+const DeliveryPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.DeliveryPage })));
+const HowToDecantPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.HowToDecantPage })));
+const ContactsPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.ContactsPage })));
+const PrivacyPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.PrivacyPage })));
+const TermsPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.TermsPage })));
+const OfferPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.OfferPage })));
+const FAQPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.FAQPage })));
 
 const HomePage = React.lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
 const CatalogPage = React.lazy(() => import('./pages/CatalogPage').then(m => ({ default: m.CatalogPage })));
@@ -44,6 +43,13 @@ function ScrollToTop() {
   const { pathname, search } = useLocation();
 
   useEffect(() => {
+    // If incoming link has hash from old version (e.g. /#/product/...), convert to clean pathname
+    if (window.location.hash && window.location.hash.startsWith('#/')) {
+      const cleanPath = window.location.hash.replace(/^#/, '');
+      window.history.replaceState(null, '', cleanPath);
+      window.location.href = cleanPath;
+      return;
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
@@ -54,7 +60,7 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ThemeProvider>
         <ShopProvider>
           <ScrollToTop />
@@ -111,6 +117,6 @@ export default function App() {
         </div>
       </ShopProvider>
     </ThemeProvider>
-  </HashRouter>
+  </BrowserRouter>
   );
 }
