@@ -69,9 +69,10 @@ export const HomePage: React.FC = () => {
       <section className="relative bg-zinc-950 text-white overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
           <img
-            src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=2000&q=80"
+            src="/assets/hero-banner.jpg"
             alt="Maison Arôme"
             className="w-full h-full object-cover object-center filter brightness-50"
+            decoding="async"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-10" />
