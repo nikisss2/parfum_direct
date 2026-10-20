@@ -18,7 +18,7 @@ const TermsPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ de
 const OfferPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.OfferPage })));
 const FAQPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ default: m.FAQPage })));
 
-const HomePage = React.lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
+import { HomePage } from './pages/HomePage';
 const CatalogPage = React.lazy(() => import('./pages/CatalogPage').then(m => ({ default: m.CatalogPage })));
 const ProductPage = React.lazy(() => import('./pages/ProductPage').then(m => ({ default: m.ProductPage })));
 const AromaBoxPage = React.lazy(() => import('./pages/AromaBoxPage').then(m => ({ default: m.AromaBoxPage })));
