@@ -256,6 +256,15 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
 
+app.post('/api/client-error', express.text({ type: '*/*' }), (req, res) => {
+  try {
+    const raw = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    const ip = (req.headers['x-real-ip'] || req.ip || '') as string;
+    console.error(`[CLIENT-DIAGNOSTIC] ${new Date().toISOString()} | IP: ${ip} | ${raw}`);
+  } catch {}
+  res.status(204).end();
+});
+
 app.get('/api/meta', (_req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=1200');
   const { meta } = getCatalog();
