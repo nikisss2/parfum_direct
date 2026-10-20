@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect } from 'react';
+import { safeRemoveItem } from '../utils/storage';
 
 type Theme = 'light';
 
@@ -20,11 +21,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     // Гарантированно фиксируем оригинальную светлую тему и сбрасываем темный класс
     document.documentElement.classList.remove('dark');
-    try {
-      localStorage.removeItem('maison_arome_theme');
-    } catch {
-      // Ignore storage errors
-    }
+    safeRemoveItem('maison_arome_theme');
   }, []);
 
   return (

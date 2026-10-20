@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { safeGetItem, safeSetItem } from '../utils/storage';
 
 export const CookieBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     try {
-      const consent = localStorage.getItem('maison_cookie_consent');
+      const consent = safeGetItem('maison_cookie_consent');
       if (!consent) {
         // Small delay to make it non-intrusive on page load
         const timer = setTimeout(() => setIsVisible(true), 1200);
@@ -17,12 +18,10 @@ export const CookieBanner: React.FC = () => {
   }, []);
 
   const handleAccept = (type: 'all' | 'necessary') => {
-    try {
-      localStorage.setItem('maison_cookie_consent', JSON.stringify({
-        status: type,
-        timestamp: new Date().toISOString(),
-      }));
-    } catch {}
+    safeSetItem('maison_cookie_consent', JSON.stringify({
+      status: type,
+      timestamp: new Date().toISOString(),
+    }));
     setIsVisible(false);
   };
 

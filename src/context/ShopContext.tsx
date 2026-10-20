@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { CartItem, Order, OrderStatus, Perfume, SavedAddress, ToastMessage, User, VolumeOption } from '../types';
 import { fetchProductsByIds } from '../api/catalog';
 import { db } from '../services/db';
+import { safeGetItem, safeSetItem } from '../utils/storage';
 
 interface ShopContextType {
   cart: CartItem[];
@@ -81,7 +82,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const active = db.getActiveUser();
       if (active) return db.getUserWishlist(active.id);
-      const guest = localStorage.getItem('parfum_direct_guest_wishlist');
+      const guest = safeGetItem('parfum_direct_guest_wishlist');
       return guest ? JSON.parse(guest) : [];
     } catch {
       return [];
@@ -112,7 +113,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (user) {
         db.saveUserWishlist(user.id, wishlist);
       } else {
-        localStorage.setItem('parfum_direct_guest_wishlist', JSON.stringify(wishlist));
+        safeSetItem('parfum_direct_guest_wishlist', JSON.stringify(wishlist));
       }
     } catch {}
   }, [wishlist, user]);

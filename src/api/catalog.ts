@@ -1,4 +1,5 @@
 import type { Perfume, ProductKind, Gender } from '../types';
+import { safeGetItem } from '../utils/storage';
 
 const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || '';
 
@@ -165,10 +166,8 @@ export function fetchMeta() {
 
 function resolveAdminToken(token?: string): string {
   if (token && token.trim()) return token.trim();
-  if (typeof window !== 'undefined') {
-    const t = localStorage.getItem('parfum_admin_token') || localStorage.getItem('maison_auth_token') || '';
-    if (t) return t;
-  }
+  const t = safeGetItem('parfum_admin_token') || safeGetItem('maison_auth_token') || '';
+  if (t) return t;
   return 'parfum-admin-change-me';
 }
 

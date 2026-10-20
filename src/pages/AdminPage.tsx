@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { safeGetItem, safeSetItem } from '../utils/storage';
 import { Link } from 'react-router-dom';
 import {
   adminSaveProduct,
@@ -67,7 +68,7 @@ const TOKEN_KEY = 'parfum_admin_token';
 
 export const AdminPage: React.FC = () => {
   const { allOrders, updateOrderStatus, deleteOrder, user, login, showToast } = useShop();
-  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || '');
+  const [token, setToken] = useState(() => safeGetItem(TOKEN_KEY) || '');
   const [authed, setAuthed] = useState(() => user?.role === 'admin');
   const [metaCount, setMetaCount] = useState<number | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -191,7 +192,7 @@ export const AdminPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || '';
+    const saved = safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || '';
     if (saved && !token) {
       setToken(saved);
     }
@@ -201,7 +202,7 @@ export const AdminPage: React.FC = () => {
     if (user?.role === 'admin') {
       setAuthed(true);
       fetchMeta().then(m => setMetaCount(m.count)).catch(() => {});
-      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
       if (!token && activeToken) {
         setToken(activeToken);
       }
@@ -215,7 +216,7 @@ export const AdminPage: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem(TOKEN_KEY, token);
+    safeSetItem(TOKEN_KEY, token);
     verifyToken(token)
       .then(() => loadAdminData(token))
       .catch(() =>
@@ -233,9 +234,9 @@ export const AdminPage: React.FC = () => {
         throw new Error('Этот аккаунт не обладает правами администратора магазина');
       }
       setAuthed(true);
-      const authToken = localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      const authToken = safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
       setToken(authToken);
-      localStorage.setItem(TOKEN_KEY, authToken);
+      safeSetItem(TOKEN_KEY, authToken);
       loadAdminData(authToken);
       showToast('Вход выполнен', `Добро пожаловать, ${loggedUser.fullName}!`, 'success');
     } catch (err: any) {
@@ -331,7 +332,7 @@ export const AdminPage: React.FC = () => {
     };
 
     try {
-      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
       await adminSaveProduct(activeToken, payload as Record<string, unknown>);
       setStatus('Товар сохранён в catalog.custom.json');
       showToast('Товар создан', `Товар «${form.name}» успешно добавлен в каталог`, 'success');
@@ -538,7 +539,7 @@ export const AdminPage: React.FC = () => {
     };
 
     try {
-      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
       const res = await adminUpdateProduct(activeToken, editingProduct.id, payload);
       setEditingProduct(res.product);
       setEditStatus({
@@ -585,7 +586,7 @@ export const AdminPage: React.FC = () => {
     if (!editingProduct) return;
     if (!window.confirm(`Вы уверены, что хотите удалить товар «${editingProduct.name}»?`)) return;
     try {
-      const activeToken = token || localStorage.getItem(TOKEN_KEY) || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
       await adminDeleteProduct(activeToken, editingProduct.id);
       showToast('Удалено', `Товар «${editingProduct.name}» удалён`, 'info');
       setEditingProduct(null);
@@ -1353,7 +1354,7 @@ export const AdminPage: React.FC = () => {
               </div>
               <button
                 onClick={() => {
-                  const activeToken = token || localStorage.getItem('maison_auth_token') || 'parfum-admin-change-me';
+                  const activeToken = token || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
                   loadAdminData(activeToken);
                   showToast('Обновлено', 'Список пользователей обновлен из базы', 'success');
                 }}

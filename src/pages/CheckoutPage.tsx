@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { safeGetItem, safeSetItem } from '../utils/storage';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import {
@@ -160,10 +161,10 @@ export const CheckoutPage: React.FC = () => {
   const [telegram, setTelegram] = useState('');
   const [email, setEmail] = useState(user?.email || '');
   const [city, setCity] = useState(() => {
-    return localStorage.getItem('user_city') || user?.city || 'Москва';
+    return safeGetItem('user_city') || user?.city || 'Москва';
   });
   const [cityDeliveryDays, setCityDeliveryDays] = useState(() => {
-    const saved = localStorage.getItem('user_city') || user?.city || 'Москва';
+    const saved = safeGetItem('user_city') || user?.city || 'Москва';
     const found = RUSSIAN_CITIES.find(c => c.name.toLowerCase() === saved.toLowerCase());
     return found ? found.deliveryDays : '1–2 дня';
   });
@@ -190,7 +191,7 @@ export const CheckoutPage: React.FC = () => {
 
   useEffect(() => {
     if (user?.id) {
-      const token = localStorage.getItem('maison_auth_token') || '';
+      const token = safeGetItem('maison_auth_token') || '';
       fetch(`/api/loyalty/card?userId=${encodeURIComponent(user.id)}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
@@ -223,7 +224,7 @@ export const CheckoutPage: React.FC = () => {
   // Sync city selection dynamically from Header or storage events
   useEffect(() => {
     const syncCity = (e: any) => {
-      const saved = e?.detail || localStorage.getItem('user_city');
+      const saved = e?.detail || safeGetItem('user_city');
       if (saved && saved !== city) {
         setCity(saved);
         const found = RUSSIAN_CITIES.find(c => c.name.toLowerCase() === saved.toLowerCase());
@@ -289,7 +290,7 @@ export const CheckoutPage: React.FC = () => {
     setCity(c.name);
     setCityDeliveryDays(c.deliveryDays);
     setCityDropdownOpen(false);
-    localStorage.setItem('user_city', c.name);
+    safeSetItem('user_city', c.name);
     window.dispatchEvent(new CustomEvent('city-change', { detail: c.name }));
   };
 
@@ -401,7 +402,7 @@ export const CheckoutPage: React.FC = () => {
 
     // 3.1 Deduct bonus points if used
     if (appliedBonusPoints > 0 && user?.id) {
-      const token = localStorage.getItem('maison_auth_token') || '';
+      const token = safeGetItem('maison_auth_token') || '';
       fetch('/api/loyalty/use', {
         method: 'POST',
         headers: {

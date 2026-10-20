@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { safeGetItem } from '../utils/storage';
 import { Link, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import {
@@ -55,8 +56,8 @@ export const CrmPage: React.FC = () => {
   // Active navigation tab
   const [activeTab, setActiveTab] = useState<'orders' | 'customers' | 'analytics' | 'create-order' | 'security'>('orders');
 
-  // Token: from localStorage or fallback
-  const adminToken = localStorage.getItem('parfum_admin_token') || 'parfum-admin-change-me';
+  // Token: from safe storage or fallback
+  const adminToken = safeGetItem('parfum_admin_token') || 'parfum-admin-change-me';
 
   // State data
   const [loading, setLoading] = useState(true);

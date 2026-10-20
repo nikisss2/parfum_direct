@@ -108,27 +108,9 @@ const SEED_ORDERS: Order[] = [
   },
 ];
 
+import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage';
+
 const TOKEN_STORAGE_KEY = 'maison_auth_token';
-
-function safeGetItem(key: string): string | null {
-  try {
-    return typeof window !== 'undefined' ? localStorage.getItem(key) : null;
-  } catch {
-    return null;
-  }
-}
-
-function safeSetItem(key: string, value: string): void {
-  try {
-    if (typeof window !== 'undefined') localStorage.setItem(key, value);
-  } catch {}
-}
-
-function safeRemoveItem(key: string): void {
-  try {
-    if (typeof window !== 'undefined') localStorage.removeItem(key);
-  } catch {}
-}
 
 class DatabaseService {
   private getUsers(): StoredUser[] {
@@ -496,9 +478,9 @@ class DatabaseService {
   // --- Orders ---
   public getAllOrders(): Order[] {
     try {
-      const data = localStorage.getItem(ORDERS_STORAGE_KEY);
+      const data = safeGetItem(ORDERS_STORAGE_KEY);
       if (!data) {
-        localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(SEED_ORDERS));
+        safeSetItem(ORDERS_STORAGE_KEY, JSON.stringify(SEED_ORDERS));
         return SEED_ORDERS;
       }
       return JSON.parse(data);
@@ -508,7 +490,7 @@ class DatabaseService {
   }
 
   public saveAllOrders(orders: Order[]) {
-    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+    safeSetItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
   }
 
   public getUserOrders(userId?: string, email?: string): Order[] {
@@ -577,7 +559,7 @@ class DatabaseService {
     this.saveAllOrders(all);
 
     // Синхронизируем со статусом в SQLite
-    const token = this.getAuthToken() || localStorage.getItem('parfum_admin_token');
+    const token = this.getAuthToken() || safeGetItem('parfum_admin_token');
     if (token) {
       fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, {
         method: 'PUT',
@@ -604,7 +586,7 @@ class DatabaseService {
   // --- User Wishlists ---
   public getUserWishlist(userId: string): string[] {
     try {
-      const data = localStorage.getItem(`parfum_direct_wishlist_${userId}`);
+      const data = safeGetItem(`parfum_direct_wishlist_${userId}`);
       return data ? JSON.parse(data) : [];
     } catch {
       return [];
@@ -612,7 +594,7 @@ class DatabaseService {
   }
 
   public saveUserWishlist(userId: string, wishlist: string[]) {
-    localStorage.setItem(`parfum_direct_wishlist_${userId}`, JSON.stringify(wishlist));
+    safeSetItem(`parfum_direct_wishlist_${userId}`, JSON.stringify(wishlist));
   }
 }
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { safeGetItem } from '../utils/storage';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { fetchProductsByIds } from '../api/catalog';
@@ -147,7 +148,7 @@ export const AccountPage: React.FC = () => {
   const handleExportData = async () => {
     setExportLoading(true);
     try {
-      const token = localStorage.getItem('parfum_auth_token');
+      const token = safeGetItem('parfum_auth_token');
       const res = await fetch('/api/user/export-data', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -175,7 +176,7 @@ export const AccountPage: React.FC = () => {
     }
     setDeleteLoading(true);
     try {
-      const token = localStorage.getItem('parfum_auth_token');
+      const token = safeGetItem('parfum_auth_token');
       const res = await fetch('/api/user/delete-account', {
         method: 'POST',
         headers: {
