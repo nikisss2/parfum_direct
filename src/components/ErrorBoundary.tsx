@@ -23,6 +23,20 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error caught by ErrorBoundary:', error, errorInfo);
+    try {
+      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+        navigator.sendBeacon(
+          '/api/client-error',
+          JSON.stringify({
+            t: 'react-boundary',
+            msg: error?.message || 'React error',
+            stack: error?.stack?.slice(0, 500) || '',
+            comp: errorInfo?.componentStack?.slice(0, 500) || '',
+            ua: navigator.userAgent,
+          })
+        );
+      }
+    } catch {}
   }
 
   private handleReset = () => {

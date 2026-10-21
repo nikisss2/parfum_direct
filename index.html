@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" style="background-color:#ffffff;color-scheme:light;">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>Maison Arôme — Оригинальная парфюмерия и распивы</title>
     <meta name="description" content="Интернет-магазин оригинальной парфюмерии Maison Arôme. Распивы от 1 мл и целые флаконы. 100% подлинность, фото перед отправкой." />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
     <meta name="theme-color" content="#ffffff" />
     <meta property="og:title" content="Maison Arôme — Оригинальная парфюмерия и распивы" />
     <meta property="og:description" content="Интернет-магазин оригинальной парфюмерии Maison Arôme. Распивы от 1 мл и целые флаконы. 100% подлинность, фото перед отправкой." />
@@ -14,12 +16,20 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <style>
+      html, body {
+        background-color: #ffffff !important;
+        color: #09090b !important;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
     <script>
       window.__marome_loaded = false;
 
       // Handle Safari bfcache (back-forward cache) frozen restore
       window.addEventListener('pageshow', function(e) {
-        if (e.persisted) {
+        if (e.persisted && !window.__marome_loaded) {
           window.location.reload();
         }
       });

@@ -9,7 +9,19 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        name: 'non-blocking-css',
+        transformIndexHtml(html: string) {
+          return html.replace(
+            /<link rel="stylesheet" crossorigin href="([^"]+)">/g,
+            '<link rel="preload" as="style" crossorigin href="$1" onload="this.onload=null;this.rel=\'stylesheet\'"><noscript><link rel="stylesheet" crossorigin href="$1"></noscript>'
+          );
+        },
+      },
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -23,19 +35,20 @@ export default defineConfig(() => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (
-                id.includes('react') ||
-                id.includes('react-dom') ||
-                id.includes('react-router-dom') ||
-                id.includes('scheduler')
-              ) {
-                return 'vendor-react';
-              }
               if (id.includes('lucide-react')) {
                 return 'vendor-icons';
               }
               if (id.includes('motion')) {
                 return 'vendor-motion';
+              }
+              if (
+                id.includes('/react/') ||
+                id.includes('/react-dom/') ||
+                id.includes('/react-router/') ||
+                id.includes('/react-router-dom/') ||
+                id.includes('/scheduler/')
+              ) {
+                return 'vendor-react';
               }
               return 'vendor-libs';
             }
