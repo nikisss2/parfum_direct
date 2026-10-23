@@ -133,7 +133,7 @@ export const Footer: React.FC = () => {
               <div className="text-[11px] text-zinc-400 pt-1">
                 Склад в Москве · Доставка по РФ от 0 ₽
               </div>
-              <div className="text-[11px] text-zinc-500 font-mono pt-0.5">
+              <div className="text-[11px] text-zinc-500 font-sans tabular-nums pt-0.5">
                 ИНН: 667221490551
               </div>
             </div>

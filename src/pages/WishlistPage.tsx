@@ -13,7 +13,7 @@ import {
   Trash2,
   ArrowRight,
   ExternalLink,
-  Sparkles,
+  Package,
   BookmarkCheck,
   RotateCcw,
 } from 'lucide-react';
@@ -95,7 +95,7 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ perfume, onRemove, onAddToC
 
         {/* Brand tag */}
         <div className="absolute bottom-2 left-2 pointer-events-none">
-          <span className="bg-white/90 text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 border border-zinc-200 text-zinc-700">
+          <span className="bg-white/90 text-[10px] font-sans uppercase tracking-wider px-1.5 py-0.5 border border-zinc-200 text-zinc-700">
             {perfume.genderLabel || 'Унисекс'}
           </span>
         </div>
@@ -130,7 +130,7 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ perfume, onRemove, onAddToC
                     key={vol.type}
                     type="button"
                     onClick={() => setSelectedVolume(vol)}
-                    className={`text-[10px] font-mono px-2 py-1 transition-all ${
+                    className={`text-[10px] font-sans tabular-nums px-2 py-1 transition-all ${
                       isSelected
                         ? 'bg-black text-white font-bold'
                         : 'bg-[#f4f4f5] text-zinc-700 hover:bg-zinc-200'
@@ -327,7 +327,7 @@ export const WishlistPage: React.FC = () => {
   // Share to Telegram channel/friend
   const handleShareTelegram = useCallback(() => {
     if (!shareableUrl) return;
-    const text = 'Мой вишлист ароматов в Maison Arôme ✨';
+    const text = 'Мой вишлист ароматов в Maison Arôme:';
     const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableUrl)}&text=${encodeURIComponent(text)}`;
     window.open(tgUrl, '_blank', 'noopener,noreferrer');
   }, [shareableUrl]);
@@ -453,7 +453,7 @@ export const WishlistPage: React.FC = () => {
       {/* Breadcrumbs & Header */}
       <div className="border-b border-zinc-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 uppercase tracking-widest mb-3">
+          <div className="flex items-center gap-2 text-xs font-sans text-zinc-400 uppercase tracking-widest mb-3">
             <Link to="/" className="hover:text-black transition-colors">
               Главная
             </Link>
@@ -516,7 +516,7 @@ export const WishlistPage: React.FC = () => {
                   className="px-3.5 py-2.5 bg-[#5A6B32] hover:bg-[#4E5D2B] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5"
                   title="Заказать эти ароматы у менеджера в Telegram @nikisss2"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5" />
                   <span>Заказать в TG</span>
                 </button>
 
@@ -582,7 +582,7 @@ export const WishlistPage: React.FC = () => {
                 to="/aromabox"
                 className="px-6 py-3.5 bg-white border border-zinc-300 hover:border-black text-zinc-950 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2"
               >
-                <Sparkles className="w-4 h-4 text-zinc-700" />
+                <Package className="w-4 h-4 text-zinc-700" />
                 <span>Конструктор аромабокса</span>
               </Link>
             </div>

@@ -25,7 +25,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-8">
       {/* Editorial Header */}
       <div className="space-y-2 border-b border-zinc-200 pb-6">
-        <div className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
+        <div className="text-[11px] font-sans uppercase tracking-widest text-zinc-400">
           Правовая информация · Законодательство РФ
         </div>
         <h1 className="text-2xl sm:text-4xl font-serif text-zinc-950 uppercase tracking-wide">
@@ -33,7 +33,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           {activeTab === 'offer' && 'Публичная оферта'}
           {activeTab === 'privacy' && 'Политика конфиденциальности (152-ФЗ)'}
         </h1>
-        <p className="text-xs text-zinc-500 font-mono">
+        <p className="text-xs text-zinc-500 font-sans tabular-nums">
           Редакция от 15 октября 2026 г. · Действует на всей территории Российской Федерации
         </p>
       </div>
@@ -204,7 +204,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
             <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
               6. Реквизиты Продавца и порядок обращений
             </h2>
-            <div className="p-4 bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-1.5 text-zinc-800">
+            <div className="p-4 bg-zinc-50 border border-zinc-200 font-sans tabular-nums text-xs space-y-1.5 text-zinc-800">
               <div><strong>Продавец:</strong> Интернет-бутик оригинальной парфюмерии Maison Arôme</div>
               <div><strong>ИНН:</strong> 667221490551</div>
               <div><strong>Склад комплектации и отгрузки:</strong> г. Москва</div>
@@ -270,7 +270,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
               4. Права субъекта персональных данных
             </h2>
             <p>
-              4.1. Субъект персональных данных имеет право в любой момент запросить сведения об обработке своих данных, выгрузить их в машиночитаемом формате JSON или отозвать согласие в личном кабинете, либо направив запрос на электронную почту <a href="mailto:order@maisonarome.ru" className="text-black underline font-mono">order@maisonarome.ru</a> или в Telegram @nikisss2.
+              4.1. Субъект персональных данных имеет право в любой момент запросить сведения об обработке своих данных, выгрузить их в машиночитаемом формате JSON или отозвать согласие в личном кабинете, либо направив запрос на электронную почту <a href="mailto:order@maisonarome.ru" className="text-black underline font-sans">order@maisonarome.ru</a> или в Telegram @nikisss2.
             </p>
           </section>
 
@@ -278,7 +278,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
             <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
               5. Реквизиты Оператора персональных данных
             </h2>
-            <div className="p-4 bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-1.5 text-zinc-800">
+            <div className="p-4 bg-zinc-50 border border-zinc-200 font-sans tabular-nums text-xs space-y-1.5 text-zinc-800">
               <div><strong>Оператор:</strong> Maison Arôme (ИНН: 667221490551)</div>
               <div><strong>Склад комплектации и отправки:</strong> г. Москва</div>
               <div><strong>Контакты для отзыва согласия:</strong> <a href="mailto:order@maisonarome.ru" className="underline">order@maisonarome.ru</a> или Telegram @nikisss2</div>

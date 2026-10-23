@@ -11,7 +11,7 @@ import {
   User as UserIcon,
   Menu,
   X,
-  Sparkles,
+  Package,
   ChevronRight,
   ChevronDown,
   ShieldCheck,
@@ -350,7 +350,7 @@ export const Header: React.FC = () => {
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
                       <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <ShieldCheck className="w-3.5 h-3.5" />
                       </div>
                       <div>
                         <div className="font-semibold text-zinc-950">Почему дешевле?</div>
@@ -816,7 +816,7 @@ export const Header: React.FC = () => {
                   <div className="mt-8 p-4 bg-zinc-950 text-white flex items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <Package className="w-3.5 h-3.5" />
                         <span>Конструктор аромабокса</span>
                       </div>
                       <div className="text-sm font-semibold mt-1">

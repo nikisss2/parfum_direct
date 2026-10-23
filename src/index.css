@@ -18,6 +18,24 @@
   .font-serif {
     font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   }
+  .font-sans {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Строгий запрет на моноширинный шрифт: исключает ИИ-шный и технический стиль */
+  .font-mono,
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Аккуратное табличное выравнивание для цен и цифр */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
 
   /* Эстетика Maison Arôme: строгая прямоугольная геометрия без скруглений */
   *,

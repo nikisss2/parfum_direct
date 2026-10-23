@@ -342,7 +342,7 @@ export const AromaBoxPage: React.FC = () => {
       />
       {/* Editorial Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-400">
+        <div className="text-[11px] font-sans font-semibold uppercase tracking-[0.2em] text-zinc-400">
           Maison Arôme Atelier · Discovery Set
         </div>
         <h1 className="text-3xl sm:text-5xl font-normal font-serif tracking-tight text-zinc-950">
@@ -359,7 +359,7 @@ export const AromaBoxPage: React.FC = () => {
           <div className="text-xs font-bold uppercase tracking-widest text-zinc-950">
             Готовые подборки
           </div>
-          <span className="text-[11px] text-zinc-400 font-mono">
+          <span className="text-[11px] text-zinc-400 font-sans">
             Заполнить 5 слотов сбалансированным сетом
           </span>
         </div>
@@ -379,11 +379,11 @@ export const AromaBoxPage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                    <span className="text-[10px] font-sans font-medium uppercase tracking-wider text-zinc-400">
                       Сет 5 × 5 мл
                     </span>
                     <span
-                      className={`text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 border ${
+                      className={`text-[9px] font-sans uppercase tracking-wider px-2 py-0.5 border font-semibold ${
                         isActive
                           ? 'border-white/30 text-white bg-white/10'
                           : 'border-zinc-200 text-zinc-600 bg-zinc-50'
@@ -433,7 +433,7 @@ export const AromaBoxPage: React.FC = () => {
       {/* Step 1: Tier Selection */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-950 border-b border-zinc-200 pb-2">
-          <span className="font-mono text-zinc-400">01</span>
+          <span className="font-serif text-zinc-400">01</span>
           <span>Формат бокса</span>
         </div>
 
@@ -451,17 +451,17 @@ export const AromaBoxPage: React.FC = () => {
                 }`}
               >
                 {tier.badge && (
-                  <span className="absolute -top-2.5 right-4 px-2 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-widest font-mono">
+                  <span className="absolute -top-2.5 right-4 px-2 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-widest font-sans">
                     {tier.badge}
                   </span>
                 )}
 
                 <div className="font-serif text-lg text-zinc-950">{tier.name}</div>
-                <div className="text-xs uppercase tracking-wider text-zinc-400 mt-0.5 font-mono">{tier.subtitle}</div>
+                <div className="text-xs uppercase tracking-wider text-zinc-400 mt-0.5 font-sans">{tier.subtitle}</div>
 
                 <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs">
                   <span className="text-zinc-500 font-light">Фирменный футляр:</span>
-                  <span className="font-mono text-emerald-700 font-semibold">0 ₽ (в комплекте)</span>
+                  <span className="font-sans tabular-nums text-emerald-700 font-semibold">0 ₽ (в комплекте)</span>
                 </div>
               </div>
             );
@@ -473,11 +473,11 @@ export const AromaBoxPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-zinc-200 pb-2">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-950">
-            <span className="font-mono text-zinc-400">02</span>
+            <span className="font-serif text-zinc-400">02</span>
             <span>Наполнение сета ({filledCount} из {selectedTier.count})</span>
           </div>
 
-          <span className="text-[11px] uppercase tracking-wider text-zinc-400 font-mono">
+          <span className="text-[11px] uppercase tracking-wider text-zinc-400 font-sans">
             Нажмите на слот для выбора
           </span>
         </div>
@@ -497,7 +497,7 @@ export const AromaBoxPage: React.FC = () => {
                 <div className="font-serif uppercase tracking-widest text-xs text-white">
                   Maison Arôme Atelier
                 </div>
-                <div className="font-mono text-[10px] text-zinc-400">
+                <div className="font-sans text-[10px] text-zinc-400">
                   Футляр · {selectedTier.count} атомайзеров по 5 мл
                 </div>
               </div>
@@ -505,7 +505,7 @@ export const AromaBoxPage: React.FC = () => {
 
             <div className="flex items-center gap-2.5 self-end sm:self-auto">
               <span
-                className={`px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider border ${
+                className={`px-2.5 py-1 text-[10px] font-sans uppercase tracking-wider border font-medium ${
                   isComplete
                     ? 'border-emerald-500/50 bg-emerald-950/40 text-emerald-300'
                     : 'border-zinc-800 bg-zinc-900 text-zinc-400'
@@ -518,7 +518,7 @@ export const AromaBoxPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleClearAllSlots}
-                  className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors flex items-center gap-1"
+                  className="px-2 py-1 text-[10px] font-sans uppercase tracking-wider border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors flex items-center gap-1"
                   title="Очистить все слоты"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -543,8 +543,8 @@ export const AromaBoxPage: React.FC = () => {
                   }`}
                 >
                   {/* Slot Top Header */}
-                  <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono z-20">
-                    <span className="text-zinc-500">
+                  <div className="flex items-center justify-between text-[10px] text-zinc-400 font-sans z-20">
+                    <span className="text-zinc-500 tabular-nums">
                       #{String(idx + 1).padStart(2, '0')}
                     </span>
                     {isFilled && (
@@ -572,13 +572,13 @@ export const AromaBoxPage: React.FC = () => {
 
                       {/* Flacon Label */}
                       <div className="relative bg-white text-zinc-950 p-2 text-center w-full mt-2.5">
-                        <div className="text-[9px] uppercase font-bold tracking-wider text-zinc-500 truncate font-mono">
+                        <div className="text-[9px] uppercase font-bold tracking-wider text-zinc-500 truncate font-sans">
                           {perfume.brand}
                         </div>
                         <div className="text-xs font-serif font-bold text-zinc-950 truncate leading-snug">
                           {perfume.name}
                         </div>
-                        <div className="text-[11px] font-mono text-zinc-900 mt-1 font-semibold">
+                        <div className="text-[11px] font-sans tabular-nums text-zinc-900 mt-1 font-semibold">
                           {get5mlPrice(perfume).toLocaleString('ru-RU')} ₽ <span className="font-sans font-normal text-[9px] text-zinc-500">/ 5 мл</span>
                         </div>
                       </div>
@@ -589,15 +589,15 @@ export const AromaBoxPage: React.FC = () => {
                         <Plus className="w-4 h-4 text-zinc-400 group-hover:text-white" />
                       </div>
                       <div>
-                        <div className="text-xs uppercase tracking-wider font-semibold text-zinc-300">Флакон {idx + 1}</div>
-                        <div className="text-[10px] text-zinc-500 font-mono mt-0.5">5 мл · нажать для выбора</div>
+                        <div className="text-xs uppercase tracking-wider font-semibold text-zinc-300 font-sans">Флакон {idx + 1}</div>
+                        <div className="text-[10px] text-zinc-500 font-sans mt-0.5">5 мл · нажать для выбора</div>
                       </div>
                     </div>
                   )}
 
                   {/* Slot Bottom Action Indicator */}
                   <div className="text-center pt-2 border-t border-zinc-800/80 z-20">
-                    <span className="text-[10px] uppercase font-bold text-zinc-400 group-hover:text-white tracking-widest transition-colors">
+                    <span className="text-[10px] uppercase font-bold text-zinc-400 group-hover:text-white tracking-widest transition-colors font-sans">
                       {isFilled ? 'Заменить' : '+ Добавить'}
                     </span>
                   </div>
@@ -618,18 +618,18 @@ export const AromaBoxPage: React.FC = () => {
       {/* Order Action Bar */}
       <div className="p-6 sm:p-8 bg-zinc-950 text-white flex flex-col lg:flex-row items-center justify-between gap-6 border border-zinc-800">
         <div className="space-y-1 text-center lg:text-left">
-          <div className="text-xs uppercase tracking-wider text-zinc-400 font-mono">
+          <div className="text-xs uppercase tracking-wider text-zinc-400 font-sans font-medium">
             Итого ({selectedTier.count} ароматов по 5 мл):
           </div>
           <div className="flex items-baseline justify-center lg:justify-start gap-3">
-            <span className="text-3xl font-light font-mono text-white">
+            <span className="text-3xl font-light font-sans tabular-nums text-white">
               {boxTotalPrice > 0 ? `${boxTotalPrice.toLocaleString('ru-RU')} ₽` : '0 ₽'}
             </span>
-            <span className="text-xs font-mono text-zinc-400">
+            <span className="text-xs font-sans text-zinc-400">
               Футляр — в комплекте
             </span>
           </div>
-          <div className="text-[11px] text-zinc-400 pt-0.5">
+          <div className="text-[11px] text-zinc-400 pt-0.5 font-sans">
             {isComplete
               ? `Все ${selectedTier.count} ароматов укомплектованы`
               : `Заполнено ${filledCount} из ${selectedTier.count} слотов`}
@@ -642,8 +642,8 @@ export const AromaBoxPage: React.FC = () => {
             onClick={handleAddToCart}
             className={`w-full sm:w-auto px-8 py-3.5 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors ${
               isComplete
-                ? 'bg-white text-zinc-950 hover:bg-zinc-200 cursor-pointer'
-                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-60'
+                ? 'bg-white text-zinc-950 hover:bg-zinc-200 cursor-pointer font-sans'
+                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-60 font-sans'
             }`}
           >
             <ShoppingBag className="w-4 h-4" />
@@ -664,7 +664,7 @@ export const AromaBoxPage: React.FC = () => {
                 <h3 className="font-serif text-lg text-zinc-950">
                   Выбор аромата · Слот #{activeSlotIndex !== null ? activeSlotIndex + 1 : ''}
                 </h3>
-                <p className="text-[11px] text-zinc-400 font-mono mt-0.5">Оригинальные ароматы бутика (5 мл)</p>
+                <p className="text-[11px] text-zinc-400 font-sans mt-0.5">Оригинальные ароматы бутика (5 мл)</p>
               </div>
 
               <button
@@ -713,7 +713,7 @@ export const AromaBoxPage: React.FC = () => {
             {/* Products List in Modal */}
             <div className="flex-1 overflow-y-auto pr-1">
               {loadingItems ? (
-                <div className="py-20 text-center text-xs text-zinc-400 font-mono">
+                <div className="py-20 text-center text-xs text-zinc-400 font-sans">
                   Загрузка каталога...
                 </div>
               ) : catalogItems.length > 0 ? (
@@ -732,15 +732,15 @@ export const AromaBoxPage: React.FC = () => {
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                           />
                         </div>
-                        <div className="text-[9px] uppercase font-bold text-zinc-400 truncate tracking-wider font-mono">{p.brand}</div>
+                        <div className="text-[9px] uppercase font-bold text-zinc-400 truncate tracking-wider font-sans">{p.brand}</div>
                         <div className="text-xs font-serif font-bold text-zinc-900 truncate mt-0.5">{p.name}</div>
-                        <div className="text-xs font-mono text-zinc-950 mt-1 font-semibold">
+                        <div className="text-xs font-sans tabular-nums text-zinc-950 mt-1 font-semibold">
                           {get5mlPrice(p).toLocaleString('ru-RU')} ₽ <span className="text-[10px] font-normal text-zinc-400 font-sans">/ 5 мл</span>
                         </div>
                       </div>
                       <button
                         type="button"
-                        className="mt-2.5 w-full py-1.5 bg-black group-hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-widest transition-colors"
+                        className="mt-2.5 w-full py-1.5 bg-black group-hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-widest transition-colors font-sans"
                       >
                         Выбрать
                       </button>
@@ -748,7 +748,7 @@ export const AromaBoxPage: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="py-20 text-center text-xs text-zinc-400 font-mono">
+                <div className="py-20 text-center text-xs text-zinc-400 font-sans">
                   По запросу «{modalSearch}» ничего не найдено.
                 </div>
               )}

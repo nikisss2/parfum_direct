@@ -253,7 +253,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
               <span>Интерактивная карта ПВЗ</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-amber-400 text-black font-bold">
+              <span className="text-[10px] font-sans tabular-nums px-1.5 py-0.2 bg-amber-400 text-black font-bold">
                 {filteredPoints.length} точек
               </span>
             </div>
@@ -355,7 +355,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
         {viewMode === 'list' && (
           <div className="w-full h-[380px] sm:h-[430px] overflow-y-auto divide-y divide-zinc-200 bg-white">
             {filteredPoints.length === 0 ? (
-              <div className="p-8 text-center text-xs text-zinc-400 font-mono">
+              <div className="p-8 text-center text-xs text-zinc-400 font-sans">
                 Пунктов выдачи по запросу «{searchQuery}» не найдено. Попробуйте изменить запрос.
               </div>
             ) : (
@@ -374,7 +374,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`text-[9px] font-mono uppercase px-1.5 py-0.5 font-bold ${
+                          className={`text-[9px] font-sans uppercase px-1.5 py-0.5 font-bold ${
                             p.network === 'yandex'
                               ? 'bg-amber-400 text-black'
                               : p.network === 'cdek'
@@ -392,11 +392,11 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
                       </div>
                       <div className="text-xs text-zinc-700 mt-1 font-medium">{p.address}</div>
                       {p.metro && (
-                        <div className="text-[11px] text-zinc-400 mt-0.5 flex items-center gap-1">
-                          <span>🚇 {p.metro}</span>
+                        <div className="text-[11px] text-zinc-500 mt-0.5 flex items-center gap-1 font-sans">
+                          <span>м. {p.metro}</span>
                         </div>
                       )}
-                      <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">
+                      <div className="text-[10px] text-zinc-500 mt-0.5 font-sans tabular-nums">
                         График: {p.workTime} · Срок: {p.deliveryDays}
                       </div>
                     </div>
@@ -428,19 +428,19 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
         <div className="p-3 bg-zinc-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">
+              <span className="w-2 h-2 rounded-none bg-emerald-400" />
+              <span className="text-[10px] font-sans uppercase tracking-wider text-emerald-400 font-bold">
                 Выбран пункт выдачи:
               </span>
               <span className="text-xs font-bold text-white truncate">
                 {selectedPvz.networkName} — {selectedPvz.name}
               </span>
             </div>
-            <div className="text-xs text-zinc-300 truncate mt-0.5 font-mono">
-              📍 {selectedPvz.address} ({selectedPvz.workTime})
+            <div className="text-xs text-zinc-300 truncate mt-0.5 font-sans">
+              {selectedPvz.address} ({selectedPvz.workTime})
             </div>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0 text-[10px] font-mono text-zinc-400">
+          <div className="flex items-center gap-1.5 shrink-0 text-[10px] font-sans tabular-nums text-zinc-400">
             <span>Доставка от 50 ₽ · {selectedPvz.deliveryDays}</span>
           </div>
         </div>

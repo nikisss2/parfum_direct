@@ -9,7 +9,6 @@ import {
   ArrowRight,
   ArrowLeft,
   MapPin,
-  Sparkles,
   Check,
   Gift,
   Building,
@@ -484,7 +483,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
         <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">
           Оформление заказа
         </h1>
-        <div className="text-xs uppercase tracking-wider text-zinc-400 mt-1 font-mono">
+        <div className="text-xs uppercase tracking-wider text-zinc-400 mt-1 font-sans font-medium">
           Прямое согласование, фотоконтроль флаконов и оплата в Telegram
         </div>
       </div>
@@ -512,7 +511,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
           {/* Section 1: Контакты получателя */}
           <div className="p-6 rounded-none bg-white border border-zinc-200 space-y-4">
             <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-mono flex items-center justify-center font-bold">
+              <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-sans flex items-center justify-center font-bold">
                 1
               </span>
               Данные получателя
@@ -544,7 +543,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                   placeholder="+7 (999) 000-00-00"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
-                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-mono ${
+                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-sans tabular-nums ${
                     errors.phone ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900'
                   }`}
                 />
@@ -560,7 +559,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                   placeholder="@ivanov или номер"
                   value={telegram}
                   onChange={e => setTelegram(e.target.value)}
-                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-mono ${
+                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-sans ${
                     errors.telegram ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900'
                   }`}
                 />
@@ -586,20 +585,20 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
           <div className="p-6 rounded-none bg-white border border-zinc-200 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-mono flex items-center justify-center font-bold">
+                <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-sans flex items-center justify-center font-bold">
                   2
                 </span>
                 Доставка и Пункт выдачи (ПВЗ)
               </h2>
 
               {isFreeShipping && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-[#5A6B32] text-white text-[10px] font-bold uppercase tracking-wider font-mono">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-[#5A6B32] text-white text-[10px] font-bold uppercase tracking-wider font-sans">
                   <Check className="w-3.5 h-3.5" />
                   Бесплатная доставка от 25 000 ₽ (до 2 500 км)
                 </span>
               )}
               {cartTotalPrice >= 25000 && !isWithinDistance && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-amber-100 text-amber-950 border border-amber-300 text-[10px] font-bold uppercase tracking-wider font-mono">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-amber-100 text-amber-950 border border-amber-300 text-[10px] font-bold uppercase tracking-wider font-sans">
                   Свыше 2 500 км от МСК · Расчет ТК от 0 ₽
                 </span>
               )}
@@ -667,7 +666,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                           <span className="font-bold text-zinc-950">{c.name}</span>
                           <span className="text-[10px] text-zinc-500 ml-1.5">{c.region}</span>
                         </div>
-                        <span className="text-[10px] text-zinc-400 font-mono">{c.deliveryDays}</span>
+                        <span className="text-[10px] text-zinc-400 font-sans tabular-nums">{c.deliveryDays}</span>
                       </button>
                     ))}
                   </div>
@@ -678,7 +677,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
                   Срок доставки до вашего города:
                 </label>
-                <div className="text-xs px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 text-zinc-900 font-mono flex items-center justify-between">
+                <div className="text-xs px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 text-zinc-900 font-sans tabular-nums flex items-center justify-between">
                   <span>{city}</span>
                   <span className="font-bold text-black">{cityDeliveryDays}</span>
                 </div>
@@ -692,7 +691,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                   Служба доставки:
                 </label>
                 <span className="text-[11px] font-bold text-zinc-800 bg-amber-50 px-2 py-0.5 border border-amber-200">
-                  📦 Склад в Москве · Доставка от 0 ₽
+                  Склад в Москве · Доставка от 0 ₽
                 </span>
               </div>
               <p className="text-[11px] text-zinc-500 mb-2 font-light">
@@ -723,13 +722,13 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                         <div>
                           <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-2">
                             <span>{opt.name}</span>
-                            <span className="text-[10px] text-zinc-400 font-mono font-normal">({opt.time})</span>
+                            <span className="text-[10px] text-zinc-400 font-sans tabular-nums font-normal">({opt.time})</span>
                           </div>
                           <div className="text-[11px] text-zinc-500 mt-0.5">{opt.description}</div>
                         </div>
                       </div>
 
-                      <div className="text-xs font-bold font-mono text-zinc-950 shrink-0 ml-4">
+                      <div className="text-xs font-bold font-sans tabular-nums text-zinc-950 shrink-0 ml-4">
                         {isFreeShipping ? (
                           <span className="text-[#5A6B32] uppercase">Бесплатно</span>
                         ) : (
@@ -749,7 +748,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                   <MapPin className="w-4 h-4 text-amber-500" />
                   <span>Адрес пункта выдачи (ПВЗ всех компаний) или адрес доставки *</span>
                 </label>
-                <span className="text-[10px] text-zinc-500 font-mono">
+                <span className="text-[10px] text-zinc-500 font-sans">
                   Яндекс Маркет · СДЭК · Ozon · Boxberry · 5POST · Почта РФ
                 </span>
               </div>
@@ -777,7 +776,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                 <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-zinc-300 shadow-2xl z-30 max-h-72 overflow-y-auto divide-y divide-zinc-100 animate-in fade-in slide-in-from-top-1 duration-200 rounded-none">
                   <div className="px-3.5 py-2 bg-zinc-50 text-[10px] font-bold uppercase text-zinc-600 tracking-wider flex items-center justify-between sticky top-0 z-10 border-b border-zinc-200">
                     <span>Пункты выдачи в г. {city} (все службы)</span>
-                    <span className="text-zinc-400 font-mono">{pvzSuggestions.length} предложений</span>
+                    <span className="text-zinc-400 font-sans tabular-nums">{pvzSuggestions.length} предложений</span>
                   </div>
                   {pvzSuggestions.map(p => (
                     <button
@@ -789,7 +788,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span
-                            className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-none font-mono ${
+                            className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-none font-sans ${
                               p.network === 'yandex'
                                 ? 'bg-amber-100 text-amber-900 border border-amber-300'
                                 : p.network === 'cdek'
@@ -805,7 +804,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                             {p.name}
                           </span>
                           {p.metro && (
-                            <span className="text-[10px] text-zinc-500 font-mono">
+                            <span className="text-[10px] text-zinc-500 font-sans">
                               м. {p.metro}
                             </span>
                           )}
@@ -813,7 +812,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                         <div className="text-[11px] text-zinc-600 mt-0.5 truncate">
                           {p.address}
                         </div>
-                        <div className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                        <div className="text-[10px] text-zinc-400 font-sans tabular-nums mt-0.5">
                           {p.workTime} · {p.deliveryDays}
                         </div>
                       </div>
@@ -831,17 +830,17 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
               <div className="p-3.5 bg-zinc-950 text-white border border-black flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 text-[9px] font-mono uppercase bg-amber-400 text-black font-bold">
+                    <span className="px-1.5 py-0.5 text-[9px] font-sans uppercase bg-amber-400 text-black font-bold">
                       {selectedPvz.networkName}
                     </span>
                     <span className="text-xs font-bold truncate">{selectedPvz.name}</span>
                   </div>
                   <div className="text-[11px] text-zinc-300 mt-0.5 truncate">{selectedPvz.address}</div>
-                  <div className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                  <div className="text-[10px] text-zinc-400 font-sans tabular-nums mt-0.5">
                     {selectedPvz.workTime} · Срок: {selectedPvz.deliveryDays} · от 0 ₽
                   </div>
                 </div>
-                <div className="px-2.5 py-1 bg-emerald-600 text-white font-mono text-[10px] uppercase font-bold shrink-0 flex items-center gap-1">
+                <div className="px-2.5 py-1 bg-emerald-600 text-white font-sans text-[10px] uppercase font-bold shrink-0 flex items-center gap-1">
                   <Check className="w-3 h-3" />
                   Выбрано
                 </div>
@@ -899,12 +898,12 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                         {item.brand}
                       </div>
                       <div className="text-zinc-600 text-[11px] truncate">{item.name}</div>
-                      <div className="text-[10px] text-zinc-400 font-mono">
+                      <div className="text-[10px] text-zinc-400 font-sans tabular-nums">
                         {item.volumeLabel} × {item.quantity}
                       </div>
                     </div>
                   </div>
-                  <div className="font-bold font-mono text-zinc-950 shrink-0">
+                  <div className="font-bold font-sans tabular-nums text-zinc-950 shrink-0">
                     {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
@@ -919,7 +918,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                     <Coins className="w-4 h-4 text-amber-400" />
                     <span className="text-xs font-bold uppercase tracking-wider">Программа лояльности</span>
                   </div>
-                  <span className="text-xs font-mono text-amber-300 font-bold">{bonusPoints} баллов</span>
+                  <span className="text-xs font-sans tabular-nums text-amber-300 font-bold">{bonusPoints} баллов</span>
                 </div>
                 {bonusPoints > 0 ? (
                   <label className="flex items-start gap-2.5 pt-1.5 cursor-pointer select-none">
@@ -932,7 +931,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                     <div className="text-[11px] leading-snug">
                       <span className="font-bold text-white block">Списать баллы на этот заказ</span>
                       <span className="text-zinc-400 text-[10px]">
-                        Доступно к списанию до 30%: <strong className="text-white font-mono">{maxBonusRedeemable} ₽</strong> (1 балл = 1 ₽)
+                        Доступно к списанию до 30%: <strong className="text-white font-sans tabular-nums">{maxBonusRedeemable} ₽</strong> (1 балл = 1 ₽)
                       </span>
                     </div>
                   </label>
@@ -958,13 +957,13 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
             <div className="space-y-2 pt-4 border-t border-zinc-200 text-xs">
               <div className="flex justify-between text-zinc-600">
                 <span>Товары ({cart.reduce((a, b) => a + b.quantity, 0)} шт.)</span>
-                <span className="font-mono text-zinc-950">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
+                <span className="font-sans tabular-nums text-zinc-950">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
 
               {discountAmount > 0 && (
                 <div className="flex justify-between text-zinc-900 font-bold">
                   <span>Скидка</span>
-                  <span className="font-mono text-emerald-600">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
+                  <span className="font-sans tabular-nums text-emerald-600">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
@@ -974,13 +973,13 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                     <Coins className="w-3.5 h-3.5 text-amber-600" />
                     Оплата бонусами
                   </span>
-                  <span className="font-mono text-amber-700">−{appliedBonusPoints.toLocaleString('ru-RU')} ₽</span>
+                  <span className="font-sans tabular-nums text-amber-700">−{appliedBonusPoints.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
               <div className="flex justify-between items-center text-zinc-600">
                 <span>Доставка ({selectedDelivery.name})</span>
-                <span className="font-mono text-zinc-950 font-bold">
+                <span className="font-sans tabular-nums text-zinc-950 font-bold">
                   {isFreeShipping ? '0 ₽ (Бесплатно)' : 'от 0 ₽'}
                 </span>
               </div>
@@ -990,7 +989,7 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
 
               <div className="pt-3 border-t border-zinc-200 flex justify-between text-base font-bold text-zinc-950">
                 <span className="uppercase tracking-wider">Итого к оплате:</span>
-                <span className="font-mono text-lg">{finalTotal.toLocaleString('ru-RU')} ₽</span>
+                <span className="font-sans tabular-nums text-lg">{finalTotal.toLocaleString('ru-RU')} ₽</span>
               </div>
             </div>
 

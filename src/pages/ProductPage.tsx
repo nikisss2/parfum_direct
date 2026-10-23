@@ -271,30 +271,30 @@ export const ProductPage: React.FC = () => {
 
         <div className="space-y-6">
           <div>
-            <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-zinc-400 font-mono">
+            <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-zinc-400 font-sans font-medium">
               <span>{perfume.kindLabel}</span>
               <span>·</span>
               <span>{perfume.genderLabel}</span>
               {perfume.sku && (
                 <>
                   <span>·</span>
-                  <span>Арт. {perfume.sku}</span>
+                  <span className="tabular-nums">Арт. {perfume.sku}</span>
                 </>
               )}
             </div>
             <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 mt-2">{perfume.brand}</div>
             <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950 mt-1">{perfume.name}</h1>
-            <div className="mt-3 flex items-center gap-2 text-xs font-mono">
+            <div className="mt-3 flex items-center gap-2 text-xs font-sans">
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-zinc-900">{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
-              <span className="text-zinc-400">({perfume.reviewsCount} отзывов)</span>
+              <span className="font-bold text-zinc-900 tabular-nums">{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
+              <span className="text-zinc-400 tabular-nums">({perfume.reviewsCount} отзывов)</span>
             </div>
           </div>
 
           <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
             <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-900">
               <span>{isPerfume ? 'Выберите объём' : 'Фасовка'}</span>
-              {isPerfume && <span className="text-zinc-500 font-mono font-normal">{pricePerMl} ₽ / мл</span>}
+              {isPerfume && <span className="text-zinc-500 font-sans tabular-nums font-normal">{pricePerMl} ₽ / мл</span>}
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {uniqueVolumes.map(vol => (
@@ -309,19 +309,19 @@ export const ProductPage: React.FC = () => {
                   }`}
                 >
                   <div className="font-bold uppercase tracking-wider">{volumeShortLabel(vol)}</div>
-                  <div className="font-mono font-bold mt-1.5">{vol.price.toLocaleString('ru-RU')} ₽</div>
+                  <div className="font-sans tabular-nums font-bold mt-1.5">{vol.price.toLocaleString('ru-RU')} ₽</div>
                 </button>
               ))}
             </div>
 
             <div className="pt-4 border-t border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="text-2xl sm:text-3xl font-black font-mono text-zinc-950">
+              <div className="text-2xl sm:text-3xl font-bold font-sans tabular-nums text-zinc-950">
                 {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
               </div>
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <div className="flex border border-zinc-300 rounded-none bg-white text-zinc-900">
                   <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 font-bold text-sm cursor-pointer">−</button>
-                  <span className="w-10 h-11 flex items-center justify-center text-xs font-bold font-mono border-x border-zinc-300">{quantity}</span>
+                  <span className="w-10 h-11 flex items-center justify-center text-xs font-bold font-sans tabular-nums border-x border-zinc-300">{quantity}</span>
                   <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 font-bold text-sm cursor-pointer">+</button>
                 </div>
                 <button
@@ -365,17 +365,17 @@ export const ProductPage: React.FC = () => {
                 <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-900">
                   Ольфакторная пирамида
                 </h2>
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#5A6B32] font-semibold bg-[#5A6B32]/10 px-2 py-0.5 border border-[#5A6B32]/30">
-                  Fragrantica Verified
+                <span className="text-[10px] uppercase font-sans tracking-widest text-zinc-500 font-medium">
+                  Оригинальные аккорды
                 </span>
               </div>
 
               <div className="space-y-3.5 bg-zinc-50 p-4 border border-zinc-200">
                 {perfume.notes.top?.length > 0 && (
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
-                      <span>🌿 Верхние ноты</span>
-                      <span className="text-[10px] text-zinc-400">Первые 15 минут</span>
+                    <div className="flex items-center justify-between text-[11px] font-sans text-zinc-600 uppercase tracking-wider font-semibold">
+                      <span>Верхние ноты</span>
+                      <span className="text-[10px] text-zinc-400 font-normal">Первые 15 минут</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {perfume.notes.top.map(n => (
@@ -394,9 +394,9 @@ export const ProductPage: React.FC = () => {
 
                 {perfume.notes.heart?.length > 0 && (
                   <div className="space-y-1.5 pt-2.5 border-t border-zinc-200">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
-                      <span>🌸 Ноты сердца</span>
-                      <span className="text-[10px] text-zinc-400">Звучание 2–6 часов</span>
+                    <div className="flex items-center justify-between text-[11px] font-sans text-zinc-600 uppercase tracking-wider font-semibold">
+                      <span>Ноты сердца</span>
+                      <span className="text-[10px] text-zinc-400 font-normal">Звучание 2–6 часов</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {perfume.notes.heart.map(n => (
@@ -415,9 +415,9 @@ export const ProductPage: React.FC = () => {
 
                 {perfume.notes.base?.length > 0 && (
                   <div className="space-y-1.5 pt-2.5 border-t border-zinc-200">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
-                      <span>🪵 Базовые ноты / Шлейф</span>
-                      <span className="text-[10px] text-zinc-400">Стойкость до 24 часов</span>
+                    <div className="flex items-center justify-between text-[11px] font-sans text-zinc-600 uppercase tracking-wider font-semibold">
+                      <span>Базовые ноты / Шлейф</span>
+                      <span className="text-[10px] text-zinc-400 font-normal">Стойкость до 24 часов</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {perfume.notes.base.map(n => (

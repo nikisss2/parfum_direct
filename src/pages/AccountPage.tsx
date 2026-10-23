@@ -514,7 +514,7 @@ export const AccountPage: React.FC = () => {
               <span className="px-2 py-0.5 bg-amber-400 text-black text-[10px] font-black uppercase tracking-widest">
                 Админ-доступ
               </span>
-              <span className="text-xs text-amber-300/80 font-mono">SQLite WAL · Scrypt · Role Guard</span>
+              <span className="text-xs text-amber-300/80 font-sans tabular-nums">Защищенный служебный контур</span>
             </div>
             <h3 className="text-lg font-serif tracking-wide text-white">
               Корпоративная CRM-система Maison d'Arôme
@@ -663,7 +663,7 @@ export const AccountPage: React.FC = () => {
                         <div className="flex items-center gap-2 text-zinc-700">
                           <Truck className="w-4 h-4 text-black" />
                           <span className="uppercase tracking-wider text-[11px] font-medium">Трек-номер для отслеживания:</span>
-                          <strong className="font-mono text-zinc-900 tracking-wider">{order.trackingNumber}</strong>
+                          <strong className="font-sans tabular-nums text-zinc-900 tracking-wider">{order.trackingNumber}</strong>
                         </div>
                         <span className="text-[10px] text-zinc-500 uppercase tracking-widest">СДЭК / Почта России</span>
                       </div>
@@ -1205,7 +1205,7 @@ export const AccountPage: React.FC = () => {
                   {/* Chip & Number */}
                   <div className="z-10 my-auto">
                     <div className="w-10 h-7 rounded-sm bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 border border-amber-500/30 mb-4 opacity-90 shadow-inner" />
-                    <div className="font-mono text-base tracking-[0.25em] text-zinc-200 font-medium">
+                    <div className="font-sans tabular-nums text-base tracking-[0.25em] text-zinc-200 font-medium">
                       {bonusCard?.cardNumber || '7789 •••• •••• 4201'}
                     </div>
                   </div>
@@ -1213,14 +1213,14 @@ export const AccountPage: React.FC = () => {
                   {/* Card Footer: Holder & Balance */}
                   <div className="flex items-end justify-between z-10">
                     <div>
-                      <div className="text-[9px] uppercase tracking-wider text-zinc-400 font-mono">Владелец</div>
+                      <div className="text-[9px] uppercase tracking-wider text-zinc-400 font-sans">Владелец</div>
                       <div className="text-xs uppercase font-bold tracking-wider text-white">
                         {user.fullName || 'Клубный клиент'}
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[9px] uppercase tracking-wider text-zinc-400 font-mono">Бонусный баланс</div>
-                      <div className="text-xl font-bold font-mono text-amber-300">
+                      <div className="text-[9px] uppercase tracking-wider text-zinc-400 font-sans">Бонусный баланс</div>
+                      <div className="text-xl font-bold font-sans tabular-nums text-amber-300">
                         {(bonusCard?.balance ?? 500).toLocaleString('ru-RU')} ₽
                       </div>
                     </div>
@@ -1252,7 +1252,7 @@ export const AccountPage: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="text-2xl font-bold font-mono text-black">
+                      <span className="text-2xl font-bold font-sans tabular-nums text-black">
                         {orders.length >= 15 ? '10%' : orders.length >= 5 ? '7%' : '5%'}
                       </span>
                       <span className="block text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Кэшбэк</span>
@@ -1261,7 +1261,7 @@ export const AccountPage: React.FC = () => {
 
                   {/* Orders counter progress */}
                   <div className="space-y-2 pt-2">
-                    <div className="flex justify-between text-xs font-mono">
+                    <div className="flex justify-between text-xs font-sans tabular-nums">
                       <span className="text-zinc-600">Оформлено заказов: <strong>{orders.length}</strong></span>
                       <span className="text-zinc-500">
                         {orders.length < 5
@@ -1287,7 +1287,7 @@ export const AccountPage: React.FC = () => {
                       />
                     </div>
 
-                    <div className="flex justify-between text-[10px] text-zinc-400 font-mono pt-1">
+                    <div className="flex justify-between text-[10px] text-zinc-400 font-sans tabular-nums pt-1">
                       <span>Базовый (от 0)</span>
                       <span>Постоянный (от 5 заказов)</span>
                       <span>VIP (от 15 заказов)</span>

@@ -10,10 +10,10 @@ import {
   MapPin,
   Send,
   Droplet,
-  Sparkles,
   ArrowRight,
   Star,
-  CreditCard
+  CreditCard,
+  Package
 } from 'lucide-react';
 import { FAQSection } from '../components/FAQSection';
 
@@ -198,7 +198,7 @@ export const DeliveryPage: React.FC = () => {
           <p>
             Перед отправкой наш специалист собирает ваш заказ, делает подробные фотографии каждого флакона, отливантов, наклеенных этикеток и бланка отправления с трек-номером. Фотоотчет направляется вам в Telegram или WhatsApp. Оставшаяся часть (70%) оплачивается после согласования фото перед передачей посылки в курьерскую службу или при получении.
           </p>
-          <p className="text-xs text-zinc-500 font-mono">
+          <p className="text-xs text-zinc-500 font-sans">
             Способы оплаты: Система быстрых платежей (СБП), банковский перевод, безналичный расчет.
           </p>
         </div>
@@ -210,8 +210,9 @@ export const DeliveryPage: React.FC = () => {
           <h2 className="text-lg font-normal font-serif text-zinc-950 uppercase tracking-wide">
             Службы доставки и тарифы
           </h2>
-          <span className="text-xs font-bold text-zinc-900 bg-amber-100/80 px-2.5 py-1 border border-amber-300">
-            📦 Склад находится в Москве · Доставка от 0 ₽ (Бесплатно от 25 000 ₽ до 2 500 км)
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-900 bg-amber-100/80 px-2.5 py-1 border border-amber-300">
+            <Package className="w-3.5 h-3.5 text-amber-800" />
+            <span>Склад в Москве · Доставка от 0 ₽ (Бесплатно от 25 000 ₽ до 2 500 км)</span>
           </span>
         </div>
         <p className="text-xs sm:text-sm text-zinc-600 font-light leading-relaxed">
@@ -222,7 +223,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">СДЭК (ПВЗ или курьер)</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
+              <span className="font-bold text-xs font-sans tabular-nums text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 2–4 рабочих дня. Самая разветвленная сеть пунктов выдачи по всей РФ и ЕАЭС. Бесплатно от 25 000 ₽ (до 2 500 км).
@@ -232,7 +233,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Яндекс Доставка</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
+              <span className="font-bold text-xs font-sans tabular-nums text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 1–2 дня. Быстрая доставка в ПВЗ Яндекс Маркета или экспресс до двери из склада в Москве. Бесплатно от 25 000 ₽.
@@ -242,7 +243,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Ozon Доставка</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
+              <span className="font-bold text-xs font-sans tabular-nums text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 2–3 дня. Выдача в любом отделении Ozon прямо у вашего дома. Бесплатно от 25 000 ₽ (до 2 500 км).
@@ -252,7 +253,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">5POST (Пятёрочка)</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
+              <span className="font-bold text-xs font-sans tabular-nums text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 2–4 дня. Получение в постаматах и на кассах магазинов «Пятёрочка» и «Перекрёсток».
@@ -262,7 +263,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Почта России (1 класс)</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
+              <span className="font-bold text-xs font-sans tabular-nums text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 3–6 дней. Авиа-доставка в любые удаленные населенные пункты РФ.
@@ -272,7 +273,7 @@ export const DeliveryPage: React.FC = () => {
           <div className="p-5 rounded-none border border-zinc-200 hover:border-black bg-white space-y-2 transition-colors">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wide text-zinc-950">Авито Доставка</span>
-              <span className="font-bold text-xs font-mono text-zinc-900">от 0 ₽</span>
+              <span className="font-bold text-xs font-sans tabular-nums text-zinc-900">от 0 ₽</span>
             </div>
             <p className="text-xs text-zinc-500 font-light">
               Срок: 2–5 дней. Безопасная партнерская сделка с отслеживанием через сервис Авито.

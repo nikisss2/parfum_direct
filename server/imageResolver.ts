@@ -34,11 +34,14 @@ function normalizeHaystack(p: { brand: string; name: string }): string {
     .trim();
 }
 
-/** Локальный файл из public/ */
+/** Локальный файл из public/ или dist/ */
 function localIfExists(relative: string): string | null {
   const clean = relative.startsWith('/') ? relative.slice(1) : relative;
-  const full = path.join(PUBLIC, clean);
-  return fs.existsSync(full) ? `/${clean}` : null;
+  const fullPublic = path.join(PUBLIC, clean);
+  if (fs.existsSync(fullPublic)) return `/${clean}`;
+  const fullDist = path.join(ROOT, 'dist', clean);
+  if (fs.existsSync(fullDist)) return `/${clean}`;
+  return null;
 }
 
 interface ProductRule {

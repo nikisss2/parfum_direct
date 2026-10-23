@@ -4,7 +4,6 @@ import { useShop } from '../context/ShopContext';
 import {
   Gift,
   Check,
-  Sparkles,
   ShoppingBag,
   CreditCard,
   Mail,
@@ -109,7 +108,7 @@ export const GiftCertificatesPage: React.FC = () => {
           {/* Left Column: Live Card Preview */}
           <div className="lg:col-span-5 space-y-6">
             <div className="sticky top-24">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4 font-mono">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4 font-sans">
                 Предпросмотр сертификата
               </h2>
 
@@ -129,7 +128,7 @@ export const GiftCertificatesPage: React.FC = () => {
                       Haute Parfumerie
                     </span>
                   </div>
-                  <Sparkles className={`w-5 h-5 ${selectedDesign.accentColor}`} />
+                  <Gift className={`w-5 h-5 ${selectedDesign.accentColor}`} />
                 </div>
 
                 <div className="my-auto py-2 z-10">
@@ -146,7 +145,7 @@ export const GiftCertificatesPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="flex items-end justify-between text-[10px] opacity-70 z-10 font-mono">
+                <div className="flex items-end justify-between text-[10px] opacity-70 z-10 font-sans tabular-nums">
                   <span>№ MA-{selectedAmount}-CERT</span>
                   <span>Без срока действия</span>
                 </div>
@@ -184,7 +183,7 @@ export const GiftCertificatesPage: React.FC = () => {
                       key={amt}
                       type="button"
                       onClick={() => setSelectedAmount(amt)}
-                      className={`py-3 px-4 text-xs font-bold font-mono uppercase tracking-wider border transition-all cursor-pointer ${
+                      className={`py-3 px-4 text-xs font-bold font-sans tabular-nums uppercase tracking-wider border transition-all cursor-pointer ${
                         selectedAmount === amt
                           ? 'border-black bg-black text-white shadow-sm'
                           : 'border-zinc-300 bg-white text-zinc-900 hover:border-black'

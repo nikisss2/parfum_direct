@@ -167,7 +167,7 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
             </button>
           </div>
 
-          <pre className="p-3 bg-white border border-zinc-200 text-xs font-mono text-zinc-800 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+          <pre className="p-3 bg-white border border-zinc-200 text-xs font-sans tabular-nums text-zinc-800 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
             {orderText}
           </pre>
         </div>
@@ -180,7 +180,7 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
             <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
               Состав заказа
             </span>
-            <span className="text-xs text-zinc-500 uppercase tracking-wider text-[11px] font-mono">
+            <span className="text-xs text-zinc-500 uppercase tracking-wider text-[11px] font-sans tabular-nums">
               {order.date}
             </span>
           </div>
@@ -199,12 +199,12 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
                   <div className="truncate">
                     <span className="font-bold text-zinc-900 uppercase tracking-tight">{item.brand}</span>{' '}
                     <span className="text-zinc-700">{item.name}</span>
-                    <span className="text-zinc-500 uppercase tracking-wider text-[11px] font-mono">
+                    <span className="text-zinc-500 uppercase tracking-wider text-[11px] font-sans tabular-nums">
                       {' '}· {item.volumeLabel} × {item.quantity}
                     </span>
                   </div>
                 </div>
-                <div className="font-bold text-zinc-900 shrink-0 font-mono">
+                <div className="font-bold text-zinc-900 shrink-0 font-sans tabular-nums">
                   {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                 </div>
               </div>

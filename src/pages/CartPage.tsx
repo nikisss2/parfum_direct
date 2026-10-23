@@ -11,8 +11,7 @@ import {
   Tag,
   Check,
   Gift,
-  Truck,
-  Sparkles
+  Truck
 } from 'lucide-react';
 
 export const CartPage: React.FC = () => {
@@ -77,7 +76,7 @@ export const CartPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-zinc-200 gap-4">
         <div>
           <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">Корзина</h1>
-          <div className="text-xs uppercase tracking-wider text-zinc-400 mt-1 font-mono">
+          <div className="text-xs uppercase tracking-wider text-zinc-400 mt-1 font-sans font-medium">
             {cart.length} {cart.length === 1 ? 'наименование' : 'наименований'} в заказе
           </div>
         </div>
@@ -104,12 +103,12 @@ export const CartPage: React.FC = () => {
                 <div>
                   {isFreeShippingUnlocked ? (
                     <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950">
-                      🎉 Бесплатная доставка (0 ₽) активирована! (до 2 500 км от МСК)
+                      Бесплатная доставка (0 ₽) активирована! (до 2 500 км от МСК)
                     </div>
                   ) : (
                     <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-900">
                       До бесплатной доставки осталось{' '}
-                      <span className="font-mono font-black">{remainingForGift.toLocaleString('ru-RU')} ₽</span>
+                      <span className="font-sans font-bold tabular-nums">{remainingForGift.toLocaleString('ru-RU')} ₽</span>
                     </div>
                   )}
                   <div className="text-[11px] text-zinc-500 mt-0.5">
@@ -119,7 +118,7 @@ export const CartPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <span className="text-xs font-bold font-mono text-zinc-900 shrink-0">
+              <span className="text-xs font-bold font-sans tabular-nums text-zinc-900 shrink-0">
                 {progressPercent}%
               </span>
             </div>
@@ -150,7 +149,7 @@ export const CartPage: React.FC = () => {
                   <div className="font-semibold text-sm sm:text-base text-zinc-950 mt-0.5 truncate">
                     {item.name}
                   </div>
-                  <div className="text-xs text-zinc-500 mt-1 flex items-center gap-1.5 font-mono">
+                  <div className="text-xs text-zinc-500 mt-1 flex items-center gap-1.5 font-sans tabular-nums">
                     <span className="font-medium text-zinc-800">{item.volumeLabel}</span>
                     <span aria-hidden="true">·</span>
                     <span>{item.price.toLocaleString('ru-RU')} ₽ / шт</span>
@@ -166,7 +165,7 @@ export const CartPage: React.FC = () => {
                       >
                         −
                       </button>
-                      <span className="w-8 h-8 text-xs font-bold font-mono flex items-center justify-center border-x border-zinc-300 text-zinc-900">
+                      <span className="w-8 h-8 text-xs font-bold font-sans tabular-nums flex items-center justify-center border-x border-zinc-300 text-zinc-900">
                         {item.quantity}
                       </span>
                       <button
@@ -179,7 +178,7 @@ export const CartPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                      <div className="text-base font-bold font-mono text-zinc-950">
+                      <div className="text-base font-bold font-sans tabular-nums text-zinc-950">
                         {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                       </div>
                       <button
@@ -225,7 +224,7 @@ export const CartPage: React.FC = () => {
                   placeholder="Введите промокод"
                   value={promoCode}
                   onChange={e => setPromoCode(e.target.value)}
-                  className="flex-1 uppercase bg-white border border-zinc-300 text-xs text-zinc-900 px-3.5 py-2.5 rounded-none outline-none focus:border-black font-mono"
+                  className="flex-1 uppercase bg-white border border-zinc-300 text-xs text-zinc-900 px-3.5 py-2.5 rounded-none outline-none focus:border-black font-sans tracking-wider"
                 />
                 <button
                   type="submit"
@@ -235,7 +234,7 @@ export const CartPage: React.FC = () => {
                 </button>
               </div>
               {promoApplied && (
-                <div className="text-xs text-emerald-600 flex items-center gap-1 font-bold uppercase tracking-wider font-mono">
+                <div className="text-xs text-emerald-600 flex items-center gap-1 font-bold uppercase tracking-wider font-sans">
                   <Check className="w-3.5 h-3.5" />
                   Скидка {discountPercent}% применена!
                 </div>
@@ -251,26 +250,26 @@ export const CartPage: React.FC = () => {
             <div className="space-y-3 pt-4 border-t border-zinc-200 text-xs">
               <div className="flex justify-between text-zinc-600">
                 <span>Товары ({cart.reduce((a, b) => a + b.quantity, 0)} шт.)</span>
-                <span className="font-mono text-zinc-950">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
+                <span className="font-sans tabular-nums text-zinc-950">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
 
               {discountAmount > 0 && (
                 <div className="flex justify-between text-zinc-900 font-bold">
                   <span>Скидка ({discountPercent}%)</span>
-                  <span className="font-mono text-emerald-600">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
+                  <span className="font-sans tabular-nums text-emerald-600">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
               <div className="flex justify-between items-center text-zinc-600">
                 <span>Доставка</span>
-                <span className={isFreeShippingUnlocked ? "text-zinc-950 font-bold uppercase tracking-wider font-mono" : "text-zinc-500 font-mono"}>
+                <span className={isFreeShippingUnlocked ? "text-zinc-950 font-bold uppercase tracking-wider font-sans tabular-nums" : "text-zinc-500 font-sans tabular-nums"}>
                   {isFreeShippingUnlocked ? "0 ₽ (Бесплатно)" : "от 0 ₽ (0 ₽ от 25 000 ₽)"}
                 </span>
               </div>
 
               <div className="pt-4 border-t border-zinc-200 flex justify-between text-base font-bold text-zinc-950">
                 <span className="uppercase tracking-wider">Итого к оплате:</span>
-                <span className="font-mono text-lg">{finalPrice.toLocaleString('ru-RU')} ₽</span>
+                <span className="font-sans tabular-nums text-lg">{finalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
             </div>
 

@@ -105,7 +105,7 @@ export const OrderTrackPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-10">
       {/* Title */}
       <div className="text-center max-w-xl mx-auto space-y-3">
-        <div className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
+        <div className="text-[11px] font-sans font-semibold uppercase tracking-widest text-zinc-400">
           Служба заботы · Онлайн-отслеживание
         </div>
         <h1 className="text-2xl sm:text-4xl font-serif text-zinc-950 uppercase tracking-wide">
@@ -125,7 +125,7 @@ export const OrderTrackPage: React.FC = () => {
               placeholder="Номер заказа (ORD-XXXXX) или телефон..."
               value={query}
               onChange={e => setQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3.5 text-xs outline-none bg-white text-zinc-950 font-mono"
+              className="w-full pl-10 pr-4 py-3.5 text-xs outline-none bg-white text-zinc-950 font-sans tracking-wider"
             />
             <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           </div>
@@ -160,16 +160,16 @@ export const OrderTrackPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-zinc-200 gap-4">
             <div>
               <div className="flex items-center gap-2.5">
-                <span className="text-xs font-mono font-bold text-zinc-400 uppercase">Заказ</span>
+                <span className="text-xs font-sans font-bold text-zinc-400 uppercase">Заказ</span>
                 <span className="text-xl font-serif font-bold text-zinc-950">№ {order.orderNumber}</span>
               </div>
-              <div className="text-[11px] text-zinc-500 font-mono mt-0.5">
+              <div className="text-[11px] text-zinc-500 font-sans mt-0.5">
                 Оформлен: {order.date} · Получатель: {order.recipientName}
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="px-3 py-1 bg-zinc-900 text-white text-xs font-mono font-bold uppercase tracking-wider">
+              <span className="px-3 py-1 bg-zinc-900 text-white text-xs font-sans font-bold uppercase tracking-wider">
                 {order.statusLabel || 'В обработке'}
               </span>
             </div>
@@ -202,7 +202,7 @@ export const OrderTrackPage: React.FC = () => {
                         : 'border-zinc-200 bg-zinc-50 text-zinc-400'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1.5 font-mono text-[10px]">
+                    <div className="flex items-center justify-between mb-1.5 font-sans tabular-nums text-[10px]">
                       <span className="font-bold">0{s.step}</span>
                       {isPassed && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
                     </div>
@@ -241,7 +241,7 @@ export const OrderTrackPage: React.FC = () => {
               </div>
               {order.trackingNumber ? (
                 <div className="space-y-2">
-                  <div className="font-mono text-sm font-bold text-black bg-zinc-100 p-2 border border-zinc-300 inline-block">
+                  <div className="font-sans text-sm font-bold text-black bg-zinc-100 p-2 border border-zinc-300 inline-block tracking-wider tabular-nums">
                     {order.trackingNumber}
                   </div>
                   <div>
@@ -274,11 +274,11 @@ export const OrderTrackPage: React.FC = () => {
                 {order.items.map((it, idx) => (
                   <div key={idx} className="pt-2 first:pt-0 flex items-center justify-between text-xs">
                     <div>
-                      <span className="font-mono text-[10px] text-zinc-400 uppercase mr-1.5">{it.brand}</span>
+                      <span className="font-sans text-[10px] text-zinc-400 uppercase mr-1.5 font-bold">{it.brand}</span>
                       <span className="font-bold text-zinc-900">{it.name}</span>
-                      <span className="text-[10px] text-zinc-500 ml-2 font-mono">({it.volumeLabel}) × {it.quantity}</span>
+                      <span className="text-[10px] text-zinc-500 ml-2 font-sans tabular-nums">({it.volumeLabel}) × {it.quantity}</span>
                     </div>
-                    <div className="font-mono font-bold text-zinc-950">
+                    <div className="font-sans font-bold text-zinc-950 tabular-nums">
                       {(it.price * it.quantity).toLocaleString('ru-RU')} ₽
                     </div>
                   </div>

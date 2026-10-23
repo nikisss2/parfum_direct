@@ -5,7 +5,7 @@ import {
   TrendingDown,
   Building2,
   PackageCheck,
-  Sparkles,
+  FlaskConical,
   ArrowRight,
   CheckCircle2,
   DollarSign,
@@ -34,7 +34,7 @@ export const WhyCheaperPage: React.FC = () => {
       {/* Main Pillars Section */}
       <section className="py-12 sm:py-16 border-b border-zinc-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-8 text-center font-mono">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-8 text-center font-sans">
             4 главных фактора честной цены
           </h2>
 
@@ -81,7 +81,7 @@ export const WhyCheaperPage: React.FC = () => {
             {/* Factor 4 */}
             <div className="p-6 sm:p-8 border border-zinc-200 bg-white hover:border-black transition-colors space-y-3">
               <div className="w-10 h-10 bg-black text-white flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-[#5A6B32]" />
+                <FlaskConical className="w-5 h-5 text-[#5A6B32]" />
               </div>
               <h3 className="text-lg font-bold text-zinc-950">
                 4. Умный формат распивов (отливантов)

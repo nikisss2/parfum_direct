@@ -127,7 +127,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
     <section className={`space-y-8 ${className}`}>
       {showTitle && (
         <div className="space-y-2 text-center sm:text-left">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5A6B32] font-mono">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5A6B32] font-sans">
             <HelpCircle className="w-3.5 h-3.5" />
             <span>База знаний & FAQ</span>
           </div>
@@ -155,11 +155,11 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
                   {item.question}
                 </span>
                 <span
-                  className={`text-xl font-mono text-zinc-400 group-hover:text-black shrink-0 transition-transform duration-200 ${
+                  className={`p-1 text-zinc-400 group-hover:text-black shrink-0 transition-transform duration-200 ${
                     isOpen ? 'rotate-180 text-black' : ''
                   }`}
                 >
-                  {isOpen ? '−' : '+'}
+                  <ChevronDown className="w-4 h-4" />
                 </span>
               </button>
               {isOpen && (

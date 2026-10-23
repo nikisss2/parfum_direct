@@ -39,7 +39,6 @@ import {
   Lock,
   ChevronRight,
   ArrowUpRight,
-  Sparkles,
   Eye,
   X,
   FileText,
@@ -312,17 +311,17 @@ export const CrmPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 bg-emerald-500 rounded-none animate-pulse" />
               <span className="font-serif text-lg font-bold uppercase tracking-wider text-white">
-                Maison Arôme <span className="text-amber-400 font-mono text-xs px-2 py-0.5 bg-amber-400/10 border border-amber-400/30 ml-1">CRM 2.0</span>
+                Maison Arôme <span className="text-amber-400 font-sans tabular-nums text-xs px-2 py-0.5 bg-amber-400/10 border border-amber-400/30 ml-1">CRM 2.0</span>
               </span>
             </div>
             <span className="text-zinc-600 hidden md:inline">|</span>
-            <span className="text-xs text-zinc-400 font-mono hidden md:inline">
+            <span className="text-xs text-zinc-400 font-sans tabular-nums hidden md:inline">
               Защищенная корпоративная система управления
             </span>
           </div>
 
           {/* Quick Stats in Header */}
-          <div className="flex items-center gap-6 text-xs font-mono">
+          <div className="flex items-center gap-6 text-xs font-sans tabular-nums">
             <div className="hidden sm:flex items-center gap-2">
               <span className="text-zinc-500">Выручка:</span>
               <span className="font-bold text-amber-400">
@@ -380,7 +379,7 @@ export const CrmPage: React.FC = () => {
                 <Icon className="w-4 h-4" />
                 <span>{tab.label}</span>
                 {tab.badge !== undefined && (
-                  <span className={`px-1.5 py-0.2 rounded-none text-[10px] font-mono ${isCurrent ? 'bg-amber-400 text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                  <span className={`px-1.5 py-0.2 rounded-none text-[10px] font-sans tabular-nums ${isCurrent ? 'bg-amber-400 text-black' : 'bg-zinc-800 text-zinc-400'}`}>
                     {tab.badge}
                   </span>
                 )}
@@ -396,8 +395,8 @@ export const CrmPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">Общая выручка</div>
-              <div className="text-2xl font-black font-mono text-zinc-950 mt-1">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Общая выручка</div>
+              <div className="text-2xl font-black font-sans tabular-nums text-zinc-950 mt-1">
                 {(stats?.totalRevenue || 0).toLocaleString('ru-RU')} ₽
               </div>
               <div className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
@@ -411,11 +410,11 @@ export const CrmPage: React.FC = () => {
 
           <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">Всего заказов</div>
-              <div className="text-2xl font-black font-mono text-zinc-950 mt-1">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Всего заказов</div>
+              <div className="text-2xl font-black font-sans tabular-nums text-zinc-950 mt-1">
                 {orders.length}
               </div>
-              <div className="text-[10px] text-zinc-500 font-mono mt-1">
+              <div className="text-[10px] text-zinc-500 font-sans tabular-nums mt-1">
                 Сборка на складе: {orders.filter(o => o.status === 'assembling').length}
               </div>
             </div>
@@ -426,11 +425,11 @@ export const CrmPage: React.FC = () => {
 
           <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">База клиентов (SQLite)</div>
-              <div className="text-2xl font-black font-mono text-zinc-950 mt-1">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">База клиентов (SQLite)</div>
+              <div className="text-2xl font-black font-sans tabular-nums text-zinc-950 mt-1">
                 {users.length}
               </div>
-              <div className="text-[10px] text-zinc-500 font-mono mt-1">
+              <div className="text-[10px] text-zinc-500 font-sans tabular-nums mt-1">
                 Зарегистрированные клиенты
               </div>
             </div>
@@ -441,11 +440,11 @@ export const CrmPage: React.FC = () => {
 
           <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">Безопасность БД</div>
-              <div className="text-2xl font-black font-mono text-emerald-600 mt-1">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Безопасность БД</div>
+              <div className="text-2xl font-black font-sans tabular-nums text-emerald-600 mt-1">
                 100% OK
               </div>
-              <div className="text-[10px] text-zinc-500 font-mono mt-1">
+              <div className="text-[10px] text-zinc-500 font-sans tabular-nums mt-1">
                 WAL Mode · scrypt · 0 SQLi
               </div>
             </div>
@@ -534,7 +533,7 @@ export const CrmPage: React.FC = () => {
             <div className="bg-white border border-zinc-200 shadow-xs overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-zinc-950 text-white font-mono uppercase text-[10px] tracking-wider border-b border-zinc-800">
+                  <tr className="bg-zinc-950 text-white font-sans tabular-nums uppercase text-[10px] tracking-wider border-b border-zinc-800">
                     <th className="py-3.5 px-4">Заказ</th>
                     <th className="py-3.5 px-4">Клиент</th>
                     <th className="py-3.5 px-4">Город & Доставка</th>
@@ -548,7 +547,7 @@ export const CrmPage: React.FC = () => {
                 <tbody className="divide-y divide-zinc-200">
                   {filteredOrders.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-zinc-500 font-mono text-xs">
+                      <td colSpan={8} className="py-12 text-center text-zinc-500 font-sans tabular-nums text-xs">
                         Заказов не найдено.
                       </td>
                     </tr>
@@ -558,14 +557,14 @@ export const CrmPage: React.FC = () => {
                       const itemsCount = (order.items || []).reduce((sum: number, it: any) => sum + (it.quantity || 1), 0);
                       return (
                         <tr key={order.id} className="hover:bg-zinc-50/80 transition-colors">
-                          <td className="py-3 px-4 font-mono">
+                          <td className="py-3 px-4 font-sans tabular-nums">
                             <div className="font-bold text-zinc-950">{order.orderNumber}</div>
                             <div className="text-[10px] text-zinc-400 mt-0.5">{order.date || order.createdAt?.split('T')[0]}</div>
                           </td>
 
                           <td className="py-3 px-4">
                             <div className="font-bold text-zinc-950">{recipient.fullName || order.customerName || 'Покупатель'}</div>
-                            <div className="text-zinc-500 font-mono text-[11px] flex items-center gap-1 mt-0.5">
+                            <div className="text-zinc-500 font-sans tabular-nums text-[11px] flex items-center gap-1 mt-0.5">
                               <span>{recipient.phone || order.phone || '—'}</span>
                               {recipient.phone && (
                                 <a
@@ -587,12 +586,12 @@ export const CrmPage: React.FC = () => {
                           </td>
 
                           <td className="py-3 px-4">
-                            <span className="inline-block px-2 py-0.5 bg-zinc-100 font-mono text-[11px] font-bold text-zinc-800">
+                            <span className="inline-block px-2 py-0.5 bg-zinc-100 font-sans tabular-nums text-[11px] font-bold text-zinc-800">
                               {itemsCount} поз.
                             </span>
                           </td>
 
-                          <td className="py-3 px-4 font-mono">
+                          <td className="py-3 px-4 font-sans tabular-nums">
                             <div className="font-bold text-zinc-950">{(order.totalAmount || order.total || 0).toLocaleString('ru-RU')} ₽</div>
                             <div className="text-[10px] text-emerald-700 font-bold uppercase">
                               {order.isPaid ? 'Оплачен' : 'При сборке'}
@@ -623,7 +622,7 @@ export const CrmPage: React.FC = () => {
                                   handleUpdateStatus(order.id, order.status, e.target.value.trim());
                                 }
                               }}
-                              className="text-xs font-mono px-2 py-1 border border-zinc-300 rounded-none w-32 focus:border-black outline-none bg-white"
+                              className="text-xs font-sans tabular-nums px-2 py-1 border border-zinc-300 rounded-none w-32 focus:border-black outline-none bg-white"
                             />
                           </td>
 
@@ -672,7 +671,7 @@ export const CrmPage: React.FC = () => {
             <div className="bg-white border border-zinc-200 shadow-xs overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-zinc-950 text-white font-mono uppercase text-[10px] tracking-wider">
+                  <tr className="bg-zinc-950 text-white font-sans tabular-nums uppercase text-[10px] tracking-wider">
                     <th className="py-3.5 px-4">Клиент</th>
                     <th className="py-3.5 px-4">Контакты</th>
                     <th className="py-3.5 px-4">Город</th>
@@ -686,7 +685,7 @@ export const CrmPage: React.FC = () => {
                 <tbody className="divide-y divide-zinc-200">
                   {users.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-zinc-500 font-mono text-xs">
+                      <td colSpan={8} className="py-12 text-center text-zinc-500 font-sans tabular-nums text-xs">
                         Клиентов пока нет.
                       </td>
                     </tr>
@@ -705,43 +704,43 @@ export const CrmPage: React.FC = () => {
                               </div>
                               <div>
                                 <div className="font-bold text-zinc-950">{u.full_name || 'Клиент'}</div>
-                                <div className="text-[10px] text-zinc-400 font-mono">{u.role === 'admin' ? 'Администратор' : 'Клиент'}</div>
+                                <div className="text-[10px] text-zinc-400 font-sans tabular-nums">{u.role === 'admin' ? 'Администратор' : 'Клиент'}</div>
                               </div>
                             </div>
                           </td>
 
-                          <td className="py-3.5 px-4 font-mono">
+                          <td className="py-3.5 px-4 font-sans tabular-nums">
                             <div className="text-zinc-950">{u.email}</div>
                             <div className="text-zinc-500 text-[11px]">{u.phone || '—'}</div>
                           </td>
 
                           <td className="py-3.5 px-4">{u.city || 'Москва'}</td>
 
-                          <td className="py-3.5 px-4 font-mono font-bold text-zinc-950">
+                          <td className="py-3.5 px-4 font-sans tabular-nums font-bold text-zinc-950">
                             {ordersCount}
                           </td>
 
-                          <td className="py-3.5 px-4 font-mono font-bold text-zinc-950">
+                          <td className="py-3.5 px-4 font-sans tabular-nums font-bold text-zinc-950">
                             {totalSpent.toLocaleString('ru-RU')} ₽
                           </td>
 
                           <td className="py-3.5 px-4">
                             {isVip ? (
-                              <span className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold uppercase font-mono">
-                                👑 VIP Клиент
+                              <span className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold uppercase font-sans tabular-nums">
+                                VIP Privilège
                               </span>
                             ) : isRegular ? (
-                              <span className="px-2 py-0.5 bg-sky-100 text-sky-900 border border-sky-300 text-[10px] font-bold uppercase font-mono">
-                                💎 Постоянный
+                              <span className="px-2 py-0.5 bg-sky-100 text-sky-900 border border-sky-300 text-[10px] font-bold uppercase font-sans tabular-nums">
+                                Постоянный
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 bg-zinc-100 text-zinc-700 text-[10px] font-bold uppercase font-mono">
+                              <span className="px-2 py-0.5 bg-zinc-100 text-zinc-700 text-[10px] font-bold uppercase font-sans tabular-nums">
                                 Новый
                               </span>
                             )}
                           </td>
 
-                          <td className="py-3.5 px-4 font-mono text-zinc-500 text-[11px]">
+                          <td className="py-3.5 px-4 font-sans tabular-nums text-zinc-500 text-[11px]">
                             {u.created_at?.split('T')[0] || '—'}
                           </td>
 
@@ -780,27 +779,27 @@ export const CrmPage: React.FC = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 bg-white border border-zinc-200 space-y-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-mono">Финансовые показатели</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Финансовые показатели</div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b border-zinc-100">
                     <span className="text-xs text-zinc-600">Всего заказов:</span>
-                    <span className="font-mono font-bold text-sm">{orders.length}</span>
+                    <span className="font-sans tabular-nums font-bold text-sm">{orders.length}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-zinc-100">
                     <span className="text-xs text-zinc-600">Выручка за всё время:</span>
-                    <span className="font-mono font-bold text-sm text-emerald-700">
+                    <span className="font-sans tabular-nums font-bold text-sm text-emerald-700">
                       {(stats?.totalRevenue || 0).toLocaleString('ru-RU')} ₽
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-zinc-100">
                     <span className="text-xs text-zinc-600">Средний чек (AOV):</span>
-                    <span className="font-mono font-bold text-sm">
+                    <span className="font-sans tabular-nums font-bold text-sm">
                       {orders.length > 0 ? Math.round((stats?.totalRevenue || 0) / orders.length).toLocaleString('ru-RU') : 0} ₽
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-2">
                     <span className="text-xs text-zinc-600">Заказы в сборке:</span>
-                    <span className="font-mono font-bold text-sm text-amber-600">
+                    <span className="font-sans tabular-nums font-bold text-sm text-amber-600">
                       {orders.filter(o => o.status === 'assembling').length}
                     </span>
                   </div>
@@ -808,7 +807,7 @@ export const CrmPage: React.FC = () => {
               </div>
 
               <div className="p-6 bg-white border border-zinc-200 space-y-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-mono">Воронка заказов</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Воронка заказов</div>
                 <div className="space-y-2.5">
                   {[
                     { label: 'Собирается на складе', status: 'assembling', color: 'bg-amber-400' },
@@ -823,7 +822,7 @@ export const CrmPage: React.FC = () => {
                       <div key={step.status} className="space-y-1">
                         <div className="flex justify-between text-xs">
                           <span className="text-zinc-700">{step.label}</span>
-                          <span className="font-mono font-bold">{count} ({pct}%)</span>
+                          <span className="font-sans tabular-nums font-bold">{count} ({pct}%)</span>
                         </div>
                         <div className="w-full h-2 bg-zinc-100 overflow-hidden">
                           <div className={`h-full ${step.color}`} style={{ width: `${pct}%` }} />
@@ -835,28 +834,28 @@ export const CrmPage: React.FC = () => {
               </div>
 
               <div className="p-6 bg-white border border-zinc-200 space-y-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-mono">Логистические каналы</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Логистические каналы</div>
                 <div className="space-y-3">
                   <div className="p-3 bg-zinc-50 border border-zinc-200 flex items-center justify-between">
                     <div>
                       <div className="font-bold text-xs uppercase text-zinc-950">СДЭК Доставка</div>
                       <div className="text-[10px] text-zinc-500 mt-0.5">Основной партнер курьерской логистики</div>
                     </div>
-                    <span className="font-mono font-bold text-xs">от 50 ₽</span>
+                    <span className="font-sans tabular-nums font-bold text-xs">от 50 ₽</span>
                   </div>
                   <div className="p-3 bg-zinc-50 border border-zinc-200 flex items-center justify-between">
                     <div>
                       <div className="font-bold text-xs uppercase text-zinc-950">Яндекс Маркет / Экспресс</div>
                       <div className="text-[10px] text-zinc-500 mt-0.5">Срочная доставка по Москве и РФ</div>
                     </div>
-                    <span className="font-mono font-bold text-xs">от 50 ₽</span>
+                    <span className="font-sans tabular-nums font-bold text-xs">от 50 ₽</span>
                   </div>
                   <div className="p-3 bg-zinc-50 border border-zinc-200 flex items-center justify-between">
                     <div>
                       <div className="font-bold text-xs uppercase text-zinc-950">5POST / Ozon / Почта</div>
                       <div className="text-[10px] text-zinc-500 mt-0.5">Выдача у дома и авиа-отправления</div>
                     </div>
-                    <span className="font-mono font-bold text-xs">от 50 ₽</span>
+                    <span className="font-sans tabular-nums font-bold text-xs">от 50 ₽</span>
                   </div>
                 </div>
               </div>
@@ -879,7 +878,7 @@ export const CrmPage: React.FC = () => {
             <form onSubmit={handleCreateManualOrder} className="space-y-8">
               {/* Step A: Customer info */}
               <div className="space-y-4">
-                <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 font-mono">
+                <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 font-sans tabular-nums">
                   1. Данные покупателя
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -954,7 +953,7 @@ export const CrmPage: React.FC = () => {
 
               {/* Step B: Select items from catalog */}
               <div className="space-y-4">
-                <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 font-mono">
+                <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 font-sans tabular-nums">
                   2. Выбор позиций из каталога (45 000+ товаров)
                 </div>
 
@@ -977,7 +976,7 @@ export const CrmPage: React.FC = () => {
                         <div className="flex items-center gap-3">
                           <img src={p.images[0]} alt="" className="w-10 h-10 object-cover border border-zinc-200" />
                           <div>
-                            <div className="text-[10px] uppercase font-bold text-zinc-400 font-mono">{p.brand}</div>
+                            <div className="text-[10px] uppercase font-bold text-zinc-400 font-sans tabular-nums">{p.brand}</div>
                             <div className="text-xs font-bold text-zinc-950">{p.name}</div>
                           </div>
                         </div>
@@ -988,7 +987,7 @@ export const CrmPage: React.FC = () => {
                               key={vIdx}
                               type="button"
                               onClick={() => handleAddItemToManualOrder(p, v.label || `${v.volumeMl} мл`, v.price)}
-                              className="px-2.5 py-1 bg-black hover:bg-zinc-800 text-white text-[10px] font-mono font-bold"
+                              className="px-2.5 py-1 bg-black hover:bg-zinc-800 text-white text-[10px] font-sans tabular-nums font-bold"
                             >
                               + {v.label || `${v.volumeMl} мл`} ({v.price} ₽)
                             </button>
@@ -1001,12 +1000,12 @@ export const CrmPage: React.FC = () => {
 
                 {/* Selected Items Table */}
                 <div className="border border-zinc-200 overflow-hidden">
-                  <div className="bg-zinc-900 text-white px-4 py-2 text-xs font-mono font-bold flex justify-between">
+                  <div className="bg-zinc-900 text-white px-4 py-2 text-xs font-sans tabular-nums font-bold flex justify-between">
                     <span>Выбранные позиции в заказ</span>
                     <span>{selectedItemsForOrder.length} шт.</span>
                   </div>
                   {selectedItemsForOrder.length === 0 ? (
-                    <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+                    <div className="p-6 text-center text-xs text-zinc-400 font-sans tabular-nums">
                       Товары еще не добавлены. Воспользуйтесь поиском выше.
                     </div>
                   ) : (
@@ -1017,12 +1016,12 @@ export const CrmPage: React.FC = () => {
                             <img src={it.image} alt="" className="w-8 h-8 object-cover border border-zinc-200" />
                             <div>
                               <span className="font-bold text-zinc-950">{it.brand} {it.name}</span>
-                              <span className="ml-2 font-mono text-zinc-500">({it.volume})</span>
+                              <span className="ml-2 font-sans tabular-nums text-zinc-500">({it.volume})</span>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-4">
-                            <span className="font-bold font-mono text-zinc-950">{it.price.toLocaleString('ru-RU')} ₽</span>
+                            <span className="font-bold font-sans tabular-nums text-zinc-950">{it.price.toLocaleString('ru-RU')} ₽</span>
                             <button
                               type="button"
                               onClick={() => handleRemoveManualItem(idx)}
@@ -1065,7 +1064,7 @@ export const CrmPage: React.FC = () => {
                     type="number"
                     value={newDeliveryPrice}
                     onChange={e => setNewDeliveryPrice(Number(e.target.value))}
-                    className="w-full text-xs px-3 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white font-mono"
+                    className="w-full text-xs px-3 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white font-sans tabular-nums"
                   />
                   <div className="text-[10px] text-zinc-400 mt-0.5">Склад в Москве. Доставка от 50 ₽</div>
                 </div>
@@ -1113,7 +1112,7 @@ export const CrmPage: React.FC = () => {
                   <h2 className="font-serif text-lg font-bold uppercase tracking-wide text-zinc-950">
                     Статус защищенности базы данных Maison Arôme
                   </h2>
-                  <div className="text-xs text-zinc-500 font-mono">
+                  <div className="text-xs text-zinc-500 font-sans tabular-nums">
                     Файл базы данных: data/maison.db (SQLite Режим WAL)
                   </div>
                 </div>
@@ -1121,7 +1120,7 @@ export const CrmPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-zinc-100">
                 <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-2">
-                  <div className="font-bold text-xs uppercase text-zinc-950 font-mono">Архитектурная защита</div>
+                  <div className="font-bold text-xs uppercase text-zinc-950 font-sans tabular-nums">Архитектурная защита</div>
                   <ul className="text-xs text-zinc-600 space-y-1.5 font-light">
                     <li>• <strong>Zero SQL Injection:</strong> 100% параметризованные prepared statements.</li>
                     <li>• <strong>Криптографическое хеширование:</strong> scrypt с солью 32 байта на пользователя.</li>
@@ -1130,7 +1129,7 @@ export const CrmPage: React.FC = () => {
                   </ul>
                 </div>
 
-                <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-2 font-mono text-xs">
+                <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-2 font-sans tabular-nums text-xs">
                   <div className="font-bold uppercase text-zinc-950">Системные показатели</div>
                   <div className="text-zinc-600 space-y-1">
                     <div>Движок: <span className="font-bold text-zinc-900">{audit?.database || 'node:sqlite'}</span></div>
@@ -1159,7 +1158,7 @@ export const CrmPage: React.FC = () => {
                 <h3 className="font-serif text-2xl font-bold uppercase tracking-tight text-zinc-950">
                   Заказ {selectedOrder.orderNumber}
                 </h3>
-                <div className="text-xs text-zinc-400 font-mono mt-0.5">
+                <div className="text-xs text-zinc-400 font-sans tabular-nums mt-0.5">
                   Создан: {selectedOrder.createdAt || selectedOrder.date}
                 </div>
               </div>
@@ -1175,16 +1174,16 @@ export const CrmPage: React.FC = () => {
             {/* Customer Details Box */}
             <div className="p-4 bg-zinc-50 border border-zinc-200 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 font-mono">Получатель:</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 font-sans tabular-nums">Получатель:</div>
                 <div className="font-bold text-sm text-zinc-950 mt-0.5">
                   {selectedOrder.recipient?.fullName || selectedOrder.customerName || 'Клиент'}
                 </div>
-                <div className="text-zinc-600 mt-1 flex items-center gap-1 font-mono">
+                <div className="text-zinc-600 mt-1 flex items-center gap-1 font-sans tabular-nums">
                   <Phone className="w-3.5 h-3.5" />
                   <span>{selectedOrder.recipient?.phone || selectedOrder.phone || '—'}</span>
                 </div>
                 {selectedOrder.recipient?.email && (
-                  <div className="text-zinc-600 mt-0.5 flex items-center gap-1 font-mono">
+                  <div className="text-zinc-600 mt-0.5 flex items-center gap-1 font-sans tabular-nums">
                     <Mail className="w-3.5 h-3.5" />
                     <span>{selectedOrder.recipient.email}</span>
                   </div>
@@ -1192,7 +1191,7 @@ export const CrmPage: React.FC = () => {
               </div>
 
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 font-mono">Доставка:</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 font-sans tabular-nums">Доставка:</div>
                 <div className="font-bold text-zinc-950 mt-0.5">
                   {selectedOrder.deliveryMethod || 'СДЭК'} (г. {selectedOrder.recipient?.city || selectedOrder.city || 'Москва'})
                 </div>
@@ -1209,7 +1208,7 @@ export const CrmPage: React.FC = () => {
 
             {/* Items List */}
             <div className="space-y-3">
-              <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 font-mono">
+              <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 font-sans tabular-nums">
                 Состав заказа ({(selectedOrder.items || []).length} товаров)
               </div>
               <div className="border border-zinc-200 divide-y divide-zinc-200">
@@ -1219,10 +1218,10 @@ export const CrmPage: React.FC = () => {
                       <img src={it.image || '/assets/placeholder-product.svg'} alt="" className="w-12 h-12 object-cover border border-zinc-200" />
                       <div>
                         <div className="font-bold text-zinc-950">{it.brand} {it.name}</div>
-                        <div className="text-[11px] text-zinc-500 font-mono">{it.volume || it.volumeLabel || '10 мл'} × {it.quantity || 1} шт.</div>
+                        <div className="text-[11px] text-zinc-500 font-sans tabular-nums">{it.volume || it.volumeLabel || '10 мл'} × {it.quantity || 1} шт.</div>
                       </div>
                     </div>
-                    <div className="font-mono font-bold text-sm text-zinc-950">
+                    <div className="font-sans tabular-nums font-bold text-sm text-zinc-950">
                       {((it.price || 0) * (it.quantity || 1)).toLocaleString('ru-RU')} ₽
                     </div>
                   </div>
@@ -1231,7 +1230,7 @@ export const CrmPage: React.FC = () => {
             </div>
 
             {/* Total Strip */}
-            <div className="pt-4 border-t border-zinc-200 flex items-center justify-between font-mono">
+            <div className="pt-4 border-t border-zinc-200 flex items-center justify-between font-sans tabular-nums">
               <span className="text-sm uppercase tracking-wider font-bold">Итого к оплате:</span>
               <span className="text-2xl font-black text-zinc-950">
                 {(selectedOrder.totalAmount || selectedOrder.total || 0).toLocaleString('ru-RU')} ₽

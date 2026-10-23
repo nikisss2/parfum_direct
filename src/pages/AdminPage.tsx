@@ -51,7 +51,6 @@ import {
   Edit3,
   Plus,
   Save,
-  Sparkles,
   Percent,
   X,
   Bot,
@@ -788,7 +787,7 @@ export const AdminPage: React.FC = () => {
                   value={token}
                   onChange={e => setToken(e.target.value)}
                   placeholder="parfum-admin-change-me"
-                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-mono transition-colors"
+                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-sans tabular-nums transition-colors"
                 />
               </div>
 
@@ -996,7 +995,7 @@ export const AdminPage: React.FC = () => {
                       placeholder="1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ"
                       value={telegramConfig.botToken}
                       onChange={e => setTelegramConfig({ ...telegramConfig, botToken: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3 py-2 text-xs font-mono outline-none focus:border-black"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3 py-2 text-xs font-sans tabular-nums outline-none focus:border-black"
                     />
                   </label>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
@@ -1006,7 +1005,7 @@ export const AdminPage: React.FC = () => {
                       placeholder="Например: 987654321"
                       value={telegramConfig.chatId}
                       onChange={e => setTelegramConfig({ ...telegramConfig, chatId: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3 py-2 text-xs font-mono outline-none focus:border-black"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3 py-2 text-xs font-sans tabular-nums outline-none focus:border-black"
                     />
                   </label>
                 </div>
@@ -1187,11 +1186,11 @@ export const AdminPage: React.FC = () => {
                             }}
                             className="text-xs font-bold uppercase tracking-wider px-3 py-2 rounded-none border border-zinc-300 bg-white hover:border-black outline-none text-zinc-900 cursor-pointer transition-colors"
                           >
-                            <option value="paid">💳 Оплачен онлайн</option>
-                            <option value="assembling">🧪 В сборке (отлив атомайзеров)</option>
-                            <option value="sent">🚚 Отправлен в доставку</option>
-                            <option value="delivered">✅ Доставлен покупателю</option>
-                            <option value="cancelled">❌ Отменен</option>
+                            <option value="paid">Оплачен онлайн</option>
+                            <option value="assembling">В сборке (отлив атомайзеров)</option>
+                            <option value="sent">Отправлен в доставку</option>
+                            <option value="delivered">Доставлен покупателю</option>
+                            <option value="cancelled">Отменен</option>
                           </select>
                         </div>
 
@@ -1221,7 +1220,7 @@ export const AdminPage: React.FC = () => {
                         </div>
                         <div className="font-bold text-zinc-900 uppercase tracking-wide">{order.recipient.fullName}</div>
                         <div className="flex flex-wrap items-center gap-3 text-zinc-700">
-                          <a href={`tel:${order.recipient.phone}`} className="flex items-center gap-1 hover:text-black font-mono">
+                          <a href={`tel:${order.recipient.phone}`} className="flex items-center gap-1 hover:text-black font-sans tabular-nums">
                             <Phone className="w-3.5 h-3.5 text-zinc-500" />
                             <span>{order.recipient.phone}</span>
                           </a>
@@ -1235,7 +1234,7 @@ export const AdminPage: React.FC = () => {
                             WhatsApp
                           </a>
                         </div>
-                        <div className="flex items-center gap-1 text-zinc-500 font-mono text-[11px]">
+                        <div className="flex items-center gap-1 text-zinc-500 font-sans tabular-nums text-[11px]">
                           <Mail className="w-3.5 h-3.5 text-zinc-400" />
                           <span>{order.recipient.email}</span>
                         </div>
@@ -1264,7 +1263,7 @@ export const AdminPage: React.FC = () => {
                             onChange={e =>
                               setEditingTracking(prev => ({ ...prev, [order.id]: e.target.value }))
                             }
-                            className="px-3 py-2 text-xs rounded-none border border-zinc-300 bg-white font-mono flex-1 outline-none focus:border-black transition-colors"
+                            className="px-3 py-2 text-xs rounded-none border border-zinc-300 bg-white font-sans tabular-nums flex-1 outline-none focus:border-black transition-colors"
                           />
                           <button
                             type="button"
@@ -1408,7 +1407,7 @@ export const AdminPage: React.FC = () => {
                     .map(u => (
                       <tr key={u.id} className="hover:bg-zinc-50 transition-colors">
                         <td className="py-3 px-4 font-medium text-zinc-900">{u.full_name}</td>
-                        <td className="py-3 px-4 font-mono text-[11px] text-zinc-600">{u.email}</td>
+                        <td className="py-3 px-4 font-sans tabular-nums text-[11px] text-zinc-600">{u.email}</td>
                         <td className="py-3 px-4 text-zinc-700">{u.phone || '—'}</td>
                         <td className="py-3 px-4 text-zinc-700">{u.city || '—'}</td>
                         <td className="py-3 px-4">
@@ -1423,7 +1422,7 @@ export const AdminPage: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-right font-medium text-zinc-900">{u.orders_count || 0}</td>
-                        <td className="py-3 px-4 text-right font-medium text-zinc-950 font-mono">
+                        <td className="py-3 px-4 text-right font-medium text-zinc-950 font-sans tabular-nums">
                           {(u.total_spent || 0).toLocaleString('ru-RU')} ₽
                         </td>
                         <td className="py-3 px-4 text-right text-zinc-500 text-[11px]">
@@ -1538,11 +1537,11 @@ export const AdminPage: React.FC = () => {
                           </div>
                           <div className="font-bold text-zinc-900 truncate uppercase tracking-tight">{prod.name}</div>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[11px] text-zinc-900 font-mono font-bold">
+                            <span className="text-[11px] text-zinc-900 font-sans tabular-nums font-bold">
                               {(prod.minPrice || 0).toLocaleString('ru-RU')} ₽
                             </span>
                             {prod.oldPrice && prod.oldPrice > (prod.minPrice || 0) && (
-                              <span className="text-[10px] text-zinc-400 font-mono line-through">
+                              <span className="text-[10px] text-zinc-400 font-sans tabular-nums line-through">
                                 {prod.oldPrice.toLocaleString('ru-RU')} ₽
                               </span>
                             )}
@@ -1592,7 +1591,7 @@ export const AdminPage: React.FC = () => {
                     <h3 className="text-lg font-bold text-zinc-950 uppercase tracking-tight">
                       {editingProduct.brand} — {editingProduct.name}
                     </h3>
-                    <div className="text-[11px] text-zinc-500 font-mono">
+                    <div className="text-[11px] text-zinc-500 font-sans tabular-nums">
                       ID: {editingProduct.id} {editingProduct.sku ? `• Артикул: ${editingProduct.sku}` : ''}
                     </div>
                   </div>
@@ -1923,7 +1922,7 @@ export const AdminPage: React.FC = () => {
                             type="number"
                             value={vol.price}
                             onChange={e => handleUpdateVolume(idx, { price: Number(e.target.value) })}
-                            className="w-full text-xs border border-zinc-300 rounded-none px-2.5 py-1.5 bg-white outline-none focus:border-black font-mono font-bold"
+                            className="w-full text-xs border border-zinc-300 rounded-none px-2.5 py-1.5 bg-white outline-none focus:border-black font-sans tabular-nums font-bold"
                           />
                         </div>
                       </div>

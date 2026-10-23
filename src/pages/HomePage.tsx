@@ -4,7 +4,6 @@ import { fetchMeta, fetchProducts, listItemToPerfume } from '../api/catalog';
 import { ProductCard } from '../components/ProductCard';
 import { Perfume, PRODUCT_KIND_OPTIONS } from '../types';
 import {
-  Sparkles,
   ArrowRight,
   ShieldCheck,
   Camera,
@@ -79,8 +78,8 @@ export const HomePage: React.FC = () => {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-24 lg:py-32">
           <div className="max-w-2xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-black/60 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest text-white font-mono">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-black/60 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest text-white font-sans font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
               <span>Оригинальная продукция</span>
             </div>
 
@@ -108,7 +107,7 @@ export const HomePage: React.FC = () => {
                 to="/aromabox"
                 className="px-7 py-4 rounded-none bg-black border border-white text-white hover:bg-white hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2 transition-colors"
               >
-                <Sparkles className="w-4 h-4 text-amber-400" />
+                <Gift className="w-4 h-4 text-amber-400" />
                 <span>Конструктор ароматов (−15%)</span>
               </Link>
               <Link
@@ -173,11 +172,11 @@ export const HomePage: React.FC = () => {
                   to="/aromabox"
                   className="px-7 py-4 rounded-none bg-white text-zinc-950 hover:bg-zinc-200 font-bold uppercase tracking-widest text-xs flex items-center gap-2 transition-colors"
                 >
-                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <Gift className="w-4 h-4 text-zinc-950" />
                   <span>Собрать свой аромабокс</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <div className="text-xs uppercase tracking-wider text-zinc-400 flex items-center gap-2 font-mono">
+                <div className="text-xs uppercase tracking-wider text-zinc-400 flex items-center gap-2 font-sans font-medium">
                   <span className="w-2 h-2 rounded-none bg-[#A3B18A]" />
                   <span>Скидка от 10% до 20% считается автоматически</span>
                 </div>
@@ -232,13 +231,13 @@ export const HomePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-zinc-200">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-black bg-black text-white text-[10px] font-bold uppercase tracking-wider font-mono">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-black bg-black text-white text-[10px] font-bold uppercase tracking-wider font-sans">
                 <Camera className="w-3.5 h-3.5" />
                 <span>Реальные фото перед отправкой</span>
               </span>
               <Link
                 to="/reviews"
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-zinc-300 bg-white text-zinc-900 text-[10px] font-bold uppercase tracking-wider hover:border-black transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-zinc-300 bg-white text-zinc-900 text-[10px] font-bold uppercase tracking-wider hover:border-black transition-colors font-sans"
               >
                 <Star className="w-3.5 h-3.5 fill-black text-black" />
                 <span>Отзывы 5.0 (1 420+)</span>
@@ -281,16 +280,16 @@ export const HomePage: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-none font-mono">
+                <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-none font-sans tabular-nums">
                   {item.orderNumber}
                 </span>
-                <span className="absolute bottom-3 right-3 px-2 py-0.5 bg-white/95 text-zinc-950 text-[10px] font-bold uppercase tracking-wider rounded-none font-mono shadow-xs backdrop-blur-xs">
+                <span className="absolute bottom-3 right-3 px-2 py-0.5 bg-white/95 text-zinc-950 text-[10px] font-bold uppercase tracking-wider rounded-none font-sans shadow-xs backdrop-blur-xs">
                   г. {item.city}
                 </span>
               </div>
               <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                 <div>
-                  <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-0.5">
+                  <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-0.5 font-sans">
                     Заказ для {item.customerName}
                   </div>
                   <h3 className="font-bold text-sm text-zinc-950 group-hover:underline transition-colors uppercase tracking-tight">
@@ -300,7 +299,7 @@ export const HomePage: React.FC = () => {
                     {item.description}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400 font-mono">
+                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400 font-sans">
                   <span className="flex items-center gap-1 text-black font-semibold uppercase tracking-wider text-[10px]">
                     <CheckCircle2 className="w-3.5 h-3.5" /> 100% оригинал
                   </span>

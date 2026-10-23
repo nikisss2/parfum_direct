@@ -5,7 +5,7 @@ import { ProductCard } from '../components/ProductCard';
 import { SEO } from '../components/SEO';
 import { Gender, Perfume, ProductKind, PRODUCT_KIND_OPTIONS } from '../types';
 import { isPureBrand } from '../data/brandsData';
-import { SlidersHorizontal, X, Search, RotateCcw, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { SlidersHorizontal, X, Search, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const PAGE_SIZE = 24;
 
@@ -387,7 +387,7 @@ export const CatalogPage: React.FC = () => {
           />
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-1.5">
             <span>Только со скидкой</span>
-            <span className="text-[9px] bg-[#5A6B32] text-white px-1.5 py-0.2 font-mono">SALE</span>
+            <span className="text-[9px] bg-[#5A6B32] text-white px-1.5 py-0.2 font-sans font-bold">SALE</span>
           </span>
         </label>
       </div>
@@ -447,7 +447,7 @@ export const CatalogPage: React.FC = () => {
                   }`}
                 >
                   <span>{note}</span>
-                  <span className={`text-[9px] font-mono ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                  <span className={`text-[9px] font-sans tabular-nums ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
                     {count}
                   </span>
                 </button>
@@ -490,7 +490,7 @@ export const CatalogPage: React.FC = () => {
                 />
                 <span className="font-medium truncate">{brand}</span>
               </div>
-              <span className="text-[11px] font-mono text-zinc-400 group-hover:text-zinc-950 transition-colors shrink-0">
+              <span className="text-[11px] font-sans tabular-nums text-zinc-400 group-hover:text-zinc-950 transition-colors shrink-0">
                 {count}
               </span>
             </label>
@@ -522,7 +522,7 @@ export const CatalogPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-zinc-200">
         <div>
           <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">Каталог</h1>
-          <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-mono">
+          <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-sans font-medium">
             Парфюмерия и профессиональный уход · найдено {total.toLocaleString('ru-RU')}
           </p>
         </div>
@@ -602,7 +602,7 @@ export const CatalogPage: React.FC = () => {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <span className="text-xs uppercase tracking-wider font-mono text-zinc-700 px-3">
+                  <span className="text-xs uppercase tracking-wider font-sans tabular-nums text-zinc-700 px-3">
                     Стр. {page} из {totalPages}
                   </span>
                   <button
@@ -630,7 +630,7 @@ export const CatalogPage: React.FC = () => {
               <span className="font-bold text-xs uppercase tracking-widest text-zinc-950 flex items-center gap-2">
                 <span>Фильтры</span>
                 {activeFiltersCount > 0 && (
-                  <span className="px-1.5 py-0.5 bg-black text-white text-[10px] font-mono">
+                  <span className="px-1.5 py-0.5 bg-black text-white text-[10px] font-sans font-bold tabular-nums">
                     {activeFiltersCount}
                   </span>
                 )}

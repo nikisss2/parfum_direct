@@ -6,7 +6,6 @@ import {
   ShieldCheck,
   Camera,
   ThumbsUp,
-  Sparkles,
   ArrowRight,
   Package,
   MapPin,
@@ -62,7 +61,7 @@ export const ReviewsPage: React.FC = () => {
           {/* Left Column: Big score and summary */}
           <div className="lg:col-span-7 space-y-5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none border border-zinc-800 bg-white/5 text-[11px] font-bold uppercase tracking-widest text-amber-300">
-              <Sparkles className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-3.5 h-3.5" />
               <span>112 проверенных отзывов реальных покупателей</span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-normal font-serif tracking-tight leading-tight">
@@ -173,7 +172,7 @@ export const ReviewsPage: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="text-xs text-zinc-500 font-mono">
+        <div className="text-xs text-zinc-500 font-sans tabular-nums">
           Показано: {displayedReviews.length} из {filteredReviews.length}
         </div>
       </div>
@@ -230,8 +229,8 @@ export const ReviewsPage: React.FC = () => {
               {/* Admin reply if any */}
               {review.adminReply && (
                 <div className="mt-4 p-4 rounded-none bg-zinc-50 border-l-2 border-black text-xs space-y-1">
-                  <div className="font-bold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5 text-[11px]">
-                    <Sparkles className="w-3 h-3 text-black" />
+                  <div className="font-bold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5 text-[11px] font-sans">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-black" />
                     Ответ Maison Arôme:
                   </div>
                   <div className="text-zinc-600 leading-relaxed font-light">{review.adminReply}</div>
@@ -270,7 +269,7 @@ export const ReviewsPage: React.FC = () => {
             <span>Показать еще 12 отзывов</span>
             <ChevronDown className="w-4 h-4" />
           </button>
-          <div className="text-[11px] text-zinc-400 font-mono mt-2">
+          <div className="text-[11px] text-zinc-400 font-sans tabular-nums mt-2">
             Показано {displayedReviews.length} из {filteredReviews.length} отзывов
           </div>
         </div>
@@ -280,7 +279,7 @@ export const ReviewsPage: React.FC = () => {
       <section id="gallery" className="pt-10 space-y-6 border-t border-zinc-200">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest font-mono mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest font-sans mb-2">
               <Camera className="w-3.5 h-3.5 text-white" />
               <span>Фотоконтроль заказов</span>
             </div>
@@ -317,7 +316,7 @@ export const ReviewsPage: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-mono">
+                <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-sans tabular-nums">
                   {item.orderNumber}
                 </span>
                 <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-white/95 backdrop-blur-xs text-zinc-900 text-[8px] font-bold uppercase tracking-wider">
@@ -337,7 +336,7 @@ export const ReviewsPage: React.FC = () => {
                     {item.description}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[9px] text-zinc-400 font-mono">
+                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[9px] text-zinc-400 font-sans tabular-nums">
                   <span className="flex items-center gap-1 text-emerald-600 font-bold uppercase">
                     <CheckCircle2 className="w-2.5 h-2.5" /> Фото подтверждено
                   </span>

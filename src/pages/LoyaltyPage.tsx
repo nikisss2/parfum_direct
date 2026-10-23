@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import {
   CreditCard,
-  Sparkles,
   Gift,
   Coins,
   ShieldCheck,
@@ -92,7 +91,7 @@ export const LoyaltyPage: React.FC = () => {
                     Club Privilège
                   </span>
                 </div>
-                <div className="px-2 py-0.5 border border-zinc-600 text-[10px] font-mono uppercase font-bold text-amber-300">
+                <div className="px-2 py-0.5 border border-zinc-600 text-[10px] font-sans tabular-nums uppercase font-bold text-amber-300">
                   {cardData ? cardData.tier : '500 бонусов в подарок'}
                 </div>
               </div>
@@ -103,7 +102,7 @@ export const LoyaltyPage: React.FC = () => {
                 </span>
                 <div className="text-3xl sm:text-4xl font-serif font-bold text-white flex items-baseline gap-2">
                   <span>{cardData ? cardData.points.toLocaleString('ru-RU') : '500'}</span>
-                  <span className="text-xs uppercase text-[#5A6B32] font-mono font-bold tracking-widest">
+                  <span className="text-xs uppercase text-[#5A6B32] font-sans tabular-nums font-bold tracking-widest">
                     баллов (₽)
                   </span>
                 </div>
@@ -114,7 +113,7 @@ export const LoyaltyPage: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex items-end justify-between text-[11px] text-zinc-400 z-10 font-mono">
+              <div className="flex items-end justify-between text-[11px] text-zinc-400 z-10 font-sans tabular-nums">
                 <span>{cardData?.cardNumber || 'MA-CLUB-XXXX'}</span>
                 <span>1 бонус = 1 рубль</span>
               </div>
@@ -183,10 +182,10 @@ export const LoyaltyPage: React.FC = () => {
             {/* Tier 1 */}
             <div className="p-6 border border-zinc-200 bg-white space-y-4 hover:border-black transition-colors">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-mono">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">
                   Уровень 1
                 </span>
-                <span className="px-2 py-0.5 bg-zinc-100 text-xs font-bold text-zinc-900 font-mono">
+                <span className="px-2 py-0.5 bg-zinc-100 text-xs font-bold text-zinc-900 font-sans tabular-nums">
                   5% КЭШБЭК
                 </span>
               </div>
@@ -194,7 +193,7 @@ export const LoyaltyPage: React.FC = () => {
               <p className="text-xs text-zinc-600 leading-relaxed font-light">
                 Присваивается сразу при регистрации. Включает 500 приветственных баллов и 5% возврат с каждой покупки.
               </p>
-              <div className="text-[11px] font-mono text-zinc-400 pt-2 border-t border-zinc-100">
+              <div className="text-[11px] font-sans tabular-nums text-zinc-400 pt-2 border-t border-zinc-100">
                 Условие: 0–4 заказа
               </div>
             </div>
@@ -205,10 +204,10 @@ export const LoyaltyPage: React.FC = () => {
                 Популярный
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#5A6B32] font-mono">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#5A6B32] font-sans tabular-nums">
                   Уровень 2
                 </span>
-                <span className="px-2 py-0.5 bg-[#5A6B32] text-xs font-bold text-white font-mono">
+                <span className="px-2 py-0.5 bg-[#5A6B32] text-xs font-bold text-white font-sans tabular-nums">
                   7% КЭШБЭК
                 </span>
               </div>
@@ -216,7 +215,7 @@ export const LoyaltyPage: React.FC = () => {
               <p className="text-xs text-zinc-600 leading-relaxed font-light">
                 Активируется автоматически после оформления 5-го заказа. Повышенный кэшбэк 7% и подарки к праздникам.
               </p>
-              <div className="text-[11px] font-mono text-black font-bold pt-2 border-t border-zinc-100">
+              <div className="text-[11px] font-sans tabular-nums text-black font-bold pt-2 border-t border-zinc-100">
                 Условие: от 5 заказов
               </div>
             </div>
@@ -224,10 +223,10 @@ export const LoyaltyPage: React.FC = () => {
             {/* Tier 3 */}
             <div className="p-6 border border-zinc-200 bg-white space-y-4 hover:border-black transition-colors">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-600 font-mono">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-600 font-sans tabular-nums">
                   Уровень 3
                 </span>
-                <span className="px-2 py-0.5 bg-zinc-950 text-xs font-bold text-amber-300 font-mono">
+                <span className="px-2 py-0.5 bg-zinc-950 text-xs font-bold text-amber-300 font-sans tabular-nums">
                   10% КЭШБЭК
                 </span>
               </div>
@@ -235,7 +234,7 @@ export const LoyaltyPage: React.FC = () => {
               <p className="text-xs text-zinc-600 leading-relaxed font-light">
                 Максимальный статус для ценителей парфюмерии: 10% кэшбэк, персональный парфюмерный консультант и закрытые предзаказы редких позиций.
               </p>
-              <div className="text-[11px] font-mono text-zinc-400 pt-2 border-t border-zinc-100">
+              <div className="text-[11px] font-sans tabular-nums text-zinc-400 pt-2 border-t border-zinc-100">
                 Условие: от 15 заказов
               </div>
             </div>

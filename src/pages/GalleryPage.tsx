@@ -10,7 +10,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   Send,
   MapPin,
   Package
@@ -69,7 +68,7 @@ export const GalleryPage: React.FC = () => {
             Каждая посылка собирается вручную в нашем бутике. Перед отправкой мы делаем детальные фотографии готовых отливантов, оригинальных коробок и батч-кодов, после чего направляем фото-отчёт клиенту в Telegram или WhatsApp.
           </p>
 
-          <div className="pt-2 flex flex-wrap gap-4 text-xs font-mono">
+          <div className="pt-2 flex flex-wrap gap-4 text-xs font-sans font-medium">
             <div className="flex items-center gap-2 text-emerald-400">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>Оплата после проверки фото</span>
@@ -109,7 +108,7 @@ export const GalleryPage: React.FC = () => {
           ))}
         </div>
 
-        <div className="text-xs text-zinc-400 font-mono">
+        <div className="text-xs text-zinc-400 font-sans">
           Нажмите на карточку для просмотра в полном размере
         </div>
       </div>
@@ -135,7 +134,7 @@ export const GalleryPage: React.FC = () => {
 
                 {/* Top Badge */}
                 <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-                  <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider font-mono">
+                  <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider font-sans tabular-nums">
                     {order.orderNumber}
                   </span>
                   <span className="px-2 py-0.5 bg-white/95 backdrop-blur-xs text-zinc-900 text-[9px] font-bold uppercase tracking-wider">
@@ -176,13 +175,13 @@ export const GalleryPage: React.FC = () => {
                     {order.items.slice(0, 2).map((it, idx) => (
                       <span
                         key={idx}
-                        className="px-1.5 py-0.5 bg-zinc-100 text-[10px] text-zinc-700 font-mono truncate max-w-[200px]"
+                        className="px-1.5 py-0.5 bg-zinc-100 text-[10px] text-zinc-700 font-sans tabular-nums truncate max-w-[200px]"
                       >
                         {it}
                       </span>
                     ))}
                     {order.items.length > 2 && (
-                      <span className="px-1.5 py-0.5 bg-zinc-100 text-[10px] text-zinc-500 font-mono">
+                      <span className="px-1.5 py-0.5 bg-zinc-100 text-[10px] text-zinc-500 font-sans tabular-nums">
                         +{order.items.length - 2} еще
                       </span>
                     )}
@@ -190,7 +189,7 @@ export const GalleryPage: React.FC = () => {
                 </div>
 
                 {/* Bottom Meta */}
-                <div className="pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                <div className="pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[10px] text-zinc-400 font-sans tabular-nums">
                   <span className="flex items-center gap-1 text-emerald-600 font-bold uppercase">
                     <CheckCircle2 className="w-3 h-3" /> {order.status}
                   </span>
@@ -249,7 +248,7 @@ export const GalleryPage: React.FC = () => {
                 alt={activeOrder.title}
                 className="w-full h-full object-contain max-h-[70vh]"
               />
-              <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-xs text-white text-[11px] font-mono">
+              <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-xs text-white text-[11px] font-sans tabular-nums">
                 {selectedOrderIndex! + 1} из {ORDERS_GALLERY.length} фотоотчетов
               </div>
             </div>
@@ -257,7 +256,7 @@ export const GalleryPage: React.FC = () => {
             {/* Content Column */}
             <div className="p-6 md:w-2/5 flex flex-col justify-between space-y-5 overflow-y-auto bg-white text-zinc-900">
               <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs font-mono text-zinc-400 pb-2 border-b border-zinc-200">
+                <div className="flex items-center justify-between text-xs font-sans tabular-nums text-zinc-400 pb-2 border-b border-zinc-200">
                   <span className="font-bold text-black">{activeOrder.orderNumber}</span>
                   <span>{activeOrder.date}</span>
                 </div>
@@ -284,7 +283,7 @@ export const GalleryPage: React.FC = () => {
                   <ul className="space-y-1 text-xs">
                     {activeOrder.items.map((it, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-zinc-800">
-                        <span className="text-[#5A6B32] font-bold font-mono">✓</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#5A6B32] shrink-0 mt-0.5" />
                         <span>{it}</span>
                       </li>
                     ))}
@@ -295,7 +294,7 @@ export const GalleryPage: React.FC = () => {
                 <div className="p-3 bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-zinc-500">Логистика:</span>
-                    <span className="font-bold font-mono text-zinc-900">{activeOrder.deliveryService}</span>
+                    <span className="font-bold font-sans tabular-nums text-zinc-900">{activeOrder.deliveryService}</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-zinc-500">Контроль:</span>

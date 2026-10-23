@@ -336,7 +336,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                 Выбор пункта выдачи (ПВЗ)
               </h2>
             </div>
-            <p className="text-[11px] text-zinc-500 font-mono mt-0.5">
+            <p className="text-[11px] text-zinc-500 font-sans mt-0.5">
               Яндекс Доставка · СДЭК · Boxberry · 5POST по всей России (склад в Москве)
             </p>
           </div>
@@ -376,7 +376,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
             <button
               type="button"
               onClick={handleUseGeolocation}
-              className="px-3.5 py-2 border border-zinc-300 hover:border-black bg-zinc-50 hover:bg-black hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shrink-0 font-mono"
+              className="px-3.5 py-2 border border-zinc-300 hover:border-black bg-zinc-50 hover:bg-black hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shrink-0 font-sans"
             >
               <Navigation className="w-3.5 h-3.5" />
               <span>Рядом со мной</span>
@@ -385,7 +385,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
 
           {/* Quick Cities Bar */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-            <span className="text-[10px] font-mono uppercase text-zinc-400 shrink-0 mr-1">
+            <span className="text-[10px] font-sans uppercase text-zinc-400 shrink-0 mr-1">
               Города:
             </span>
             {POPULAR_RUSSIAN_CITIES.map(c => {
@@ -477,7 +477,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
               <div className="absolute left-4 right-4 bottom-4 bg-white border border-black p-4 shadow-2xl z-20 animate-in slide-in-from-bottom-2 sm:max-w-md sm:left-4 sm:right-auto">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                    <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-zinc-500">
                       {selectedPoint.networkName}
                     </span>
                     <h4 className="font-serif text-sm font-bold text-zinc-950 mt-0.5 leading-snug">
@@ -537,7 +537,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
               <span className="font-bold uppercase tracking-wider text-zinc-900">
                 Пункты выдачи ({filteredPoints.length})
               </span>
-              <span className="text-[10px] text-zinc-500 font-mono">
+              <span className="text-[10px] text-zinc-500 font-sans">
                 {activeCity}
               </span>
             </div>
@@ -568,7 +568,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span
-                              className={`text-[9px] font-mono uppercase font-bold px-1.5 py-0.5 border ${
+                              className={`text-[9px] font-sans uppercase font-bold px-1.5 py-0.5 border ${
                                 p.network === 'yandex'
                                   ? 'border-amber-400 text-amber-900 bg-amber-50'
                                   : p.network === 'cdek'
@@ -593,17 +593,17 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                         </div>
 
                         <div className="text-right shrink-0">
-                          <div className="text-xs font-mono font-bold text-zinc-950">
+                          <div className="text-xs font-sans tabular-nums font-bold text-zinc-950">
                             {p.price} ₽
                           </div>
-                          <div className="text-[10px] font-mono text-zinc-400">
+                          <div className="text-[10px] font-sans tabular-nums text-zinc-400">
                             {p.deliveryDays}
                           </div>
                         </div>
                       </div>
 
                       <div className="mt-2.5 pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px]">
-                        <span className="text-zinc-500 font-mono text-[10px]">
+                        <span className="text-zinc-500 font-sans tabular-nums text-[10px]">
                           {p.workTime}
                         </span>
 
@@ -614,7 +614,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                             onSelectPvz(p);
                             onClose();
                           }}
-                          className="px-2.5 py-1 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-wider transition-colors"
+                          className="px-2.5 py-1 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-wider transition-colors font-sans"
                         >
                           Выбрать
                         </button>
@@ -628,7 +628,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
         </div>
 
         {/* Footer info bar */}
-        <div className="p-3 border-t border-zinc-200 bg-zinc-50 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-zinc-500 font-mono shrink-0">
+        <div className="p-3 border-t border-zinc-200 bg-zinc-50 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-zinc-500 font-sans shrink-0">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-zinc-700">
               <ShieldCheck className="w-4 h-4 text-[#5A6B32]" />
