@@ -129,14 +129,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
   const productUrl = `/product/${encodeURIComponent(perfume.slug || perfume.id)}`;
 
   return (
-    <div className="group relative flex flex-col bg-white border border-transparent hover:border-zinc-200 p-2 sm:p-3 transition-colors duration-200">
+    <div className="group relative flex flex-col bg-white border border-transparent hover:border-zinc-300 hover:shadow-xs p-2 sm:p-3 transition-all duration-300 ease-out">
       {/* 1. Image Container (ЗЯ soft light-gray background #f4f4f5 with centered bottle) */}
       <div className="relative aspect-square sm:aspect-[4/5] bg-[#f4f4f5] flex items-center justify-center overflow-hidden">
         <Link to={productUrl} className="block w-full h-full p-3 sm:p-4">
           <img
             src={perfume.images?.[0] || PLACEHOLDER}
             alt={`${perfume.brand || ''} ${perfume.name || ''}`}
-            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-400 ease-out"
             loading="lazy"
             decoding="async"
             onError={e => {

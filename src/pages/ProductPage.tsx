@@ -235,11 +235,11 @@ export const ProductPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
         <div className="space-y-4">
-          <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-zinc-50 border border-zinc-200">
+          <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-[#f4f4f5] border border-zinc-200 flex items-center justify-center p-4 sm:p-8">
             <img
               src={perfume.images[activeImageIndex] || perfume.images[0] || '/assets/placeholder-product.svg'}
               alt={`${perfume.brand} ${perfume.name}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain object-center transition-transform duration-500 ease-out"
               decoding="async"
               onError={e => {
                 e.currentTarget.onerror = null;

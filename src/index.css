@@ -59,3 +59,124 @@
     background: #52525b;
   }
 }
+
+/* ========================================================================= */
+/* LUXURY MINIMALIST MOTION SYSTEM (200-400ms Smooth UI / Apple ease)       */
+/* ========================================================================= */
+@keyframes megaDropdownEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes megaBackdropFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dropdownSubtle {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalContentEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes drawerSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawerSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation utility classes */
+.anim-dropdown-menu {
+  animation: megaDropdownEnter 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.anim-backdrop {
+  animation: megaBackdropFade 240ms ease-out forwards;
+  will-change: opacity;
+}
+
+.anim-popover {
+  animation: dropdownSubtle 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.anim-modal {
+  animation: modalContentEnter 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.anim-drawer-right {
+  animation: drawerSlideRight 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.anim-drawer-left {
+  animation: drawerSlideLeft 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.anim-fade {
+  animation: fadeInScale 260ms ease-out forwards;
+}
+
+/* Smooth micro-interactions */
+button:active:not(:disabled),
+a.btn:active {
+  transform: scale(0.98);
+  transition: transform 120ms ease-out;
+}
+

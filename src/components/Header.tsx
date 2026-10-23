@@ -310,7 +310,7 @@ export const Header: React.FC = () => {
                 {moreMenuOpen && (
                   <div
                     onMouseLeave={() => setMoreMenuOpen(false)}
-                    className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-72 bg-white border border-zinc-200 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-72 bg-white border border-zinc-200 shadow-2xl py-2 z-50 anim-popover"
                   >
                     <div className="px-4 py-2 border-b border-zinc-100 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                       Сервисы и привилегии
@@ -427,10 +427,10 @@ export const Header: React.FC = () => {
       {/* GOLDEN APPLE (ЗЯ) SEARCH OVERLAY (DESKTOP & MOBILE WITH FULL AUTOCOMPLETE) */}
       {/* ========================================================================= */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs animate-in fade-in duration-300 flex flex-col justify-start">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs anim-backdrop flex flex-col justify-start">
           <div
             ref={searchRef}
-            className="bg-white border-b border-black shadow-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-top duration-300 ease-out"
+            className="bg-white border-b border-black shadow-2xl w-full max-h-[85vh] flex flex-col overflow-hidden anim-dropdown-menu"
           >
             {/* Search Input Bar */}
             <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-3 flex items-center gap-3">
@@ -564,9 +564,9 @@ export const Header: React.FC = () => {
       {/* FULL GOLDEN APPLE (ЗЯ) NAVIGATION MEGA-MENU DRAWER (Screenshot 2 style)   */}
       {/* ========================================================================= */}
       {navDrawerTab && (
-        <div className="fixed inset-0 top-[64px] md:top-[105px] z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-start animate-in fade-in duration-300">
+        <div className="fixed inset-0 top-[64px] md:top-[105px] z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-start anim-backdrop">
           <div
-            className="w-full bg-white border-b border-zinc-200 shadow-2xl max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-top duration-300 ease-out"
+            className="w-full bg-white border-b border-zinc-200 shadow-2xl max-h-[85vh] flex flex-col overflow-hidden anim-dropdown-menu"
             onClick={e => e.stopPropagation()}
           >
             {/* Top Navigation Tabs Header (каталог | бренды | конструктор | акции) */}

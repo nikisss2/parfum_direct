@@ -13,8 +13,8 @@ function isGenericStock(url: string): boolean {
   return (
     !url ||
     url.includes('unsplash.com') ||
-    url.includes('placeholder-product') ||
-    url.endsWith('/assets/placeholder-product.svg')
+    url.includes('perfume-luxury-flacon') ||
+    url.includes('placeholder-product')
   );
 }
 
@@ -758,10 +758,10 @@ function resolveCategoryFallback(kind: string | undefined, hay: string, nameLowe
     if (/(рук|hand)/i.test(nameLower)) return '/assets/categories/loccitane-hand-cream.jpg';
     if (/(лосьон|lotion|молочко|масло для тела|крем для тела)/i.test(nameLower)) return '/assets/categories/baylis-harding-lotion.jpg';
 
-    return '/assets/categories/baylis-harding-lotion.jpg';
+    return PLACEHOLDER_IMAGE;
   }
 
-  return '/assets/categories/perfume-luxury-flacon.jpg';
+  return PLACEHOLDER_IMAGE;
 }
 
 export function resolveProductImage(p: {
@@ -845,16 +845,8 @@ export function resolveProductImage(p: {
     if (loc) return loc;
   }
 
-  // 7. Поиск эталонного флакона парфюмерного дома
-  for (const [brandKey, flaconPath] of Object.entries(BRAND_SIGNATURE_FLACONS)) {
-    if (brandLower.includes(brandKey) || hay.includes(brandKey)) {
-      const loc = localIfExists(flaconPath);
-      if (loc) return loc;
-    }
-  }
-
-  // 8. Если для редкого парфюма нет индивидуального фото в базе — отдаем эталонный флакон селектива
-  return '/assets/categories/perfume-luxury-flacon.jpg';
+  // 7. Если для редкого товара нет индивидуальной фотографии в базе — отдаем лаконичную векторную заглушку "Здесь скоро будет фотография"
+  return PLACEHOLDER_IMAGE;
 }
 
 export function withResolvedImage<
