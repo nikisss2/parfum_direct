@@ -846,35 +846,7 @@ export function ensureAdminAccount(): { email: string; initialPassword?: string 
     );
   }
 
-  // Создаем / обновляем тестового клиента client@maisonarome.ru / password123
-  const clientEmail = 'client@maisonarome.ru';
-  const clientStmt = sqlite.prepare("SELECT id FROM users WHERE email = ?");
-  const existingClient = clientStmt.get(clientEmail);
-  const clientPass = hashPassword('password123');
-  if (existingClient) {
-    sqlite.prepare("UPDATE users SET password_hash = ?, salt = ? WHERE email = ?").run(clientPass.hash, clientPass.salt, clientEmail);
-  } else {
-    sqlite.prepare(`
-      INSERT INTO users (
-        id, email, password_hash, salt, full_name, phone, city,
-        default_address, role, saved_addresses_json, wishlist_json,
-        created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'client', '[]', '[]', ?, ?)
-    `).run(
-      'usr_client_demo',
-      clientEmail,
-      clientPass.hash,
-      clientPass.salt,
-      'Екатерина Смирнова',
-      '+7 (912) 287-94-86',
-      'Москва',
-      'ПВЗ СДЭК ул. Тверская, 12',
-      now,
-      now
-    );
-  }
-
-  console.log(`[SECURITY] Аккаунты проверены: admin=${adminEmail} (пароль: ${adminPassword}), client=${clientEmail}`);
+  console.log(`[SECURITY] Административный аккаунт проверен: admin=${adminEmail}`);
   return { email: adminEmail, initialPassword: adminPassword };
 }
 

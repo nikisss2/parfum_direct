@@ -23,10 +23,20 @@ export function triggerExcelUpdate(): void {
   }
 
   isUpdatingExcel = true;
-  const child = spawn('python3', [EXCEL_SCRIPT], { cwd: ROOT, stdio: 'ignore' });
+  const child = spawn('python3', [EXCEL_SCRIPT], { cwd: ROOT });
 
-  child.on('close', () => {
+  let stderr = '';
+  child.stderr?.on('data', (d) => {
+    stderr += d.toString();
+  });
+
+  child.on('close', (code) => {
     isUpdatingExcel = false;
+    if (code === 0) {
+      console.log('[EXCEL SYNC] Таблица заказов Excel успешно обновлена:', EXCEL_SCRIPT);
+    } else {
+      console.warn(`[EXCEL SYNC] Скрипт генерации Excel завершился с кодом ${code}:`, stderr);
+    }
     if (pendingExcelUpdate) {
       pendingExcelUpdate = false;
       triggerExcelUpdate();
@@ -34,7 +44,7 @@ export function triggerExcelUpdate(): void {
   });
 
   child.on('error', (err) => {
-    console.warn('[EXCEL SYNC] Python script execution error:', err.message);
+    console.warn('[EXCEL SYNC] Ошибка запуска python3:', err.message);
     isUpdatingExcel = false;
   });
 }

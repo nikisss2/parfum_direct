@@ -154,7 +154,6 @@ export const ReviewsPage: React.FC = () => {
             { id: 'all', label: `Все отзывы (${reviews.length})` },
             { id: 'decant', label: `Распивы (${reviews.filter(r => r.type === 'decant').length})` },
             { id: 'bottle', label: `Флаконы (${reviews.filter(r => r.type === 'bottle').length})` },
-            { id: 'box', label: `Аромабоксы (${reviews.filter(r => r.type === 'box').length})` },
           ].map(tab => (
             <button
               key={tab.id}

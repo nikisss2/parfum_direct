@@ -133,7 +133,7 @@ export function applyMarkupToProduct<T extends { kind?: any; category?: any; bra
     prod.minPrice = calculateRetailPrice(costPrice, kind, category, prod.brand, prod.name);
   }
 
-  if (prod.oldPrice && prod.discountPercent) {
+  if (prod.oldPrice && prod.discountPercent && prod.minPrice) {
     const multiplier = 1 + prod.discountPercent / 100;
     prod.oldPrice = Math.round((prod.minPrice * multiplier) / 10) * 10;
   }

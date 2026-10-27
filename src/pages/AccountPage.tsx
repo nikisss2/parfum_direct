@@ -607,7 +607,7 @@ export const AccountPage: React.FC = () => {
                 <Package className="w-12 h-12 text-zinc-400 mx-auto" />
                 <h3 className="text-lg font-normal font-serif text-zinc-900 uppercase tracking-wide">У вас пока нет заказов</h3>
                 <p className="text-xs text-zinc-500 max-w-sm mx-auto font-light">
-                  Выберите распивы от 3 мл, аромабоксы или флаконы в каталоге и оформите первый заказ с онлайн-оплатой.
+                  Выберите распивы от 1 мл или флаконы в каталоге и оформите первый заказ с онлайн-оплатой.
                 </p>
                 <Link
                   to="/catalog"

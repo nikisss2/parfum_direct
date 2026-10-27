@@ -89,7 +89,6 @@ export const Footer: React.FC = () => {
             <div className="font-semibold text-white tracking-wide uppercase text-[11px]">Каталог</div>
             <ul className="space-y-2 text-zinc-400">
               <li><Link to="/catalog" className="hover:text-white transition-colors">Все ароматы</Link></li>
-              <li><Link to="/aromabox" className="hover:text-white transition-colors text-amber-300 font-medium">Собери аромабокс (−15%)</Link></li>
               <li><Link to="/catalog?category=decants" className="hover:text-white transition-colors">Распивы (1–20 мл)</Link></li>
               <li><Link to="/certificates" className="hover:text-white transition-colors text-white font-medium">Подарочные сертификаты</Link></li>
               <li><Link to="/catalog?category=niche" className="hover:text-white transition-colors">Нишевая парфюмерия</Link></li>

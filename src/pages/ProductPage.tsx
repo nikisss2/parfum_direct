@@ -200,8 +200,8 @@ export const ProductPage: React.FC = () => {
       '@type': 'Offer',
       url: `https://maison-arome.ru/product/${perfume.slug || perfume.id}`,
       priceCurrency: 'RUB',
-      price: perfume.price,
-      availability: perfume.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      price: perfume.minPrice || perfume.volumes?.[0]?.price || 0,
+      availability: (perfume.volumes?.some(v => v.inStock) ?? true) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: {
         '@type': 'Organization',
@@ -215,11 +215,13 @@ export const ProductPage: React.FC = () => {
     },
   };
 
+  const displayPrice = perfume.minPrice || perfume.volumes?.[0]?.price || 0;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-10">
       <SEO
         title={`${perfume.brand} ${perfume.name} — купить оригинал | Maison Arôme`}
-        description={`Купить оригинальный ${perfume.brand} ${perfume.name} в интернет-магазине Maison Arôme. Распивы от 1 мл и целые флаконы от ${perfume.price} ₽. 100% оригинал, доставка по РФ.`}
+        description={`Купить оригинальный ${perfume.brand} ${perfume.name} в интернет-магазине Maison Arôme. Распивы от 1 мл и целые флаконы от ${displayPrice} ₽. 100% оригинал, доставка по РФ.`}
         canonical={`https://maison-arome.ru/product/${perfume.slug || perfume.id}`}
         ogImage={perfume.images?.[0]}
         ogType="product"

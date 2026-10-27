@@ -104,11 +104,11 @@ export const HomePage: React.FC = () => {
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                to="/aromabox"
+                to="/catalog?type=decant"
                 className="px-7 py-4 rounded-none bg-black border border-white text-white hover:bg-white hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2 transition-colors"
               >
-                <Gift className="w-4 h-4 text-amber-400" />
-                <span>Конструктор ароматов (−15%)</span>
+                <Droplet className="w-4 h-4 text-amber-400" />
+                <span>Распивы от 1 мл</span>
               </Link>
               <Link
                 to="/catalog?kind=perfume"
@@ -151,64 +151,6 @@ export const HomePage: React.FC = () => {
           </div>
         </section>
       )}
-
-      {/* Интерактивный баннер конструктора «Собери свой аромабокс» */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="relative rounded-none bg-zinc-950 text-white p-6 sm:p-10 lg:p-12 overflow-hidden border border-zinc-800">
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-black/60 border border-amber-400/40 text-[10px] font-bold uppercase tracking-widest text-amber-300">
-                <Gift className="w-3.5 h-3.5 text-amber-400" />
-                <span>Индивидуальный парфюмерный гардероб</span>
-              </div>
-              <h2 className="text-2xl sm:text-4xl font-normal font-serif tracking-tight leading-tight">
-                Конструктор «Собери свой Аромабокс»
-              </h2>
-              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed max-w-2xl font-light">
-                Выберите 3, 5 или 8 любых нишевых и люксовых ароматов от 3 мл в стильный фирменный бокс с магнитным клапаном. Пакетная скидка до <strong>−20%</strong> и премиальный стеклянный атомайзер с металлической помпой в каждом слоте.
-              </p>
-              <div className="pt-2 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/aromabox"
-                  className="px-7 py-4 rounded-none bg-white text-zinc-950 hover:bg-zinc-200 font-bold uppercase tracking-widest text-xs flex items-center gap-2 transition-colors"
-                >
-                  <Gift className="w-4 h-4 text-zinc-950" />
-                  <span>Собрать свой аромабокс</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <div className="text-xs uppercase tracking-wider text-zinc-400 flex items-center gap-2 font-sans font-medium">
-                  <span className="w-2 h-2 rounded-none bg-[#A3B18A]" />
-                  <span>Скидка от 10% до 20% считается автоматически</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 bg-zinc-900/90 border border-zinc-800 rounded-none p-6 space-y-3">
-              <div className="text-xs font-bold uppercase tracking-widest text-amber-300">
-                Что внутри бокса:
-              </div>
-              <ul className="space-y-2 text-xs text-zinc-300 font-light">
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#A3B18A] shrink-0" />
-                  <span>3, 5 или 8 атомайзеров по 5 мл или 10 мл</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#A3B18A] shrink-0" />
-                  <span>Премиальная подарочная коробка на скрытом магните</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#A3B18A] shrink-0" />
-                  <span>Стеклянные флаконы со стойкими гравировками</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#A3B18A] shrink-0" />
-                  <span>Бесплатная доставка от 25 000 ₽ (до 2 500 км от МСК)</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {newPerfumes.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6">

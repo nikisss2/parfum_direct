@@ -924,9 +924,7 @@ app.get('/api/orders/export-csv', (req, res) => {
 app.get('/api/orders/download-xlsx', (req, res) => {
   const xlsxPath = path.resolve(__dirname, '..', 'Таблица_Заказов_Maison_Arome.xlsx');
   if (fs.existsSync(xlsxPath)) {
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename="Таблица_Заказов_Maison_Arome.xlsx"');
-    res.sendFile(xlsxPath);
+    res.download(xlsxPath, 'Таблица_Заказов_Maison_Arome.xlsx');
   } else {
     res.status(404).json({ ok: false, error: 'Файл Excel еще не создан' });
   }

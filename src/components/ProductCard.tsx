@@ -12,12 +12,17 @@ interface ProductCardProps {
 
 const getShortVolumeLabel = (vol: VolumeOption): string => {
   if (vol.label) {
-    // Сокращаем длинные названия вроде "10 мл (отливант)" или "100 мл (флакон)" до лаконичных "10 мл", "100 мл"
-    const match = vol.label.match(/^(\d+(?:\.\d+)?\s*(?:мл|ml))/i);
-    if (match) return match[1];
+    // Сокращаем длинные названия вроде "10 мл (отливант)", "100 мл (флакон)", "92 г (флакон)"
+    const match = vol.label.match(/^(\d+(?:[.,]\d+)?\s*(?:мл|ml|г|g|л|l))/i);
+    if (match) return match[1].replace(/ml/i, 'мл').replace(/g/i, 'г').replace(/l/i, 'л');
+    const cleaned = vol.label.replace(/\s*\((?:отливант|флакон|тестер|пробник)[^\)]*\)/gi, '').trim();
+    if (cleaned) return cleaned;
     return vol.label;
   }
-  return `${vol.volumeMl} мл`;
+  if (vol.volumeMl) {
+    return `${Math.round(vol.volumeMl)} мл`;
+  }
+  return '100 мл';
 };
 
 export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
@@ -109,6 +114,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
 
   const remainingVolumesCount = uniqueVolumes.length - displayedVolumes.length;
 
+  const singleVolumeLabel = React.useMemo(() => {
+    if (displayedVolumes.length === 1) {
+      return getShortVolumeLabel(displayedVolumes[0]);
+    }
+    if (displayedVolumes.length === 0) {
+      const match = perfume.name?.match(/(\d+(?:[.,]\d+)?)\s*(?:мл|ml|г|g)\b/i);
+      if (match) return `${match[1]} ${/г|g/i.test(match[0]) ? 'г' : 'мл'}`;
+      return null;
+    }
+    return null;
+  }, [displayedVolumes, perfume.name]);
+
   // Calculate selective fake/strikethrough discount if applicable
   const hasDiscount = !!perfume.oldPrice || (perfume.discountPercent && perfume.discountPercent > 0);
   const baseMinPrice = perfume.minPrice ?? 0;
@@ -180,7 +197,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
       {/* 2. Content Container */}
       <div className="pt-3 flex-1 flex flex-col justify-between">
         <div>
-          {/* Row 1: Volume Chips row (compact and clean, max 4 chips + link if more) */}
+          {/* Row 1: Volume row (Multi-choice buttons OR single volume badge for customer clarity) */}
           {displayedVolumes.length > 1 ? (
             <div className="flex items-center gap-1.5 flex-wrap mb-2">
               {displayedVolumes.map(vol => {
@@ -212,6 +229,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
                 >
                   +{remainingVolumesCount}
                 </Link>
+              )}
+            </div>
+          ) : singleVolumeLabel ? (
+            <div className="flex items-center gap-2 flex-wrap mb-2">
+              <span className="px-2 py-0.5 border border-zinc-200 text-[11px] bg-zinc-100 text-zinc-900 font-sans tabular-nums font-medium leading-tight">
+                {singleVolumeLabel}
+              </span>
+              {(perfume.rating || 0) > 0 && (
+                <div className="flex items-center gap-1 text-[11px] font-semibold text-zinc-900">
+                  <span>{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
+                  <span className="text-amber-400 tracking-tight text-xs">★</span>
+                  <span className="text-zinc-400">({perfume.reviewsCount || 1})</span>
+                </div>
               )}
             </div>
           ) : (perfume.rating || 0) > 0 ? (

@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ShopProvider } from './context/ShopContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
@@ -21,7 +21,6 @@ const FAQPage = React.lazy(() => import('./pages/StaticPages').then(m => ({ defa
 import { HomePage } from './pages/HomePage';
 const CatalogPage = React.lazy(() => import('./pages/CatalogPage').then(m => ({ default: m.CatalogPage })));
 const ProductPage = React.lazy(() => import('./pages/ProductPage').then(m => ({ default: m.ProductPage })));
-const AromaBoxPage = React.lazy(() => import('./pages/AromaBoxPage').then(m => ({ default: m.AromaBoxPage })));
 const ReviewsPage = React.lazy(() => import('./pages/ReviewsPage').then(m => ({ default: m.ReviewsPage })));
 const GalleryPage = React.lazy(() => import('./pages/GalleryPage').then(m => ({ default: m.GalleryPage })));
 const CartPage = React.lazy(() => import('./pages/CartPage').then(m => ({ default: m.CartPage })));
@@ -78,7 +77,6 @@ export default function App() {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/catalog" element={<CatalogPage />} />
                   <Route path="/product/:slug" element={<ProductPage />} />
-                  <Route path="/aromabox" element={<AromaBoxPage />} />
                   <Route path="/reviews" element={<ReviewsPage />} />
                   <Route path="/gallery" element={<GalleryPage />} />
                   <Route path="/cart" element={<CartPage />} />

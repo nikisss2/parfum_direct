@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Package,
+  Gift,
   ChevronRight,
   ChevronDown,
   ShieldCheck,
@@ -20,7 +21,6 @@ import {
   Star,
   ArrowRight,
   Check,
-  Gift,
   CreditCard,
   HelpCircle,
 } from 'lucide-react';
@@ -267,16 +267,7 @@ export const Header: React.FC = () => {
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${navDrawerTab === 'brands' ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* 3. КОНСТРУКТОР */}
-              <Link
-                to="/aromabox"
-                className="text-zinc-800 hover:text-black transition-colors whitespace-nowrap flex items-center gap-1.5 lowercase font-medium"
-              >
-                <span>конструктор</span>
-                <span className="text-[9px] bg-black text-white px-1 py-0.2 uppercase font-bold tracking-wider">box</span>
-              </Link>
-
-              {/* 4. АКЦИИ */}
+              {/* 3. АКЦИИ */}
               <Link
                 to="/catalog?filter=sale"
                 className="text-zinc-800 hover:text-black transition-colors whitespace-nowrap lowercase font-medium"
@@ -597,15 +588,6 @@ export const Header: React.FC = () => {
                 </button>
 
                 <Link
-                  to="/aromabox"
-                  onClick={() => setNavDrawerTab(null)}
-                  className="py-3.5 sm:py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none flex items-center gap-1"
-                >
-                  <span>конструктор</span>
-                  <span className="text-[9px] bg-black text-white px-1 py-0.2 uppercase font-bold tracking-wider">box</span>
-                </Link>
-
-                <Link
                   to="/catalog?filter=sale"
                   onClick={() => setNavDrawerTab(null)}
                   className="py-3.5 sm:py-4 text-base sm:text-lg tracking-tight lowercase font-normal text-zinc-500 hover:text-black transition-all select-none"
@@ -636,7 +618,6 @@ export const Header: React.FC = () => {
                     { id: 'hits', label: 'подборки', path: '/catalog?filter=hits', badge: 'ТОП' },
                     { id: 'perfume', label: 'парфюмерия', path: '/catalog?kind=perfume' },
                     { id: 'decant', label: 'распивы (3, 5, 10, 15 мл)', path: '/catalog?type=decant', badge: 'ХИТ' },
-                    { id: 'aromabox', label: 'конструктор аромабоксов', path: '/aromabox' },
                     { id: 'skincare', label: 'уход за кожей', path: '/catalog?kind=skincare' },
                     { id: 'haircare', label: 'уход за волосами', path: '/catalog?kind=haircare' },
                     { id: 'makeup', label: 'макияж', path: '/catalog?kind=makeup' },
@@ -812,23 +793,23 @@ export const Header: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Banner Card: Аромабокс */}
+                  {/* Banner Card: Подарочные сертификаты */}
                   <div className="mt-8 p-4 bg-zinc-950 text-white flex items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                        <Package className="w-3.5 h-3.5" />
-                        <span>Конструктор аромабокса</span>
+                        <Gift className="w-3.5 h-3.5" />
+                        <span>Подарочные сертификаты</span>
                       </div>
                       <div className="text-sm font-semibold mt-1">
-                        Соберите набор из 5 любимых ароматов со скидкой 15%
+                        Подарите близким выбор оригинального селективного парфюма
                       </div>
                     </div>
                     <Link
-                      to="/aromabox"
+                      to="/certificates"
                       onClick={() => setNavDrawerTab(null)}
                       className="px-4 py-2 bg-[#5A6B32] text-white text-xs font-bold uppercase tracking-wider hover:bg-black transition-colors shrink-0"
                     >
-                      Собрать бокс
+                      Выбрать
                     </Link>
                   </div>
 

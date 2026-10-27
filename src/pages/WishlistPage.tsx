@@ -578,13 +578,6 @@ export const WishlistPage: React.FC = () => {
                 <span>Перейти в каталог</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
-                to="/aromabox"
-                className="px-6 py-3.5 bg-white border border-zinc-300 hover:border-black text-zinc-950 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2"
-              >
-                <Package className="w-4 h-4 text-zinc-700" />
-                <span>Конструктор аромабокса</span>
-              </Link>
             </div>
 
             {/* Popular perfumes carousel / grid preview */}

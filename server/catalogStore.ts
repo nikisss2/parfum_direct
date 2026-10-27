@@ -152,7 +152,7 @@ function extractVolumeOption(name: string, price: number, existing?: VolumeOptio
 }
 
 export const KNOWN_HOUSES = [
-  "Tom Ford", "By Kilian", "Kilian", "Yves Saint Laurent", "YSL", "Dolce & Gabbana", "Dolce and Gabbana", "D&G",
+  "Zielinski & Rozen", "Zielinski", "Tom Ford", "By Kilian", "Kilian", "Yves Saint Laurent", "YSL", "Dolce & Gabbana", "Dolce and Gabbana", "D&G",
   "French Avenue", "Attar Collection", "Escentric Molecules", "Juliette Has A Gun", "Haute Fragrance Company", "HFC",
   "Boadicea The Victorious", "Marc-Antoine Barrois", "Jean Paul Gaultier", "Hugo Boss", "Giorgio Armani", "Emporio Armani",
   "Clive Christian", "Carolina Herrera", "Paco Rabanne", "Rabanne", "Tiziana Terenzi", "Victoria's Secret",
@@ -180,17 +180,86 @@ export const KNOWN_HOUSES = [
   "Vilhelm", "Widian", "X-Ray", "Aesop", "Yves de Sistelle", "Yves Rocher", "The 7 Virtues", "The Beautiful Mind",
   "The Harmonist", "Parfums de Marly", "Maison 21G", "Maison Asrar", "Maison Alhambra",
   "Louis Vuitton", "Louis Vitton", "Louis Feraud", "Louis Cardin", "Jean Paul Gaultier", "Jean Louis Scherrer",
-  "Sol de Janeiro", "Stella McCartney", "Ted Baker", "Ted Lapidus", "Tommy Hilfiger", "Urban Decay", "Vivienne Sabo"
+  "Sol de Janeiro", "Stella McCartney", "Ted Baker", "Ted Lapidus", "Tommy Hilfiger", "Urban Decay", "Vivienne Sabo",
+  "Antonio Banderas", "Antonio Maretti", "Franck Boclet", "Max Philip", "Nina Ricci", "Jil Sander", "LM Parfums",
+  "Salvatore Ferragamo", "Salvador Dali"
 ];
 
 const SORTED_HOUSES = [...KNOWN_HOUSES].sort((a, b) => b.length - a.length);
 
-export function normalizeBrand(raw: string): string {
+export function normalizeBrand(raw: string, productName?: string): string {
   if (!raw) return 'Другое';
   let b = raw.trim();
   b = b.replace(/^!+\s*/, '').replace(/^\d+\s+/, '').trim();
   const lower = b.toLowerCase();
   if (lower === 'бренд' || lower === 'другое') return 'Другое';
+
+  const pn = (productName || '').toLowerCase();
+
+  // 1. Приоритетное сопоставление брендов с частыми коллизиями (Zielinski & Rozen, Parfums de Marly, Essential Parfums, Nicolai)
+  if (
+    lower === 'zielinski & rozen' ||
+    lower === 'zielinski' ||
+    lower.startsWith('zielinski') ||
+    pn.includes('zielinski and rozen') ||
+    pn.includes('zielinski & rozen') ||
+    pn.includes('зелински')
+  ) {
+    return 'Zielinski & Rozen';
+  }
+
+  if (
+    lower === 'marly' ||
+    lower.startsWith('marly ') ||
+    pn.includes('parfums de marly') ||
+    pn.includes('marly akaster') ||
+    pn.includes('marly althair') ||
+    pn.includes('marly athalia') ||
+    pn.includes('marly delina') ||
+    pn.includes('marly layton') ||
+    pn.includes('marly valaya') ||
+    pn.includes('marly sedley') ||
+    pn.includes('marly percival') ||
+    pn.includes('marly herod') ||
+    pn.includes('marly pegasus') ||
+    pn.includes('marly carlisle') ||
+    pn.includes('marly galloway') ||
+    pn.includes('marly haltane') ||
+    pn.includes('marly oriana') ||
+    pn.includes('marly greenley') ||
+    pn.includes('marly kalan') ||
+    pn.includes('marly oajan')
+  ) {
+    if (!lower.includes('marilyn') && !pn.includes('marilyn monroe')) {
+      return 'Parfums de Marly';
+    }
+  }
+
+  if (
+    lower === 'essential parfums' ||
+    lower.startsWith('essential parfums') ||
+    pn.includes('essential parfums') ||
+    (lower === 'essential' && (pn.includes('parfums') || pn.includes('bois imperial') || pn.includes('fig infusion') || pn.includes('nice bergamote') || pn.includes('the musc') || pn.includes('mon vetiver') || pn.includes('divine vanille') || pn.includes('rose magnetic') || pn.includes('orange x santal')))
+  ) {
+    return 'Essential Parfums';
+  }
+
+  if (pn.includes('parfums de nicolai') || pn.includes('de nicolai') || lower === 'nicolai' || lower.startsWith('nicolai ')) {
+    return 'Parfums de Nicolai';
+  }
+
+  if (pn.includes('parfums d elmar') || pn.includes("parfums d'elmar")) {
+    return "Parfums d'Elmar";
+  }
+
+  if (pn.includes('parfums 137')) {
+    return 'Parfums 137';
+  }
+
+  if (pn.includes('parfums et senteurs') || pn.includes('pays basque')) {
+    return 'Parfums et Senteurs du Pays Basque';
+  }
+
   for (const house of SORTED_HOUSES) {
     const hLow = house.toLowerCase();
     if (lower === hLow || lower.startsWith(hLow + ' ') || lower.startsWith(hLow + "'") || lower.startsWith(hLow + '-')) {
@@ -235,7 +304,13 @@ export function normalizeBrand(raw: string): string {
   if (lower.startsWith('the ') && words.length >= 2) return words.slice(0, 3).join(' ');
   if (lower.startsWith('maison ') && words.length >= 2) return words.slice(0, 2).join(' ');
   if (lower.startsWith('parfums ') && words.length >= 2) return words.slice(0, 3).join(' ');
-  return words[0] || b;
+
+  // Сохраняем полное корректное название бренда (например: Zielinski & Rozen, Antonio Banderas, Franck Boclet)
+  const cleaned = b.replace(/\s+\d+(?:[.,]\d+)?\s*(?:ml|мл|g|г)?$/i, '').trim();
+  if (cleaned.length >= 2 && !JUNK_BRAND_FILTER.test(cleaned)) {
+    return cleaned;
+  }
+  return b;
 }
 
 function cleanBaseModelName(name: string): string {
@@ -394,7 +469,7 @@ export function groupProductsByModel(rawList: CatalogProduct[]): {
       groups.set(`custom|||${p.id}`, [p]);
       continue;
     }
-    const canonicalBrand = normalizeBrand(p.brand);
+    const canonicalBrand = normalizeBrand(p.brand, p.name);
     const cls = classifyProduct(p);
     const b = canonicalBrand.toLowerCase().trim();
     const base = cleanBaseModelName(p.name).toLowerCase();
@@ -409,7 +484,7 @@ export function groupProductsByModel(rawList: CatalogProduct[]): {
 
   for (const list of groups.values()) {
     const primary = list[0];
-    const canonicalBrand = normalizeBrand(primary.brand);
+    const canonicalBrand = normalizeBrand(primary.brand, primary.name);
     const cleanName = cleanBaseModelName(primary.name) || primary.name;
     const cls = classifyProduct(primary);
 
@@ -568,6 +643,7 @@ export function getCatalog() {
     const byId = new Map<string, CatalogProduct>();
     const bySlug = new Map<string, CatalogProduct>();
     for (const p of file.products) {
+      p.brand = normalizeBrand(p.brand, p.name);
       if (!p.description) {
         p.description = `${p.name} — ${p.kindLabel || 'оригинальная продукция'}.`;
       }
@@ -688,31 +764,54 @@ export function queryProducts(query: ProductQuery) {
       const pb = p.brand.toLowerCase();
       const pn = p.name.toLowerCase();
       return brandLower.some(b => {
-        // Direct exact or prefix match
-        if (pb === b || pb.startsWith(b + ' ') || pb.includes(b)) return true;
-        if (b.startsWith(pb + ' ') || b.includes(pb)) {
-          if (pb.length <= 4) return pn.includes(b);
+        // Direct exact match
+        if (pb === b) return true;
+
+        // Specific aliases & strict rules
+        // Zielinski & Rozen
+        if ((b.includes('zielinski') || b.includes('зелински')) && (pb.includes('zielinski') || pb.includes('зелински'))) {
           return true;
         }
+
+        // Parfums de Marly / Marly (STRICT: never match Essential Parfums!)
+        if ((b === 'parfums de marly' || b === 'marly') && (pb === 'parfums de marly' || pb === 'marly')) return true;
+
+        // Essential Parfums (STRICT: never match Parfums de Marly or generic Parfums!)
+        if (b === 'essential parfums' || b === 'essential') {
+          return pb === 'essential parfums';
+        }
+
         // Louis Vuitton / Louis Vitton / луи виттон / луи витон / LV
         const isLvQuery = b.includes('vuitton') || b.includes('vitton') || b === 'lv' || b.includes('виттон') || b.includes('витон');
-        const isLvProduct = pb.includes('vuitton') || pb.includes('vitton') || pn.includes('vuitton') || pn.includes('vitton');
+        const isLvProduct = pb.includes('vuitton') || pb.includes('vitton');
         if (isLvQuery && isLvProduct) return true;
 
         // Yves Saint Laurent / YSL
         const isYslQuery = b.includes('ysl') || b.includes('yves saint laurent');
-        const isYslProduct = pb.includes('yves saint laurent') || pn.includes('yves saint laurent') || /\bysl\b/i.test(pn);
+        const isYslProduct = pb.includes('yves saint laurent') || pb === 'ysl';
         if (isYslQuery && isYslProduct) return true;
 
         // Dolce & Gabbana / D&G
         const isDgQuery = b.includes('d&g') || b.includes('dolce');
-        const isDgProduct = pb.includes('dolce') || pn.includes('dolce');
+        const isDgProduct = pb.includes('dolce') || pb === 'd&g';
         if (isDgQuery && isDgProduct) return true;
 
         // Tom Ford
-        const isTfQuery = b.includes('tom ford');
-        const isTfProduct = pb.includes('tom ford') || pn.includes('tom ford');
+        const isTfQuery = b === 'tom ford' || b.startsWith('tom ford');
+        const isTfProduct = pb === 'tom ford';
         if (isTfQuery && isTfProduct) return true;
+
+        // Kilian / By Kilian
+        if ((b === 'kilian' || b === 'by kilian') && (pb === 'kilian' || pb === 'by kilian')) return true;
+
+        // Strict prefix match ONLY if not colliding with short generic words
+        if (pb.startsWith(b + ' ') || b.startsWith(pb + ' ')) {
+          const genericWords = ['parfums', 'maison', 'the', 'atelier', 'collection', 'paris', 'laboratorio'];
+          if (genericWords.includes(b) || genericWords.includes(pb)) {
+            return false;
+          }
+          return true;
+        }
 
         return false;
       });
@@ -738,6 +837,9 @@ const TRANSLIT_DICT: Record<string, string[]> = {
   крид: ['creed'],
   крида: ['creed'],
   криды: ['creed'],
+  зелински: ['zielinski', 'rozen'],
+  зелинский: ['zielinski', 'rozen'],
+  розен: ['rozen', 'zielinski'],
   диор: ['dior'],
   диоры: ['dior'],
   саваж: ['sauvage'],
