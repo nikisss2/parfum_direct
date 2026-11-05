@@ -55,11 +55,6 @@ export const GalleryPage: React.FC = () => {
       {/* Hero Header */}
       <div className="rounded-none bg-zinc-950 text-white p-6 sm:p-10 relative overflow-hidden border border-zinc-900">
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none border border-zinc-800 bg-white/5 text-[11px] font-bold uppercase tracking-widest text-amber-300">
-            <Camera className="w-3.5 h-3.5 text-amber-400" />
-            <span>100% реальные фото перед каждой отправкой</span>
-          </div>
-
           <h1 className="text-3xl sm:text-5xl font-normal font-serif tracking-tight leading-tight">
             Галерея заказов Maison Arôme
           </h1>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, ChevronDown, HelpCircle } from 'lucide-react';
+import { Send, ChevronDown } from 'lucide-react';
 
 export interface FAQItem {
   id: string;
@@ -121,10 +121,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
     <section className={`space-y-8 ${className}`}>
       {showTitle && (
         <div className="space-y-2 text-center sm:text-left">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5A6B32] font-sans">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>База знаний & FAQ</span>
-          </div>
           <h2 className="text-2xl sm:text-3xl font-normal font-serif text-zinc-950 uppercase tracking-wide">
             Ответы на частые вопросы
           </h2>

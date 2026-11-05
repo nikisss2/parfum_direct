@@ -60,10 +60,6 @@ export const ReviewsPage: React.FC = () => {
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column: Big score and summary */}
           <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none border border-zinc-800 bg-white/5 text-[11px] font-bold uppercase tracking-widest text-amber-300">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>112 проверенных отзывов реальных покупателей</span>
-            </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-normal font-serif tracking-tight leading-tight">
               Отзывы о Maison Arôme
             </h1>
@@ -278,10 +274,6 @@ export const ReviewsPage: React.FC = () => {
       <section id="gallery" className="pt-10 space-y-6 border-t border-zinc-200">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest font-sans mb-2">
-              <Camera className="w-3.5 h-3.5 text-white" />
-              <span>Фотоконтроль заказов</span>
-            </div>
             <h2 className="text-2xl sm:text-3xl font-serif text-zinc-950 font-normal">
               Галерея собранных заказов
             </h2>

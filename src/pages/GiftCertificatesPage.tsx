@@ -89,10 +89,6 @@ export const GiftCertificatesPage: React.FC = () => {
       {/* Hero */}
       <section className="border-b border-zinc-200 bg-zinc-50 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-white text-[11px] font-bold uppercase tracking-widest mb-4">
-            <Gift className="w-3.5 h-3.5 text-amber-400" />
-            Идеальный подарок
-          </div>
           <h1 className="text-3xl sm:text-5xl font-serif font-normal text-zinc-950 tracking-tight leading-tight">
             Подарочные сертификаты
           </h1>

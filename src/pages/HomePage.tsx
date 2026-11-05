@@ -12,7 +12,6 @@ import {
   Droplet,
   Package,
   Check,
-  Star,
   Gift
 } from 'lucide-react';
 import { FAQSection } from '../components/FAQSection';
@@ -130,13 +129,7 @@ export const HomePage: React.FC = () => {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-24 lg:py-32">
           <div className="max-w-2xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-none bg-black/60 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest text-white font-sans font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Оригинальная продукция</span>
-            </div>
-
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-normal font-serif tracking-tight leading-[1.1]">
-              <span className="block text-amber-500 font-serif italic text-xl sm:text-2xl mb-2">Maison Arôme</span>
               {totalCount ? `${totalCount.toLocaleString('ru-RU')}+` : '100 000+'} позиций.
               <span className="block text-zinc-400 font-sans font-light text-2xl sm:text-4xl mt-2">
                 Парфюмерия и профессиональный уход
@@ -258,19 +251,6 @@ export const HomePage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-zinc-200">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none border border-black bg-black text-white text-[10px] font-bold uppercase tracking-wider font-sans">
-                <Camera className="w-3.5 h-3.5" />
-                <span>Реальные фото перед отправкой</span>
-              </span>
-              <Link
-                to="/reviews"
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none border border-zinc-300 bg-white text-zinc-900 text-[10px] font-bold uppercase tracking-wider hover:border-black transition-colors font-sans"
-              >
-                <Star className="w-3.5 h-3.5 fill-black text-black" />
-                <span>Отзывы 5.0 (1 420+)</span>
-              </Link>
-            </div>
             <h2 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">
               Галерея наших заказов
             </h2>
