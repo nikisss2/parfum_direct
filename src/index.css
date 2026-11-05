@@ -37,11 +37,25 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Эстетика Maison Arôme: строгая прямоугольная геометрия без скруглений */
+  /* Эстетика Maison Arôme: строгая прямоугольная геометрия без скруглений по умолчанию */
   *,
   *::before,
   *::after {
     border-radius: 0px !important;
+  }
+
+  /* Премиальные скругленные 3D-плашки категорий (по референсу) */
+  .category-3d-card {
+    border-radius: 20px !important;
+  }
+
+  /* Скрытие системного скроллбара для горизонтальных карточек */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   /* Премиальный лаконичный скроллбар */

@@ -19,6 +19,64 @@ import { FAQSection } from '../components/FAQSection';
 import { ORDERS_GALLERY } from '../data/ordersGalleryData';
 import { SEO } from '../components/SEO';
 
+interface Category3DCard {
+  id: string;
+  label: string;
+  eyebrow: string;
+  description: string;
+  image: string;
+  pngFallback: string;
+  link: string;
+}
+
+const CATEGORY_3D_CARDS: Category3DCard[] = [
+  {
+    id: 'perfume',
+    label: 'Парфюмерия',
+    eyebrow: 'Оригиналы & Распив',
+    description: 'Селектив, ниша и люксовые флаконы от 1 мл',
+    image: '/assets/categories/perfume.webp',
+    pngFallback: '/assets/categories/perfume.png',
+    link: '/catalog?kind=perfume',
+  },
+  {
+    id: 'skincare',
+    label: 'Уход за кожей',
+    eyebrow: 'Лицо и декольте',
+    description: 'Сыворотки, премиум-кремы и уход',
+    image: '/assets/categories/skincare.webp',
+    pngFallback: '/assets/categories/skincare.png',
+    link: '/catalog?kind=skincare',
+  },
+  {
+    id: 'haircare',
+    label: 'Уход за волосами',
+    eyebrow: 'Салонный уход',
+    description: 'Шампуни, масла и термозащита',
+    image: '/assets/categories/haircare.webp',
+    pngFallback: '/assets/categories/haircare.png',
+    link: '/catalog?kind=haircare',
+  },
+  {
+    id: 'makeup',
+    label: 'Макияж',
+    eyebrow: 'Декоративная косметика',
+    description: 'Культовые помады, тон и пудры',
+    image: '/assets/categories/makeup.webp',
+    pngFallback: '/assets/categories/makeup.png',
+    link: '/catalog?kind=makeup',
+  },
+  {
+    id: 'bodycare',
+    label: 'Уход за телом',
+    eyebrow: 'SPA & Релаксация',
+    description: 'Питательные лосьоны, скрабы и масла',
+    image: '/assets/categories/bodycare.webp',
+    pngFallback: '/assets/categories/bodycare.png',
+    link: '/catalog?kind=bodycare',
+  },
+];
+
 export const HomePage: React.FC = () => {
   const [hitPerfumes, setHitPerfumes] = useState<Perfume[]>([]);
   const [newPerfumes, setNewPerfumes] = useState<Perfume[]>([]);
@@ -121,16 +179,59 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4">Категории</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-          {PRODUCT_KIND_OPTIONS.map(k => (
+      {/* Секция категорий с объемными 3D рендерами (в стиле сквозного референса) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-2">
+        <div className="flex items-center justify-between mb-1 pb-1">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+            Категории
+          </h2>
+          <Link
+            to="/catalog"
+            className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 hover:text-black transition-colors flex items-center gap-1"
+          >
+            Весь каталог <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        {/* Сетка плашек категорий: 3D рендеры в верхнем правом углу на едином уровне и выходят за край плашки */}
+        <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 lg:gap-3.5 xl:gap-4 pt-8 sm:pt-9 pb-3 px-1 -mx-1 sm:mx-0 sm:px-0 no-scrollbar snap-x snap-mandatory">
+          {CATEGORY_3D_CARDS.map(cat => (
             <Link
-              key={k.id}
-              to={`/catalog?kind=${k.id}`}
-              className="px-3 py-4 rounded-none border border-zinc-200 text-center text-xs font-bold uppercase tracking-wider text-zinc-900 hover:border-black hover:bg-black hover:text-white transition-all bg-white"
+              key={cat.id}
+              to={cat.link}
+              className="category-3d-card group relative flex-shrink-0 w-[240px] sm:w-auto snap-start bg-gradient-to-b from-white via-[#fafafc] to-[#f4f4f7] border border-zinc-200/90 hover:border-zinc-300 shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_32px_-4px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 p-4 sm:p-5 pt-5 pb-5 min-h-[148px] sm:min-h-[156px] flex flex-col justify-between overflow-visible"
             >
-              {k.label}
+              {/* Текстовая информация слева */}
+              <div className="max-w-[56%] sm:max-w-[54%] z-10">
+                <span className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-zinc-400 group-hover:text-amber-600 transition-colors">
+                  {cat.eyebrow}
+                </span>
+                <h3 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight leading-snug mt-1 group-hover:text-black">
+                  {cat.label}
+                </h3>
+                <p className="text-[11px] sm:text-xs text-zinc-500 font-light mt-1.5 leading-relaxed line-clamp-2">
+                  {cat.description}
+                </p>
+              </div>
+
+              {/* Аккуратная подсказка перехода */}
+              <div className="mt-3 z-10 flex items-center gap-1 text-[11px] font-semibold text-zinc-900 group-hover:text-amber-600 transition-colors">
+                <span>Перейти</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+
+              {/* Объемный 3D рендер: правый верхний угол, единый уровень и размер, слегка выходит за плашку */}
+              <div className="absolute -top-7 sm:-top-8 -right-1 sm:right-1 w-[110px] sm:w-[125px] h-[130px] sm:h-[150px] pointer-events-none z-20 flex items-end justify-center">
+                <picture className="w-full h-full flex items-end justify-center">
+                  <source srcSet={cat.image} type="image/webp" />
+                  <img
+                    src={cat.pngFallback}
+                    alt={cat.label}
+                    loading="lazy"
+                    className="w-full h-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.18)] group-hover:scale-105 group-hover:-translate-y-1.5 transition-transform duration-300 ease-out"
+                  />
+                </picture>
+              </div>
             </Link>
           ))}
         </div>
