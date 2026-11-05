@@ -44,11 +44,6 @@
     border-radius: 0px !important;
   }
 
-  /* Премиальные скругленные 3D-плашки категорий (по референсу) */
-  .category-3d-card {
-    border-radius: 20px !important;
-  }
-
   /* Скрытие системного скроллбара для горизонтальных карточек */
   .no-scrollbar::-webkit-scrollbar {
     display: none;

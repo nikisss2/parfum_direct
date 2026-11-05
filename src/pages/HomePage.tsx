@@ -22,8 +22,7 @@ import { SEO } from '../components/SEO';
 interface Category3DCard {
   id: string;
   label: string;
-  eyebrow: string;
-  description: string;
+  subtitle: string;
   image: string;
   pngFallback: string;
   link: string;
@@ -33,8 +32,7 @@ const CATEGORY_3D_CARDS: Category3DCard[] = [
   {
     id: 'perfume',
     label: 'Парфюмерия',
-    eyebrow: 'Оригиналы & Распив',
-    description: 'Селектив, ниша и люксовые флаконы от 1 мл',
+    subtitle: 'Люкс, селектив, ниша',
     image: '/assets/categories/perfume.webp',
     pngFallback: '/assets/categories/perfume.png',
     link: '/catalog?kind=perfume',
@@ -42,8 +40,7 @@ const CATEGORY_3D_CARDS: Category3DCard[] = [
   {
     id: 'skincare',
     label: 'Уход за кожей',
-    eyebrow: 'Лицо и декольте',
-    description: 'Сыворотки, премиум-кремы и уход',
+    subtitle: 'Кремы, сыворотки, уход',
     image: '/assets/categories/skincare.webp',
     pngFallback: '/assets/categories/skincare.png',
     link: '/catalog?kind=skincare',
@@ -51,8 +48,7 @@ const CATEGORY_3D_CARDS: Category3DCard[] = [
   {
     id: 'haircare',
     label: 'Уход за волосами',
-    eyebrow: 'Салонный уход',
-    description: 'Шампуни, масла и термозащита',
+    subtitle: 'Шампуни, масла, стайлинг',
     image: '/assets/categories/haircare.webp',
     pngFallback: '/assets/categories/haircare.png',
     link: '/catalog?kind=haircare',
@@ -60,8 +56,7 @@ const CATEGORY_3D_CARDS: Category3DCard[] = [
   {
     id: 'makeup',
     label: 'Макияж',
-    eyebrow: 'Декоративная косметика',
-    description: 'Культовые помады, тон и пудры',
+    subtitle: 'Помады, тон, пудры',
     image: '/assets/categories/makeup.webp',
     pngFallback: '/assets/categories/makeup.png',
     link: '/catalog?kind=makeup',
@@ -69,8 +64,7 @@ const CATEGORY_3D_CARDS: Category3DCard[] = [
   {
     id: 'bodycare',
     label: 'Уход за телом',
-    eyebrow: 'SPA & Релаксация',
-    description: 'Питательные лосьоны, скрабы и масла',
+    subtitle: 'Лосьоны, скрабы, масла',
     image: '/assets/categories/bodycare.webp',
     pngFallback: '/assets/categories/bodycare.png',
     link: '/catalog?kind=bodycare',
@@ -179,9 +173,9 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Секция категорий с объемными 3D рендерами (в стиле сквозного референса) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-2">
-        <div className="flex items-center justify-between mb-1 pb-1">
+      {/* Секция категорий с лаконичными 3D-плашками в строгом стиле Maison Arôme */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between mb-3 pb-1 border-b border-zinc-200">
           <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
             Категории
           </h2>
@@ -193,42 +187,33 @@ export const HomePage: React.FC = () => {
           </Link>
         </div>
 
-        {/* Сетка плашек категорий: 3D рендеры в верхнем правом углу на едином уровне и выходят за край плашки */}
-        <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 lg:gap-3.5 xl:gap-4 pt-8 sm:pt-9 pb-3 px-1 -mx-1 sm:mx-0 sm:px-0 no-scrollbar snap-x snap-mandatory">
+        {/* Сетка плашек категорий: строгая геометрия (0px скруглений), лаконичный текст, товар слегка выглядывает снизу */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5 md:gap-4">
           {CATEGORY_3D_CARDS.map(cat => (
             <Link
               key={cat.id}
               to={cat.link}
-              className="category-3d-card group relative flex-shrink-0 w-[240px] sm:w-auto snap-start bg-gradient-to-b from-white via-[#fafafc] to-[#f4f4f7] border border-zinc-200/90 hover:border-zinc-300 shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_32px_-4px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 p-4 sm:p-5 pt-5 pb-5 min-h-[148px] sm:min-h-[156px] flex flex-col justify-between overflow-visible"
+              className="group relative rounded-none border border-zinc-200 bg-[#F8F8F9] hover:bg-[#F0F1F3] hover:border-black transition-all duration-300 p-4 sm:p-5 h-[165px] sm:h-[180px] md:h-[190px] flex flex-col justify-between overflow-hidden last:col-span-2 sm:last:col-span-1"
             >
-              {/* Текстовая информация слева */}
-              <div className="max-w-[56%] sm:max-w-[54%] z-10">
-                <span className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-zinc-400 group-hover:text-amber-600 transition-colors">
-                  {cat.eyebrow}
-                </span>
-                <h3 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight leading-snug mt-1 group-hover:text-black">
+              {/* Лаконичный текст: строго название и краткий подзаголовок без лишнего шума */}
+              <div className="relative z-10">
+                <h3 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight leading-snug">
                   {cat.label}
                 </h3>
-                <p className="text-[11px] sm:text-xs text-zinc-500 font-light mt-1.5 leading-relaxed line-clamp-2">
-                  {cat.description}
+                <p className="text-[11px] sm:text-xs text-zinc-500 font-normal mt-0.5 leading-snug">
+                  {cat.subtitle}
                 </p>
               </div>
 
-              {/* Аккуратная подсказка перехода */}
-              <div className="mt-3 z-10 flex items-center gap-1 text-[11px] font-semibold text-zinc-900 group-hover:text-amber-600 transition-colors">
-                <span>Перейти</span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-
-              {/* Объемный 3D рендер: правый верхний угол, единый уровень и размер, слегка выходит за плашку */}
-              <div className="absolute -top-7 sm:-top-8 -right-1 sm:right-1 w-[110px] sm:w-[125px] h-[130px] sm:h-[150px] pointer-events-none z-20 flex items-end justify-center">
-                <picture className="w-full h-full flex items-end justify-center">
+              {/* 3D мокап: аккуратно выглядывает из нижней границы плашки (overflow-hidden срезает низ флакона, как на референсе) */}
+              <div className="absolute -bottom-2 sm:-bottom-3 inset-x-0 flex items-end justify-center pointer-events-none z-0 h-[105px] sm:h-[115px] md:h-[125px]">
+                <picture className="h-full w-auto flex items-end justify-center">
                   <source srcSet={cat.image} type="image/webp" />
                   <img
                     src={cat.pngFallback}
                     alt={cat.label}
                     loading="lazy"
-                    className="w-full h-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.18)] group-hover:scale-105 group-hover:-translate-y-1.5 transition-transform duration-300 ease-out"
+                    className="h-full w-auto max-w-[80%] object-contain object-bottom drop-shadow-[0_8px_16px_rgba(0,0,0,0.10)] group-hover:scale-105 group-hover:-translate-y-1 transition-transform duration-300 ease-out"
                   />
                 </picture>
               </div>
