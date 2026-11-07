@@ -59,23 +59,26 @@ export const LoyaltyPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="border-b border-zinc-200 bg-zinc-50 py-12 sm:py-16">
+      <section className="border-b border-zinc-100 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-3xl sm:text-5xl font-serif font-normal text-zinc-950 tracking-tight leading-tight">
+          <span className="text-[11px] font-normal uppercase tracking-[0.18em] text-zinc-400">
+            Программа привилегий
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-zinc-950 tracking-tight mt-1">
             Бонусная карта Maison Arôme
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-500 max-w-xl mx-auto leading-relaxed font-light text-delicate">
             Возвращайте от 5% до 10% с каждого заказа, копите баллы и оплачивайте до 30% стоимости любимых ароматов.
           </p>
         </div>
       </section>
 
       {/* Virtual Card Showcase */}
-      <section className="py-12 sm:py-16 border-b border-zinc-200">
+      <section className="py-12 sm:py-16 border-b border-zinc-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Card Presentation */}
           <div className="md:col-span-6">
-            <div className="w-full aspect-[1.6/1] bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800 text-white p-7 sm:p-9 flex flex-col justify-between shadow-2xl border border-zinc-700 relative overflow-hidden">
+            <div className="w-full aspect-[1.6/1] bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800 text-white p-7 sm:p-9 flex flex-col justify-between rounded-3xl shadow-xl border border-zinc-800 relative overflow-hidden">
               <div className="absolute -right-8 -top-8 w-44 h-44 bg-[#5A6B32]/30 rounded-full blur-3xl pointer-events-none" />
 
               <div className="flex items-center justify-between z-10">
@@ -87,7 +90,7 @@ export const LoyaltyPage: React.FC = () => {
                     Club Privilège
                   </span>
                 </div>
-                <div className="px-2 py-0.5 border border-zinc-600 text-[10px] font-sans tabular-nums uppercase font-bold text-amber-300">
+                <div className="px-3 py-1 rounded-full border border-zinc-700 bg-white/5 text-[10px] font-sans tabular-nums uppercase font-semibold text-amber-300">
                   {cardData ? cardData.tier : '500 бонусов в подарок'}
                 </div>
               </div>
@@ -96,20 +99,20 @@ export const LoyaltyPage: React.FC = () => {
                 <span className="text-[10px] uppercase tracking-widest text-zinc-400 block mb-1">
                   Баланс бонусных баллов
                 </span>
-                <div className="text-3xl sm:text-4xl font-serif font-bold text-white flex items-baseline gap-2">
+                <div className="text-3xl sm:text-4xl font-serif font-light text-white flex items-baseline gap-2">
                   <span>{cardData ? cardData.points.toLocaleString('ru-RU') : '500'}</span>
-                  <span className="text-xs uppercase text-[#5A6B32] font-sans tabular-nums font-bold tracking-widest">
+                  <span className="text-xs uppercase text-[#5A6B32] font-sans tabular-nums font-semibold tracking-widest">
                     баллов (₽)
                   </span>
                 </div>
                 {user && (
-                  <div className="text-xs text-zinc-300 mt-1 truncate">
-                    Владелец: <span className="font-semibold text-white">{user.fullName}</span>
+                  <div className="text-xs text-zinc-300 mt-1 truncate font-light">
+                    Владелец: <span className="font-medium text-white">{user.fullName}</span>
                   </div>
                 )}
               </div>
 
-              <div className="flex items-end justify-between text-[11px] text-zinc-400 z-10 font-sans tabular-nums">
+              <div className="flex items-end justify-between text-[11px] text-zinc-400 z-10 font-sans tabular-nums font-light">
                 <span>{cardData?.cardNumber || 'MA-CLUB-XXXX'}</span>
                 <span>1 бонус = 1 рубль</span>
               </div>
@@ -117,35 +120,35 @@ export const LoyaltyPage: React.FC = () => {
           </div>
 
           {/* Quick Explanation */}
-          <div className="md:col-span-6 space-y-4">
-            <h2 className="text-2xl font-serif text-zinc-950">
+          <div className="md:col-span-6 space-y-5 bg-zinc-50/60 rounded-3xl border border-zinc-200/70 p-6 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-light text-zinc-950">
               {user ? 'Ваша карта активирована' : 'Получите 500 баллов прямо сейчас'}
             </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed font-light">
+            <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed font-light text-delicate">
               Каждый зарегистрированный покупатель сразу получает 500 приветственных баллов на счёт. 
               Баллы начисляются автоматически за каждую покупку распивов, полноразмерных флаконов и наборов.
             </p>
 
-            <div className="space-y-2 pt-2">
-              <div className="flex items-center gap-2 text-xs text-zinc-800">
-                <CheckCircle2 className="w-4 h-4 text-[#5A6B32] shrink-0" />
+            <div className="space-y-2.5 pt-1">
+              <div className="flex items-center gap-2.5 text-xs text-zinc-700 font-light">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>1 бонус равен 1 реальному рублю скидки</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-zinc-800">
-                <CheckCircle2 className="w-4 h-4 text-[#5A6B32] shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs text-zinc-700 font-light">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Оплата бонусами до 30% стоимости любого заказа</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-zinc-800">
-                <CheckCircle2 className="w-4 h-4 text-[#5A6B32] shrink-0" />
-                <span>Статус «Постоянный клиент» (7% кэшбэк) от 5 заказов, VIP (10% кэшбэк) — от 15 заказов</span>
+              <div className="flex items-center gap-2.5 text-xs text-zinc-700 font-light">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Статус «Постоянный клиент» (7%) от 5 заказов, VIP (10%) — от 15 заказов</span>
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-2">
               {user ? (
                 <Link
                   to="/catalog"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                  className="pill-btn-black py-3 px-7 text-xs font-medium uppercase tracking-wider inline-flex items-center gap-2 rounded-full cursor-pointer transition-all active:scale-95"
                 >
                   <span>Перейти в каталог</span>
                   <ArrowRight className="w-4 h-4" />
@@ -153,10 +156,10 @@ export const LoyaltyPage: React.FC = () => {
               ) : (
                 <Link
                   to="/account"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                  className="pill-btn-black py-3 px-7 text-xs font-medium uppercase tracking-wider inline-flex items-center gap-2 rounded-full cursor-pointer transition-all active:scale-95"
                 >
                   <UserCheck className="w-4 h-4" />
-                  <span>Войти / Зарегистрироваться и забрать 500 ₽</span>
+                  <span>Войти и забрать 500 ₽</span>
                 </Link>
               )}
             </div>
@@ -165,72 +168,74 @@ export const LoyaltyPage: React.FC = () => {
       </section>
 
       {/* Tiers Progression Section */}
-      <section className="py-12 sm:py-16 bg-zinc-50 border-b border-zinc-200">
+      <section className="py-12 sm:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl sm:text-3xl font-serif text-center text-zinc-950 mb-3">
-            Уровни привилегий
-          </h2>
-          <p className="text-sm text-zinc-500 text-center mb-8 font-light">
-            Чем больше ароматов вы открываете для себя, тем выше ваш постоянный кэшбэк
-          </p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-light text-zinc-950">
+              Уровни привилегий
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-1 font-light text-delicate">
+              Чем больше ароматов вы открываете для себя, тем выше ваш постоянный кэшбэк
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Tier 1 */}
-            <div className="p-6 border border-zinc-200 bg-white space-y-4 hover:border-black transition-colors">
+            <div className="p-6 sm:p-7 rounded-[28px] border border-zinc-200/80 bg-white space-y-4 hover:border-black transition-all shadow-2xs hover:shadow-md">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">
+                <span className="text-[11px] font-normal uppercase tracking-wider text-zinc-400 font-sans tabular-nums">
                   Уровень 1
                 </span>
-                <span className="px-2 py-0.5 bg-zinc-100 text-xs font-bold text-zinc-900 font-sans tabular-nums">
+                <span className="px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium text-zinc-900 font-sans tabular-nums">
                   5% КЭШБЭК
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-zinc-950">Базовый</h3>
-              <p className="text-xs text-zinc-600 leading-relaxed font-light">
+              <h3 className="text-lg font-normal text-zinc-950">Базовый</h3>
+              <p className="text-xs text-zinc-500 leading-relaxed font-light text-delicate">
                 Присваивается сразу при регистрации. Включает 500 приветственных баллов и 5% возврат с каждой покупки.
               </p>
-              <div className="text-[11px] font-sans tabular-nums text-zinc-400 pt-2 border-t border-zinc-100">
+              <div className="text-[11px] font-sans tabular-nums text-zinc-400 pt-3 border-t border-zinc-100 font-light">
                 Условие: 0–4 заказа
               </div>
             </div>
 
             {/* Tier 2 */}
-            <div className="p-6 border-2 border-black bg-white space-y-4 shadow-sm relative">
-              <div className="absolute -top-3 right-4 px-2 py-0.5 bg-[#5A6B32] text-white text-[9px] font-bold uppercase tracking-wider">
+            <div className="p-6 sm:p-7 rounded-[28px] border-2 border-black bg-white space-y-4 shadow-md relative">
+              <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-black text-white text-[10px] font-medium uppercase tracking-wider shadow-xs">
                 Популярный
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#5A6B32] font-sans tabular-nums">
+                <span className="text-[11px] font-normal uppercase tracking-wider text-zinc-400 font-sans tabular-nums">
                   Уровень 2
                 </span>
-                <span className="px-2 py-0.5 bg-[#5A6B32] text-xs font-bold text-white font-sans tabular-nums">
+                <span className="px-3 py-1 rounded-full bg-black text-xs font-medium text-white font-sans tabular-nums">
                   7% КЭШБЭК
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-zinc-950">Постоянный клиент</h3>
-              <p className="text-xs text-zinc-600 leading-relaxed font-light">
+              <h3 className="text-lg font-normal text-zinc-950">Постоянный клиент</h3>
+              <p className="text-xs text-zinc-500 leading-relaxed font-light text-delicate">
                 Активируется автоматически после оформления 5-го заказа. Повышенный кэшбэк 7% и подарки к праздникам.
               </p>
-              <div className="text-[11px] font-sans tabular-nums text-black font-bold pt-2 border-t border-zinc-100">
+              <div className="text-[11px] font-sans tabular-nums text-black font-medium pt-3 border-t border-zinc-100">
                 Условие: от 5 заказов
               </div>
             </div>
 
             {/* Tier 3 */}
-            <div className="p-6 border border-zinc-200 bg-white space-y-4 hover:border-black transition-colors">
+            <div className="p-6 sm:p-7 rounded-[28px] border border-zinc-200/80 bg-white space-y-4 hover:border-black transition-all shadow-2xs hover:shadow-md">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-600 font-sans tabular-nums">
+                <span className="text-[11px] font-normal uppercase tracking-wider text-amber-700 font-sans tabular-nums">
                   Уровень 3
                 </span>
-                <span className="px-2 py-0.5 bg-zinc-950 text-xs font-bold text-amber-300 font-sans tabular-nums">
+                <span className="px-3 py-1 rounded-full bg-zinc-950 text-xs font-medium text-amber-300 font-sans tabular-nums">
                   10% КЭШБЭК
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-zinc-950">VIP Privilège</h3>
-              <p className="text-xs text-zinc-600 leading-relaxed font-light">
+              <h3 className="text-lg font-normal text-zinc-950">VIP Privilège</h3>
+              <p className="text-xs text-zinc-500 leading-relaxed font-light text-delicate">
                 Максимальный статус для ценителей парфюмерии: 10% кэшбэк, персональный парфюмерный консультант и закрытые предзаказы редких позиций.
               </p>
-              <div className="text-[11px] font-sans tabular-nums text-zinc-400 pt-2 border-t border-zinc-100">
+              <div className="text-[11px] font-sans tabular-nums text-zinc-400 pt-3 border-t border-zinc-100 font-light">
                 Условие: от 15 заказов
               </div>
             </div>

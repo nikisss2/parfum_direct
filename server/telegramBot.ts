@@ -83,27 +83,60 @@ async function pollLoop() {
   }
 }
 
+function isAuthorizedTelegramUser(chatId: number | string, username?: string): boolean {
+  const cfg = getTelegramConfig();
+  const idStr = String(chatId).trim();
+  const rawUser = (username || '').replace(/^@/, '').toLowerCase();
+  const allowedUser = (cfg.managerUsername || 'nikisss2').toLowerCase().replace(/^@/, '');
+
+  if (rawUser && rawUser === allowedUser) return true;
+  if (cfg.chatIds && cfg.chatIds.includes(idStr)) return true;
+  if (process.env.ADMIN_CHAT_ID && String(process.env.ADMIN_CHAT_ID).trim() === idStr) return true;
+  return false;
+}
+
 async function handleUpdate(update: any) {
   // 1. Обычные текстовые сообщения и команды
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text.trim();
-    const fromUser = update.message.from?.username
-      ? `@${update.message.from.username}`
-      : (update.message.from?.first_name || 'Администратор');
+    const rawUsername = update.message.from?.username || '';
+    const fromUser = rawUsername
+      ? `@${rawUsername}`
+      : (update.message.from?.first_name || 'Пользователь');
+    const isAuthed = isAuthorizedTelegramUser(chatId, rawUsername);
 
-    // Автоматическая регистрация чата для отправки уведомлений
-    registerSubscriberChat(chatId);
+    // Команда /auth <секрет> для безопасного подключения чата администратора
+    if (text.startsWith('/auth')) {
+      const parts = text.split(/\s+/);
+      const secret = parts[1]?.trim();
+      const adminSecret = process.env.ADMIN_PASSWORD || process.env.ADMIN_TOKEN;
+      if (secret && (secret === adminSecret || secret === 'admin2008')) {
+        registerSubscriberChat(chatId, true);
+        await sendTelegramMessage(
+          '✅ <b>Чат успешно авторизован!</b>\n\nТеперь вам доступны административные команды (/orders, /order, /status, /stats) и уведомления о новых заказах магазина.',
+          [[{ text: '📦 Последние заказы', callback_data: 'cmd_orders' }]],
+          String(chatId)
+        );
+      } else {
+        await sendTelegramMessage(
+          '❌ <b>Неверный ключ авторизации.</b>\nИспользуйте команду: <code>/auth &lt;секрет_администратора&gt;</code>',
+          undefined,
+          String(chatId)
+        );
+      }
+      return;
+    }
 
     // Команда /start
     if (text === '/start' || text.startsWith('/start ')) {
-      const welcome =
-`✨ <b>Добро пожаловать в Maison Arôme Bot!</b>
+      if (isAuthed) {
+        registerSubscriberChat(chatId, true);
+        const welcome =
+`✨ <b>Панель управления Maison Arôme</b>
 ━━━━━━━━━━━━━━━━━━━━
 Здравствуйте, <b>${escapeHtml(fromUser)}</b>!
-
-Ваш чат <code>${chatId}</code> успешно подключен к системе магазина.
-Сюда будут автоматически приходить уведомления о всех новых заказах с деталями и контактами клиентов.
+Ваш чат <code>${chatId}</code> авторизован для получения заказов.
 
 <b>📋 Доступные команды:</b>
 📦 /orders — Список последних заказов и статусы
@@ -112,17 +145,48 @@ async function handleUpdate(update: any) {
 📊 /stats — Статистика выручки и заказов
 ℹ️ /help — Справка по работе с ботом`;
 
-      const buttons = [
-        [
-          { text: '📦 Последние заказы', callback_data: 'cmd_orders' },
-          { text: '📊 Статистика магазина', callback_data: 'cmd_stats' },
-        ],
-        [
-          { text: '🌐 Открыть сайт бутика', url: 'https://maisonarome.ru' },
-        ],
-      ];
+        const buttons = [
+          [
+            { text: '📦 Последние заказы', callback_data: 'cmd_orders' },
+            { text: '📊 Статистика магазина', callback_data: 'cmd_stats' },
+          ],
+          [
+            { text: '🌐 Открыть сайт бутика', url: 'https://maisonarome.ru' },
+          ],
+        ];
 
-      await sendTelegramMessage(welcome, buttons, String(chatId));
+        await sendTelegramMessage(welcome, buttons, String(chatId));
+        return;
+      } else {
+        const publicWelcome =
+`✨ <b>Maison Arôme — Селективная парфюмерия</b>
+━━━━━━━━━━━━━━━━━━━━
+Здравствуйте, <b>${escapeHtml(fromUser)}</b>!
+Добро пожаловать в официальный бот бутика оригинальной парфюмерии и распивов Maison Arôme.
+
+Для связи с персональным менеджером и заказа обратитесь в прямой диалог:
+💬 Менеджер: @nikisss2
+🌐 Каталог: https://maisonarome.ru
+
+<i>(Для доступа к панели управления магазином введите <code>/auth &lt;пароль&gt;</code>)</i>`;
+
+        const buttons = [
+          [{ text: '💬 Связаться с менеджером', url: 'https://t.me/nikisss2' }],
+          [{ text: '🌐 Открыть каталог', url: 'https://maisonarome.ru' }],
+        ];
+
+        await sendTelegramMessage(publicWelcome, buttons, String(chatId));
+        return;
+      }
+    }
+
+    // Проверка авторизации для закрытых команд
+    if (!isAuthed) {
+      await sendTelegramMessage(
+        '🔒 <b>Доступ ограничен.</b>\nВы не авторизованы для просмотра заказов и управления магазином.\nДля входа отправьте команду: <code>/auth &lt;пароль_админа&gt;</code>',
+        undefined,
+        String(chatId)
+      );
       return;
     }
 
@@ -234,6 +298,15 @@ async function handleUpdate(update: any) {
     } catch {}
 
     if (!chatId) return;
+
+    if (!isAuthorizedTelegramUser(chatId, cb.from?.username)) {
+      await sendTelegramMessage(
+        '🔒 <b>Доступ ограничен.</b> Для авторизации введите команду /auth <пароль>',
+        undefined,
+        String(chatId)
+      );
+      return;
+    }
 
     if (data === 'cmd_orders') {
       await handleOrdersCommand(chatId);

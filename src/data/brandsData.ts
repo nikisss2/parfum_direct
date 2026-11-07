@@ -3,8 +3,8 @@ export interface BrandInfo {
   name: string;
   slug: string;
   searchQuery: string;
-  country?: string;
-  category?: 'niche' | 'luxury' | 'arabian' | 'beauty';
+  country?: string | null;
+  category?: 'niche' | 'luxury' | 'arabian' | 'beauty' | null;
   isPopular?: boolean;
   count?: number;
 }

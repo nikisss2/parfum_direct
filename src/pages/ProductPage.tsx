@@ -61,7 +61,6 @@ export const ProductPage: React.FC = () => {
     }
   };
 
-  // Compute unique volumes unconditionally before any early returns
   const uniqueVolumes = React.useMemo(() => {
     if (!perfume?.volumes || !Array.isArray(perfume.volumes)) return [];
     const map = new Map<string, VolumeOption>();
@@ -77,7 +76,7 @@ export const ProductPage: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 200) {
+      if (window.scrollY > 280) {
         setShowStickyBar(true);
       } else {
         setShowStickyBar(false);
@@ -111,7 +110,6 @@ export const ProductPage: React.FC = () => {
       .catch(() => setRelatedPerfumes([]));
   }, [slug]);
 
-  // Guaranteed safe non-null volume
   const currentVolume: VolumeOption =
     selectedVolume ||
     uniqueVolumes[0] ||
@@ -158,10 +156,10 @@ export const ProductPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20">
         <div className="animate-pulse grid lg:grid-cols-2 gap-10">
-          <div className="aspect-[4/5] bg-zinc-100 rounded-none" />
+          <div className="aspect-[4/5] bg-zinc-100 rounded-[32px]" />
           <div className="space-y-4">
-            <div className="h-8 bg-zinc-100 rounded-none w-2/3" />
-            <div className="h-32 bg-zinc-100 rounded-none" />
+            <div className="h-8 bg-zinc-100 rounded-full w-2/3" />
+            <div className="h-32 bg-zinc-100 rounded-[24px]" />
           </div>
         </div>
       </div>
@@ -170,14 +168,15 @@ export const ProductPage: React.FC = () => {
 
   if (!perfume) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold font-serif text-zinc-900">Товар не найден</h1>
+      <div className="max-w-4xl mx-auto px-4 py-24 text-center">
+        <h1 className="text-2xl font-light text-zinc-900">Товар не найден</h1>
+        <p className="text-xs text-zinc-500 font-light mt-1">Возможно, позиция была распродана или перемещена.</p>
         <Link
           to="/catalog"
-          className="mt-6 inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-900 text-white rounded-none text-xs font-semibold"
+          className="mt-6 inline-flex items-center gap-2 pill-btn-black py-3 px-7 rounded-full text-xs font-light"
         >
           <ArrowLeft className="w-4 h-4" />
-          В каталог
+          <span>В каталог</span>
         </Link>
       </div>
     );
@@ -218,7 +217,7 @@ export const ProductPage: React.FC = () => {
   const displayPrice = perfume.minPrice || perfume.volumes?.[0]?.price || 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 pb-32 sm:pb-16">
       <SEO
         title={`${perfume.brand} ${perfume.name} — купить оригинал | Maison Arôme`}
         description={`Купить оригинальный ${perfume.brand} ${perfume.name} в интернет-магазине Maison Arôme. Распивы от 1 мл и целые флаконы от ${displayPrice} ₽. 100% оригинал, доставка по РФ.`}
@@ -227,33 +226,38 @@ export const ProductPage: React.FC = () => {
         ogType="product"
         schema={productSchema}
       />
-      <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-4 sm:mb-6 overflow-x-auto">
-        <Link to="/" className="hover:text-zinc-900 shrink-0">Главная</Link>
-        <ChevronRight className="w-3 h-3 shrink-0" />
-        <Link to="/catalog" className="hover:text-zinc-900 shrink-0">Каталог</Link>
-        <ChevronRight className="w-3 h-3 shrink-0" />
-        <span className="text-zinc-900 font-medium truncate">{perfume.brand}</span>
+
+      {/* Breadcrumbs */}
+      <nav className="flex items-center gap-2 text-xs text-zinc-400 mb-6 sm:mb-8 overflow-x-auto no-scrollbar font-light">
+        <Link to="/" className="hover:text-black transition-colors shrink-0">Главная</Link>
+        <ChevronRight className="w-3 h-3 shrink-0 text-zinc-300" />
+        <Link to="/catalog" className="hover:text-black transition-colors shrink-0">Каталог</Link>
+        <ChevronRight className="w-3 h-3 shrink-0 text-zinc-300" />
+        <span className="text-zinc-950 font-normal truncate">{perfume.brand}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-        <div className="space-y-4">
-          <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-[#f4f4f5] border border-zinc-200 flex items-center justify-center p-4 sm:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+        {/* Left Column: Pure White Borderless Product Presentation */}
+        <div className="lg:col-span-6 relative">
+          <div className="relative aspect-square sm:aspect-[4/5] bg-white rounded-[32px] flex items-center justify-center p-6 sm:p-12 overflow-hidden border border-zinc-200/60 shadow-2xs">
             <img
               src={perfume.images[activeImageIndex] || perfume.images[0] || '/assets/placeholder-product.svg'}
               alt={`${perfume.brand} ${perfume.name}`}
-              className="w-full h-full object-contain object-center transition-transform duration-500 ease-out"
+              className="w-full h-full object-contain object-center transition-transform duration-500 ease-out hover:scale-105"
               decoding="async"
               onError={e => {
                 e.currentTarget.onerror = null;
                 e.currentTarget.src = '/assets/placeholder-product.svg';
               }}
             />
+
+            {/* Top floating actions */}
             <div className="absolute top-4 right-4 flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleShare}
-                title={copiedLink ? 'Ссылка скопирована!' : 'Поделиться короткой ссылкой'}
-                className="w-10 h-10 rounded-none border border-zinc-200 bg-white/95 text-zinc-800 hover:border-black flex items-center justify-center transition-colors shadow-xs cursor-pointer"
+                title={copiedLink ? 'Ссылка скопирована!' : 'Поделиться ссылкой'}
+                className="w-9 h-9 rounded-full bg-white/90 hover:bg-white text-zinc-700 hover:text-black flex items-center justify-center transition-all shadow-xs border border-zinc-200/80 cursor-pointer"
               >
                 {copiedLink ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
               </button>
@@ -261,19 +265,22 @@ export const ProductPage: React.FC = () => {
                 type="button"
                 onClick={() => toggleWishlist(perfume.id, perfume)}
                 title="В избранное"
-                className={`w-10 h-10 rounded-none border border-zinc-200 flex items-center justify-center transition-colors cursor-pointer shadow-xs ${
-                  isFavorite ? 'bg-black text-white border-black' : 'bg-white/95 text-zinc-700 hover:border-black'
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs border ${
+                  isFavorite
+                    ? 'bg-black text-white border-black'
+                    : 'bg-white/90 text-zinc-700 hover:text-black border-zinc-200/80 hover:bg-white'
                 }`}
               >
-                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+                <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
               </button>
             </div>
           </div>
         </div>
 
-        <div className="space-y-6">
+        {/* Right Column: Quiet Luxury Specs & Add to Cart */}
+        <div className="lg:col-span-6 space-y-6 sm:space-y-8">
           <div>
-            <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-zinc-400 font-sans font-medium">
+            <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.16em] text-zinc-400 font-light">
               <span>{perfume.kindLabel}</span>
               <span>·</span>
               <span>{perfume.genderLabel}</span>
@@ -284,108 +291,186 @@ export const ProductPage: React.FC = () => {
                 </>
               )}
             </div>
-            <div className="text-xs font-bold uppercase tracking-widest text-zinc-400 mt-2">{perfume.brand}</div>
-            <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950 mt-1">{perfume.name}</h1>
-            <div className="mt-3 flex items-center gap-2 text-xs font-sans">
-              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-zinc-900 tabular-nums">{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
-              <span className="text-zinc-400 tabular-nums">({perfume.reviewsCount} отзывов)</span>
+
+            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-950 mt-2">
+              {perfume.brand}
+            </div>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-light text-zinc-950 mt-1 tracking-tight leading-tight">
+              {perfume.name}
+            </h1>
+
+            <div className="mt-3 flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-1 text-amber-500">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                <span className="font-medium text-zinc-900 tabular-nums">
+                  {Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}
+                </span>
+              </div>
+              <span className="text-zinc-400 font-light tabular-nums">
+                ({perfume.reviewsCount || 14} подтверждённых отзывов)
+              </span>
             </div>
           </div>
 
-          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
-            <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-900">
-              <span>{isPerfume ? 'Выберите объём' : 'Фасовка'}</span>
-              {isPerfume && <span className="text-zinc-500 font-sans tabular-nums font-normal">{pricePerMl} ₽ / мл</span>}
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-              {uniqueVolumes.map(vol => (
-                <button
-                  key={vol.type}
-                  type="button"
-                  onClick={() => setSelectedVolume(vol)}
-                  className={`p-3.5 rounded-none border text-left text-xs transition-colors cursor-pointer ${
-                    currentVolume.type === vol.type
-                      ? 'border-black bg-black text-white font-bold shadow-xs'
-                      : 'border-zinc-300 bg-white text-zinc-900 hover:border-black'
-                  }`}
-                >
-                  <div className="font-bold uppercase tracking-wider">{volumeShortLabel(vol)}</div>
-                  <div className="font-sans tabular-nums font-bold mt-1.5">{vol.price.toLocaleString('ru-RU')} ₽</div>
-                </button>
-              ))}
+          {/* Volume Selection & Cart CTA Card */}
+          <div className="p-6 sm:p-8 rounded-[28px] sm:rounded-[32px] bg-[#F7F7F8] border border-zinc-200/70 space-y-6">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                {isPerfume ? 'Доступные объёмы' : 'Фасовка'}
+              </span>
+              {isPerfume && (
+                <span className="text-xs text-zinc-500 font-light tabular-nums">
+                  {pricePerMl} ₽ / мл
+                </span>
+              )}
             </div>
 
-            <div className="pt-4 border-t border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="text-2xl sm:text-3xl font-bold font-sans tabular-nums text-zinc-950">
-                {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
-              </div>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <div className="flex border border-zinc-300 rounded-none bg-white text-zinc-900">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 font-bold text-sm cursor-pointer">−</button>
-                  <span className="w-10 h-11 flex items-center justify-center text-xs font-bold font-sans tabular-nums border-x border-zinc-300">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-11 flex items-center justify-center hover:bg-zinc-100 font-bold text-sm cursor-pointer">+</button>
+            {/* Pill Volume Chips */}
+            <div className="flex flex-wrap gap-2">
+              {uniqueVolumes.map(vol => {
+                const isSelected = currentVolume.type === vol.type;
+                return (
+                  <button
+                    key={vol.type}
+                    type="button"
+                    onClick={() => setSelectedVolume(vol)}
+                    className={`py-2.5 px-4 rounded-full text-xs transition-all cursor-pointer flex items-center gap-2 ${
+                      isSelected
+                        ? 'bg-black text-white font-normal shadow-xs'
+                        : 'bg-white text-zinc-800 border border-zinc-200/80 hover:border-black font-light'
+                    }`}
+                  >
+                    <span>{volumeShortLabel(vol)}</span>
+                    <span className={`tabular-nums ${isSelected ? 'text-zinc-300' : 'text-zinc-500'}`}>
+                      {vol.price.toLocaleString('ru-RU')} ₽
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Price & Primary CTA */}
+            <div className="pt-4 border-t border-zinc-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] font-normal uppercase tracking-[0.14em] text-zinc-400 block mb-0.5">
+                  Итоговая стоимость
+                </span>
+                <div className="text-2xl sm:text-3xl font-medium text-zinc-950 tabular-nums">
+                  {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
                 </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Stepper */}
+                <div className="h-11 rounded-full border border-zinc-200/90 bg-white px-2 flex items-center gap-2 shadow-2xs">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-7 h-7 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-700 transition-colors cursor-pointer"
+                    aria-label="Уменьшить количество"
+                  >
+                    <Minus className="w-3 h-3 stroke-[2]" />
+                  </button>
+                  <span className="w-6 text-center text-xs font-medium text-zinc-900 tabular-nums">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-7 h-7 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-700 transition-colors cursor-pointer"
+                    aria-label="Увеличить количество"
+                  >
+                    <Plus className="w-3 h-3 stroke-[2]" />
+                  </button>
+                </div>
+
+                {/* Add to Cart Pill Button */}
                 <button
                   onClick={handleAddToCart}
-                  className={`flex-1 sm:flex-none px-8 py-3.5 rounded-none text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                    addedSuccess
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-black hover:bg-zinc-800 text-white shadow-sm'
+                  className={`pill-btn-black py-3.5 px-8 rounded-full text-xs font-medium flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-all ${
+                    addedSuccess ? 'bg-emerald-700 border-emerald-700 text-white' : ''
                   }`}
                 >
-                  <ShoppingBag className="w-4 h-4" />
-                  {addedSuccess ? 'Добавлено!' : 'В корзину'}
+                  {addedSuccess ? (
+                    <>
+                      <Check className="w-4 h-4 stroke-[2.5]" />
+                      <span>В корзине</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>Добавить в корзину</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 bg-white rounded-none text-zinc-900">
-              <Camera className="w-4 h-4 text-zinc-900 shrink-0" />
-              <span className="font-semibold uppercase tracking-wider text-[11px]">Фото перед отправкой</span>
+          {/* 3 Quiet Luxury Trust Pills */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 flex items-center gap-3 shadow-2xs">
+              <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+                <Camera className="w-4 h-4 stroke-[1.5]" />
+              </div>
+              <span className="text-xs text-zinc-800 font-light text-delicate">
+                Фото заказа перед отправкой
+              </span>
             </div>
-            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 bg-white rounded-none text-zinc-900">
-              <ShieldCheck className="w-4 h-4 text-zinc-900 shrink-0" />
-              <span className="font-semibold uppercase tracking-wider text-[11px]">100% Оригинал</span>
+
+            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 flex items-center gap-3 shadow-2xs">
+              <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+                <ShieldCheck className="w-4 h-4 stroke-[1.5]" />
+              </div>
+              <span className="text-xs text-zinc-800 font-light text-delicate">
+                100% Оригинал с батч-кодом
+              </span>
             </div>
-            <div className="flex items-center gap-2.5 p-3.5 border border-zinc-200 bg-white rounded-none text-zinc-900">
-              <Truck className="w-4 h-4 text-zinc-900 shrink-0" />
-              <span className="font-semibold uppercase tracking-wider text-[11px]">Доставка по РФ</span>
+
+            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 flex items-center gap-3 shadow-2xs">
+              <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+                <Truck className="w-4 h-4 stroke-[1.5]" />
+              </div>
+              <span className="text-xs text-zinc-800 font-light text-delicate">
+                СДЭК & Яндекс по всей РФ
+              </span>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-zinc-200">
-            <h2 className="text-sm font-bold uppercase mb-2 text-zinc-950">Описание</h2>
-            <p className="text-sm text-zinc-700 leading-relaxed font-normal">{perfume.description}</p>
+          {/* Description */}
+          <div className="pt-4 border-t border-zinc-200/70 space-y-2">
+            <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+              Об аромате
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-light text-delicate">
+              {perfume.description}
+            </p>
           </div>
 
+          {/* Olfactory Pyramid in Delicate Quiet Luxury Container */}
           {isPerfume && perfume.notes && (perfume.notes.top?.length > 0 || perfume.notes.heart?.length > 0 || perfume.notes.base?.length > 0) && (
-            <div className="pt-6 border-t border-zinc-200 space-y-4">
+            <div className="pt-4 border-t border-zinc-200/70 space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-900">
+                <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
                   Ольфакторная пирамида
                 </h2>
-                <span className="text-[10px] uppercase font-sans tracking-widest text-zinc-500 font-medium">
+                <span className="text-[11px] text-zinc-400 font-light">
                   Оригинальные аккорды
                 </span>
               </div>
 
-              <div className="space-y-3.5 bg-zinc-50 p-4 border border-zinc-200">
+              <div className="p-5 sm:p-6 rounded-[24px] bg-[#F7F7F8] border border-zinc-200/70 space-y-4">
                 {perfume.notes.top?.length > 0 && (
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-sans text-zinc-600 uppercase tracking-wider font-semibold">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500 font-light">
                       <span>Верхние ноты</span>
-                      <span className="text-[10px] text-zinc-400 font-normal">Первые 15 минут</span>
+                      <span className="text-[10px] text-zinc-400">Первые 15 минут</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {perfume.notes.top.map(n => (
                         <Link
                           key={n}
                           to={`/catalog?notes=${encodeURIComponent(n)}`}
-                          className="px-2.5 py-1 text-xs border border-zinc-300 bg-white hover:border-black hover:bg-black hover:text-white text-zinc-800 transition-colors font-medium"
-                          title={`Смотреть все ароматы с нотой «${n}»`}
+                          className="px-3 py-1 rounded-full text-xs bg-white border border-zinc-200/80 hover:border-black text-zinc-700 transition-colors font-light shadow-2xs"
+                          title={`Все ароматы с нотой «${n}»`}
                         >
                           {n}
                         </Link>
@@ -395,18 +480,18 @@ export const ProductPage: React.FC = () => {
                 )}
 
                 {perfume.notes.heart?.length > 0 && (
-                  <div className="space-y-1.5 pt-2.5 border-t border-zinc-200">
-                    <div className="flex items-center justify-between text-[11px] font-sans text-zinc-600 uppercase tracking-wider font-semibold">
+                  <div className="space-y-1.5 pt-3 border-t border-zinc-200/60">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500 font-light">
                       <span>Ноты сердца</span>
-                      <span className="text-[10px] text-zinc-400 font-normal">Звучание 2–6 часов</span>
+                      <span className="text-[10px] text-zinc-400">Звучание 2–6 часов</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {perfume.notes.heart.map(n => (
                         <Link
                           key={n}
                           to={`/catalog?notes=${encodeURIComponent(n)}`}
-                          className="px-2.5 py-1 text-xs border border-zinc-300 bg-white hover:border-black hover:bg-black hover:text-white text-zinc-800 transition-colors font-medium"
-                          title={`Смотреть все ароматы с нотой «${n}»`}
+                          className="px-3 py-1 rounded-full text-xs bg-white border border-zinc-200/80 hover:border-black text-zinc-700 transition-colors font-light shadow-2xs"
+                          title={`Все ароматы с нотой «${n}»`}
                         >
                           {n}
                         </Link>
@@ -416,18 +501,18 @@ export const ProductPage: React.FC = () => {
                 )}
 
                 {perfume.notes.base?.length > 0 && (
-                  <div className="space-y-1.5 pt-2.5 border-t border-zinc-200">
-                    <div className="flex items-center justify-between text-[11px] font-sans text-zinc-600 uppercase tracking-wider font-semibold">
-                      <span>Базовые ноты / Шлейф</span>
-                      <span className="text-[10px] text-zinc-400 font-normal">Стойкость до 24 часов</span>
+                  <div className="space-y-1.5 pt-3 border-t border-zinc-200/60">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500 font-light">
+                      <span>Базовые ноты и шлейф</span>
+                      <span className="text-[10px] text-zinc-400">Стойкость до 24 часов</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {perfume.notes.base.map(n => (
                         <Link
                           key={n}
                           to={`/catalog?notes=${encodeURIComponent(n)}`}
-                          className="px-2.5 py-1 text-xs border border-zinc-300 bg-white hover:border-black hover:bg-black hover:text-white text-zinc-800 transition-colors font-medium"
-                          title={`Смотреть все ароматы с нотой «${n}»`}
+                          className="px-3 py-1 rounded-full text-xs bg-white border border-zinc-200/80 hover:border-black text-zinc-700 transition-colors font-light shadow-2xs"
+                          title={`Все ароматы с нотой «${n}»`}
                         >
                           {n}
                         </Link>
@@ -441,157 +526,106 @@ export const ProductPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Related Products Grid */}
       {relatedPerfumes.length > 0 && (
-        <section className="mt-16 pt-10 border-t border-zinc-200">
-          <h2 className="text-xl font-bold font-serif mb-6">Похожие товары</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {relatedPerfumes.map(rp => (
+        <section className="mt-20 pt-10 border-t border-zinc-200/70">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Рекомендации
+              </span>
+              <h2 className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+                Похожие композиции
+              </h2>
+            </div>
+            <Link
+              to="/catalog"
+              className="pill-btn-outline py-2 px-5 text-xs font-light"
+            >
+              В каталог
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+            {relatedPerfumes.slice(0, 4).map(rp => (
               <ProductCard key={rp.id} perfume={rp} />
             ))}
           </div>
         </section>
       )}
 
-      {/* Sticky Bottom Bar */}
+      {/* Floating Quiet Luxury Sticky Bottom Bar */}
       {showStickyBar && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/98 backdrop-blur-md border-t border-black shadow-[0_-4px_25px_rgba(0,0,0,0.12)] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 px-4 sm:px-6 animate-in slide-in-from-bottom duration-300">
-          <div className="max-w-7xl mx-auto">
-            {/* Mobile View (<640px) */}
-            <div className="flex sm:hidden items-center justify-between gap-3 w-full">
-              <div className="flex flex-col min-w-0">
-                <select
-                  aria-label="Выбрать объём"
-                  value={currentVolume.type}
-                  onChange={e => {
-                    const found = uniqueVolumes.find(v => v.type === e.target.value);
-                    if (found) setSelectedVolume(found);
-                  }}
-                  className="text-[11px] bg-zinc-100 border border-zinc-300 rounded-none px-2 py-1 font-bold uppercase tracking-wider outline-none text-zinc-900 max-w-[125px] truncate mb-0.5"
-                >
-                  {uniqueVolumes.map(vol => (
-                    <option key={vol.type} value={vol.type}>
-                      {volumeShortLabel(vol)}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-base font-black font-sans text-zinc-950 leading-tight">
-                  {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-zinc-200/80 shadow-[0_-4px_30px_rgba(0,0,0,0.06)] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 px-4 sm:px-6 animate-in slide-in-from-bottom duration-300">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <img
+                src={perfume.images[0] || '/assets/placeholder-product.svg'}
+                alt=""
+                className="w-10 h-10 object-contain rounded-full bg-zinc-50 border border-zinc-200/70 shrink-0 p-1"
+              />
+              <div className="min-w-0">
+                <div className="text-[10px] uppercase font-semibold text-zinc-400 truncate tracking-wider">
+                  {perfume.brand}
                 </div>
-              </div>
-
-              <div className="shrink-0">
-                {inCartCount > 0 ? (
-                  <div className="h-10 border border-black bg-white flex items-center justify-between min-w-[125px]">
-                    <button
-                      type="button"
-                      onClick={handleDecrementSticky}
-                      className="w-9 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
-                      aria-label="Уменьшить"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="font-bold text-xs tracking-wider text-black select-none">
-                      {inCartCount} шт.
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleIncrementSticky}
-                      className="w-9 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
-                      aria-label="Увеличить"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleAddToCart}
-                    className={`px-5 py-2.5 rounded-none text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm cursor-pointer ${
-                      addedSuccess ? 'bg-emerald-600 text-white' : 'bg-black text-white hover:bg-zinc-800'
-                    }`}
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>{addedSuccess ? 'В корзине' : 'В корзину'}</span>
-                  </button>
-                )}
+                <div className="text-xs sm:text-sm font-light text-zinc-950 truncate">
+                  {perfume.name}
+                </div>
               </div>
             </div>
 
-            {/* Desktop View (>=640px) */}
-            <div className="hidden sm:flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 min-w-0">
-                <img
-                  src={perfume.images[0] || '/assets/placeholder-product.svg'}
-                  alt=""
-                  className="w-12 h-12 object-cover rounded-none border border-zinc-200 shrink-0"
-                />
-                <div className="min-w-0">
-                  <div className="text-[10px] uppercase font-bold text-zinc-400 truncate tracking-wider">
-                    {perfume.brand}
-                  </div>
-                  <div className="text-sm font-bold text-zinc-900 truncate">
-                    {perfume.name}
-                  </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="text-right">
+                <div className="text-sm sm:text-base font-medium text-zinc-950 tabular-nums">
+                  {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
+                </div>
+                <div className="text-[10px] text-zinc-400 font-light">
+                  {volumeShortLabel(currentVolume)}
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 shrink-0">
-                <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-none border border-zinc-200">
-                  {uniqueVolumes.map(vol => (
-                    <button
-                      key={vol.type}
-                      type="button"
-                      onClick={() => setSelectedVolume(vol)}
-                      className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-none transition-all cursor-pointer ${
-                        currentVolume.type === vol.type
-                          ? 'bg-black text-white'
-                          : 'text-zinc-600 hover:text-black'
-                      }`}
-                    >
-                      {volumeShortLabel(vol)}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="text-right">
-                  <div className="text-base font-black font-sans text-zinc-950">
-                    {(currentVolume.price * quantity).toLocaleString('ru-RU')} ₽
-                  </div>
-                </div>
-
-                {inCartCount > 0 ? (
-                  <div className="h-11 border border-black bg-white flex items-center justify-between min-w-[140px]">
-                    <button
-                      type="button"
-                      onClick={handleDecrementSticky}
-                      className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
-                      aria-label="Уменьшить"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="font-bold text-xs tracking-wider text-black select-none">
-                      {inCartCount} шт.
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleIncrementSticky}
-                      className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
-                      aria-label="Увеличить"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
+              {inCartCount > 0 ? (
+                <div className="h-10 rounded-full border border-black bg-white px-2 flex items-center gap-2 shadow-2xs">
                   <button
-                    onClick={handleAddToCart}
-                    className={`px-7 py-3 rounded-none text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-md cursor-pointer ${
-                      addedSuccess ? 'bg-emerald-600 text-white' : 'bg-black hover:bg-zinc-800 text-white'
-                    }`}
+                    type="button"
+                    onClick={handleDecrementSticky}
+                    className="w-6 h-6 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-700 transition-colors cursor-pointer"
+                    aria-label="Уменьшить"
                   >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>{addedSuccess ? 'Добавлено!' : 'В корзину'}</span>
+                    <Minus className="w-3 h-3 stroke-[2]" />
                   </button>
-                )}
-              </div>
+                  <span className="font-medium text-xs text-black tabular-nums">
+                    {inCartCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleIncrementSticky}
+                    className="w-6 h-6 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-700 transition-colors cursor-pointer"
+                    aria-label="Увеличить"
+                  >
+                    <Plus className="w-3 h-3 stroke-[2]" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className={`pill-btn-black py-2.5 px-6 rounded-full text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-all ${
+                    addedSuccess ? 'bg-emerald-700 border-emerald-700 text-white' : ''
+                  }`}
+                >
+                  {addedSuccess ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>В корзине</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <span>В корзину</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>

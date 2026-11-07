@@ -53,7 +53,7 @@ export const GalleryPage: React.FC = () => {
       </nav>
 
       {/* Hero Header */}
-      <div className="rounded-none bg-zinc-950 text-white p-6 sm:p-10 relative overflow-hidden border border-zinc-900">
+      <div className="rounded-[32px] sm:rounded-[40px] bg-zinc-950 text-white p-6 sm:p-10 relative overflow-hidden border border-zinc-900">
         <div className="relative z-10 max-w-3xl space-y-4">
           <h1 className="text-3xl sm:text-5xl font-normal font-serif tracking-tight leading-tight">
             Галерея заказов Maison Arôme
@@ -92,7 +92,7 @@ export const GalleryPage: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id as any)}
-              className={`px-4 py-2.5 rounded-none text-xs font-bold uppercase tracking-wider transition-all border cursor-pointer ${
+              className={`px-4 py-2.5 rounded-full text-xs font-light uppercase tracking-wider transition-all border cursor-pointer ${
                 activeFilter === tab.id
                   ? 'bg-black text-white border-black shadow-xs'
                   : 'bg-white text-zinc-700 border-zinc-300 hover:border-black hover:text-black'
@@ -116,7 +116,7 @@ export const GalleryPage: React.FC = () => {
             <div
               key={order.id}
               onClick={() => setSelectedOrderIndex(globalIndex)}
-              className="group bg-white border border-zinc-200 hover:border-black transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-xs hover:shadow-md"
+              className="group bg-white rounded-[28px] border border-zinc-200/80 hover:border-black transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-2xs hover:shadow-md"
             >
               {/* Photo Container */}
               <div className="relative aspect-[4/3] bg-zinc-100 overflow-hidden">
@@ -129,17 +129,17 @@ export const GalleryPage: React.FC = () => {
 
                 {/* Top Badge */}
                 <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-                  <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-wider font-sans tabular-nums">
+                  <span className="px-2.5 py-0.5 rounded-full bg-black text-white text-[10px] font-semibold uppercase tracking-wider font-sans tabular-nums shadow-xs">
                     {order.orderNumber}
                   </span>
-                  <span className="px-2 py-0.5 bg-white/95 backdrop-blur-xs text-zinc-900 text-[9px] font-bold uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-zinc-900 text-[9px] font-semibold uppercase tracking-wider shadow-2xs">
                     {order.badge}
                   </span>
                 </div>
 
                 {/* Hover overlay hint */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="px-3 py-1.5 bg-white text-zinc-950 text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-md">
+                  <span className="px-4 py-2 rounded-full bg-white text-zinc-950 text-[11px] font-medium uppercase tracking-widest flex items-center gap-1.5 shadow-md">
                     <Camera className="w-3.5 h-3.5" />
                     <span>Увеличить фото</span>
                   </span>
@@ -147,7 +147,7 @@ export const GalleryPage: React.FC = () => {
               </div>
 
               {/* Card Body */}
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
                 <div>
                   {/* Customer and City Label */}
                   <div className="flex items-center gap-1.5 text-xs text-zinc-900 font-bold uppercase tracking-wide">
@@ -170,13 +170,13 @@ export const GalleryPage: React.FC = () => {
                     {order.items.slice(0, 2).map((it, idx) => (
                       <span
                         key={idx}
-                        className="px-1.5 py-0.5 bg-zinc-100 text-[10px] text-zinc-700 font-sans tabular-nums truncate max-w-[200px]"
+                        className="px-2 py-0.5 rounded-full bg-zinc-100 text-[10px] text-zinc-700 font-sans tabular-nums truncate max-w-[200px]"
                       >
                         {it}
                       </span>
                     ))}
                     {order.items.length > 2 && (
-                      <span className="px-1.5 py-0.5 bg-zinc-100 text-[10px] text-zinc-500 font-sans tabular-nums">
+                      <span className="px-2 py-0.5 rounded-full bg-zinc-100 text-[10px] text-zinc-500 font-sans tabular-nums">
                         +{order.items.length - 2} еще
                       </span>
                     )}
@@ -205,13 +205,13 @@ export const GalleryPage: React.FC = () => {
           onClick={() => setSelectedOrderIndex(null)}
         >
           <div
-            className="relative bg-white border border-zinc-900 max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col md:flex-row shadow-2xl"
+            className="relative bg-white rounded-3xl border border-zinc-200/80 max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col md:flex-row shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
               onClick={() => setSelectedOrderIndex(null)}
-              className="absolute top-3 right-3 z-20 p-2 bg-black/70 hover:bg-black text-white transition-colors cursor-pointer"
+              className="absolute top-3.5 right-3.5 z-20 p-2.5 rounded-full bg-black/70 hover:bg-black text-white transition-all cursor-pointer backdrop-blur-xs shadow-md"
               aria-label="Закрыть"
             >
               <X className="w-5 h-5" />
@@ -220,20 +220,20 @@ export const GalleryPage: React.FC = () => {
             {/* Left/Right Carousel Controls */}
             <button
               onClick={handlePrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2.5 bg-black/70 hover:bg-black text-white transition-colors cursor-pointer"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/70 hover:bg-black text-white transition-all cursor-pointer backdrop-blur-xs shadow-md"
               title="Предыдущий заказ"
               aria-label="Предыдущий заказ"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
 
             <button
               onClick={handleNext}
-              className="absolute right-3 md:right-[43%] top-1/2 -translate-y-1/2 z-20 p-2.5 bg-black/70 hover:bg-black text-white transition-colors cursor-pointer"
+              className="absolute right-3.5 md:right-[42%] top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/70 hover:bg-black text-white transition-all cursor-pointer backdrop-blur-xs shadow-md"
               title="Следующий заказ"
               aria-label="Следующий заказ"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5" />
             </button>
 
             {/* Image Column */}
@@ -243,42 +243,42 @@ export const GalleryPage: React.FC = () => {
                 alt={activeOrder.title}
                 className="w-full h-full object-contain max-h-[70vh]"
               />
-              <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-xs text-white text-[11px] font-sans tabular-nums">
+              <div className="absolute bottom-3.5 left-3.5 px-3 py-1 rounded-full bg-black/80 backdrop-blur-xs text-white text-[11px] font-sans tabular-nums font-light">
                 {selectedOrderIndex! + 1} из {ORDERS_GALLERY.length} фотоотчетов
               </div>
             </div>
 
             {/* Content Column */}
-            <div className="p-6 md:w-2/5 flex flex-col justify-between space-y-5 overflow-y-auto bg-white text-zinc-900">
+            <div className="p-6 md:w-2/5 flex flex-col justify-between space-y-5 overflow-y-auto bg-white text-zinc-900 pt-5 pr-14 md:pr-6">
               <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs font-sans tabular-nums text-zinc-400 pb-2 border-b border-zinc-200">
-                  <span className="font-bold text-black">{activeOrder.orderNumber}</span>
-                  <span>{activeOrder.date}</span>
+                <div className="flex items-center justify-between text-xs font-sans tabular-nums text-zinc-400 pb-2 border-b border-zinc-100 font-light pr-8">
+                  <span className="font-semibold text-black">{activeOrder.orderNumber}</span>
+                  <span className="text-zinc-500 font-medium">{activeOrder.date}</span>
                 </div>
 
                 <div>
-                  <div className="inline-flex items-center gap-1.5 text-xs text-[#5A6B32] font-bold uppercase tracking-wider mb-1">
+                  <div className="inline-flex items-center gap-1.5 text-xs text-[#5A6B32] font-medium uppercase tracking-wider mb-1">
                     <MapPin className="w-3.5 h-3.5 shrink-0" />
                     <span>Заказ для {activeOrder.customerName} ({activeOrder.city})</span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold font-serif leading-snug">
+                  <h3 className="text-base sm:text-lg font-normal text-zinc-950 leading-snug">
                     {activeOrder.title}
                   </h3>
                 </div>
 
-                <p className="text-xs text-zinc-600 leading-relaxed font-light">
+                <p className="text-xs text-zinc-500 leading-relaxed font-light text-delicate">
                   {activeOrder.description}
                 </p>
 
                 {/* Items List */}
                 <div className="space-y-1.5 pt-2">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                  <div className="text-[11px] font-normal uppercase tracking-wider text-zinc-400">
                     Состав отправления:
                   </div>
                   <ul className="space-y-1 text-xs">
                     {activeOrder.items.map((it, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-zinc-800">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#5A6B32] shrink-0 mt-0.5" />
+                      <li key={idx} className="flex items-start gap-2 text-zinc-700 font-light">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{it}</span>
                       </li>
                     ))}
@@ -286,27 +286,27 @@ export const GalleryPage: React.FC = () => {
                 </div>
 
                 {/* Logistics Info */}
-                <div className="p-3 bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
+                <div className="p-3.5 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 text-xs space-y-1.5">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-zinc-500">Логистика:</span>
-                    <span className="font-bold font-sans tabular-nums text-zinc-900">{activeOrder.deliveryService}</span>
+                    <span className="text-zinc-500 font-light">Логистика:</span>
+                    <span className="font-medium font-sans tabular-nums text-zinc-900">{activeOrder.deliveryService}</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-zinc-500">Контроль:</span>
-                    <span className="text-emerald-600 font-bold uppercase">{activeOrder.status}</span>
+                    <span className="text-zinc-500 font-light">Контроль:</span>
+                    <span className="text-emerald-600 font-medium uppercase">{activeOrder.status}</span>
                   </div>
                 </div>
               </div>
 
               {/* Order Inquiry CTA */}
-              <div className="pt-4 border-t border-zinc-200 space-y-2">
+              <div className="pt-4 border-t border-zinc-100 space-y-2">
                 <a
                   href={`https://t.me/${TELEGRAM_MANAGER_USERNAME}?text=${encodeURIComponent(
                     `Здравствуйте! Увидел в галерее заказ ${activeOrder.orderNumber} (для ${activeOrder.customerName}, г. ${activeOrder.city}): "${activeOrder.title}". Подскажите, есть ли такие позиции в наличии и какая актуальная стоимость?`
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full py-3 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                  className="w-full py-3.5 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-medium uppercase tracking-widest text-center transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Заказать такой же набор в Telegram</span>

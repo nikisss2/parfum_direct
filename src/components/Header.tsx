@@ -23,6 +23,8 @@ import {
   Check,
   CreditCard,
   HelpCircle,
+  History,
+  Clock,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -40,11 +42,61 @@ export const Header: React.FC = () => {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const moreMenuRef = useRef<HTMLDivElement>(null);
 
-  // Search autocomplete state
+  // Search autocomplete & history state
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState<Perfume[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('maison_search_history');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const addToHistory = (query: string) => {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    setSearchHistory(prev => {
+      const next = [trimmed, ...prev.filter(item => item.toLowerCase() !== trimmed.toLowerCase())].slice(0, 8);
+      try {
+        localStorage.setItem('maison_search_history', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  const clearHistory = () => {
+    setSearchHistory([]);
+    try {
+      localStorage.removeItem('maison_search_history');
+    } catch {}
+  };
+
+  const removeFromHistory = (queryToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSearchHistory(prev => {
+      const next = prev.filter(item => item !== queryToRemove);
+      try {
+        localStorage.setItem('maison_search_history', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Check if current search query matches any brand (e.g. "lacoste" -> Lacoste brand card)
+  const matchedBrand = useMemo(() => {
+    const q = searchValue.trim().toLowerCase();
+    if (!q || q.length < 2) return null;
+    return (
+      POPULAR_BRANDS.find(b => b.name.toLowerCase().includes(q) || b.searchQuery.toLowerCase().includes(q)) ||
+      UNIQUE_PURE_BRANDS.find(b => b.name.toLowerCase().includes(q) || b.searchQuery.toLowerCase().includes(q)) ||
+      null
+    );
+  }, [searchValue]);
 
   // Close menus on route change or Escape
   useEffect(() => {
@@ -94,9 +146,10 @@ export const Header: React.FC = () => {
     return () => window.clearTimeout(t);
   }, [searchValue]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (searchValue.trim()) {
+      addToHistory(searchValue.trim());
       setSearchOpen(false);
       navigate(`/catalog?q=${encodeURIComponent(searchValue.trim())}`);
     }
@@ -144,18 +197,18 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white border-b border-zinc-200">
-        {/* Row 1: City selector (Left) | Centered Logo (Center) | 4 Clean Icons (Right) */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4 relative">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/70 shadow-2xs">
+        {/* Row 1: Logo & Nav Actions */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4 relative">
           {/* Left section: Hamburger (Mobile) */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-[40px] sm:min-w-[170px]">
             <button
               type="button"
               onClick={() => setNavDrawerTab(navDrawerTab ? null : 'catalog')}
-              className="md:hidden p-1.5 text-zinc-800 hover:text-black transition-colors cursor-pointer"
+              className="md:hidden p-2 rounded-full text-zinc-800 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
               aria-label="Меню навигации"
             >
-              {navDrawerTab ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {navDrawerTab ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
@@ -169,70 +222,70 @@ export const Header: React.FC = () => {
               <img
                 src="/assets/branding/логотип_2.png"
                 alt="Maison Arôme"
-                className="h-9 sm:h-11 md:h-12 w-auto object-contain transition-opacity duration-200"
+                className="h-8 sm:h-10 md:h-11 w-auto object-contain transition-opacity duration-200"
               />
             </Link>
           </div>
 
-          {/* Right section: 4 Clean Icons: Search, Wishlist, Account, Cart */}
-          <div className="flex items-center gap-0.5 sm:gap-2 shrink-0 min-w-[120px] sm:min-w-[170px] justify-end">
-            {/* 1. Search Icon */}
+          {/* Right section: Clean Rounded Pill Actions: Search, Wishlist, Account, Cart */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 min-w-[120px] sm:min-w-[170px] justify-end">
+            {/* 1. Search Icon Button */}
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="p-2 sm:p-2.5 text-zinc-900 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
+              className="p-2.5 rounded-full text-zinc-700 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
               aria-label="Поиск по ароматам"
               title="Поиск"
             >
-              <Search className="w-5 h-5 stroke-[1.7]" />
+              <Search className="w-4 h-4 stroke-[1.8]" />
             </button>
 
-            {/* 2. Wishlist Icon */}
+            {/* 2. Wishlist Button */}
             <Link
               to="/wishlist"
-              className="p-2 sm:p-2.5 text-zinc-900 hover:text-black hover:bg-zinc-100 transition-colors relative"
+              className="p-2.5 rounded-full text-zinc-700 hover:text-black hover:bg-zinc-100 transition-colors relative"
               aria-label="Избранное"
               title="Избранное"
             >
-              <Heart className="w-5 h-5 stroke-[1.7]" />
+              <Heart className="w-4 h-4 stroke-[1.8]" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-black text-[10px] text-white font-bold flex items-center justify-center leading-none rounded-none shadow-xs">
+                <span className="absolute top-0 right-0 min-w-[17px] h-[17px] px-1 bg-black text-[9px] text-white font-medium flex items-center justify-center rounded-full shadow-2xs">
                   {wishlist.length}
                 </span>
               )}
             </Link>
 
-            {/* 3. Account / Profile Icon */}
+            {/* 3. Account / Profile Button */}
             <Link
               to="/account"
-              className="p-2 sm:p-2.5 text-zinc-900 hover:text-black hover:bg-zinc-100 transition-colors flex items-center gap-1.5"
+              className="p-2.5 rounded-full text-zinc-700 hover:text-black hover:bg-zinc-100 transition-colors flex items-center gap-1.5"
               aria-label="Личный кабинет"
               title="Профиль"
             >
-              <UserIcon className="w-5 h-5 stroke-[1.7]" />
+              <UserIcon className="w-4 h-4 stroke-[1.8]" />
               {user && (
-                <span className="hidden xl:inline text-xs font-semibold uppercase tracking-wider text-zinc-900 max-w-[90px] truncate">
+                <span className="hidden xl:inline text-xs font-light text-zinc-800 max-w-[80px] truncate">
                   {user.fullName.split(' ')[0]}
                 </span>
               )}
             </Link>
 
-            {/* 4. Cart Button */}
+            {/* 4. Cart Button - Rounded Pill Accent Button (The Act style) */}
             <Link
               to="/cart"
-              className="p-2 sm:px-3 sm:py-2 bg-black text-white hover:bg-zinc-800 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
+              className="pill-btn-black py-2 px-4 sm:px-5 rounded-full text-xs font-medium flex items-center gap-2 cursor-pointer shadow-xs ml-1"
               aria-label="Корзина"
               title="Корзина"
             >
               <div className="relative">
-                <ShoppingBag className="w-4 h-4" />
+                <ShoppingBag className="w-3.5 h-3.5" />
                 {cartTotalCount > 0 && (
-                  <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 bg-[#5A6B32] text-white text-[10px] font-bold flex items-center justify-center leading-none rounded-none shadow-xs">
+                  <span className="absolute -top-2.5 -right-2.5 min-w-[16px] h-[16px] px-0.5 bg-white text-black text-[9px] font-bold flex items-center justify-center rounded-full">
                     {cartTotalCount}
                   </span>
                 )}
               </div>
-              <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider">
+              <span className="hidden sm:inline text-xs font-medium tracking-wider">
                 {cartTotalPrice > 0 ? `${cartTotalPrice.toLocaleString('ru-RU')} ₽` : 'Корзина'}
               </span>
             </Link>
@@ -312,7 +365,7 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <Gift className="w-3.5 h-3.5" />
                       </div>
                       <div>
@@ -326,7 +379,7 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <CreditCard className="w-3.5 h-3.5" />
                       </div>
                       <div>
@@ -340,7 +393,7 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <ShieldCheck className="w-3.5 h-3.5" />
                       </div>
                       <div>
@@ -356,12 +409,16 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <Star className="w-3.5 h-3.5" />
                       </div>
                       <div>
                         <div className="font-semibold text-zinc-950">Отзывы покупателей</div>
-                        <div className="text-[11px] text-zinc-500">Рейтинг 5.0★ от клиентов</div>
+                        <div className="text-[11px] text-zinc-500 inline-flex items-center gap-1">
+                          Рейтинг 5.0
+                          <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400 inline" />
+                          от клиентов
+                        </div>
                       </div>
                     </Link>
 
@@ -370,7 +427,7 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <Camera className="w-3.5 h-3.5" />
                       </div>
                       <div>
@@ -384,7 +441,7 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <Truck className="w-3.5 h-3.5" />
                       </div>
                       <div>
@@ -398,7 +455,7 @@ export const Header: React.FC = () => {
                       onClick={() => setMoreMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-xs hover:bg-zinc-50 transition-colors text-zinc-800 hover:text-black group"
                     >
-                      <div className="w-7 h-7 rounded-none bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                      <div className="w-7 h-7 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
                         <HelpCircle className="w-3.5 h-3.5" />
                       </div>
                       <div>
@@ -433,7 +490,7 @@ export const Header: React.FC = () => {
                   placeholder="Поиск по аромату, бренду или нотам..."
                   value={searchValue}
                   onChange={e => setSearchValue(e.target.value)}
-                  className="w-full pl-11 pr-10 py-3 bg-zinc-100 border border-zinc-300 focus:border-black text-sm text-zinc-950 outline-none rounded-none"
+                  className="w-full pl-11 pr-10 py-3 bg-zinc-100 border border-zinc-300 focus:border-black text-sm text-zinc-950 outline-none rounded-full"
                 />
                 {searchValue && (
                   <button
@@ -452,97 +509,179 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                className="px-4 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+                className="px-5 py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-medium uppercase tracking-wider rounded-full transition-all cursor-pointer shrink-0 active:scale-95"
               >
                 Закрыть
               </button>
             </div>
 
-            {/* Results or Popular Queries */}
+            {/* Results, Brand Suggestion or Search History & Popular Queries */}
             <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pb-6 overflow-y-auto">
               {searchValue.trim() ? (
-                searchResults.length > 0 ? (
-                  <div className="divide-y divide-zinc-100 pt-2">
-                    <div className="py-2 text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex justify-between">
-                      <span>Результаты поиска ({searchResults.length})</span>
-                      <button
-                        type="button"
-                        onClick={handleSearchSubmit}
-                        className="text-black hover:underline cursor-pointer font-bold"
-                      >
-                        Смотреть все в каталоге →
-                      </button>
-                    </div>
-                    {searchResults.map(perf => (
-                      <Link
-                        key={perf.id}
-                        to={`/product/${perf.slug}`}
-                        onClick={() => setSearchOpen(false)}
-                        className="py-3 px-2 flex items-center gap-3 hover:bg-zinc-50 transition-colors group"
-                      >
-                        <img
-                          src={perf.images[0] || '/assets/placeholder-product.svg'}
-                          alt=""
-                          className="w-12 h-12 object-contain bg-zinc-50 border border-zinc-200 shrink-0 p-1"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider truncate">
-                            {perf.brand}
+                <div className="pt-2">
+                  {/* Brand Suggestion Card if matched */}
+                  {matchedBrand && (
+                    <div className="mb-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-200/90 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div className="w-11 h-11 rounded-full bg-black text-white flex items-center justify-center text-xs font-semibold uppercase tracking-wider shrink-0 shadow-2xs">
+                          {matchedBrand.name.slice(0, 2)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
+                            Парфюмерный дом
                           </div>
-                          <div className="text-sm font-semibold text-zinc-950 truncate group-hover:text-black">
-                            {perf.name}
+                          <div className="text-sm font-semibold text-zinc-950 truncate">
+                            {matchedBrand.name}
                           </div>
-                          <div className="text-xs text-zinc-600 mt-0.5">
-                            {perf.volumes?.[0]?.label} · от {(perf.minPrice || 0).toLocaleString('ru-RU')} ₽
+                          <div className="text-xs text-zinc-500 font-light truncate">
+                            Смотреть всю коллекцию бренда
                           </div>
                         </div>
-                        <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-black shrink-0" />
-                      </Link>
-                    ))}
-                    <div className="pt-3 text-center">
-                      <button
-                        type="button"
-                        onClick={handleSearchSubmit}
-                        className="w-full py-2.5 bg-zinc-100 hover:bg-zinc-200 text-xs font-bold uppercase tracking-wider text-black transition-colors cursor-pointer"
-                      >
-                        Показать все результаты для «{searchValue}»
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="py-12 text-center text-sm text-zinc-500">
-                    По запросу «{searchValue}» ничего не найдено.
-                  </div>
-                )
-              ) : (
-                <div className="pt-2 space-y-3">
-                  <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
-                    Популярные запросы
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      'Baccarat Rouge 540',
-                      'Creed Aventus',
-                      'Tom Ford Tobacco Vanille',
-                      'Ganymede',
-                      'Lattafa Khamrah',
-                      'Delina',
-                      'Fleur Narcotique',
-                      'Lost Cherry',
-                      'Angels Share',
-                      'Le Labo Santal 33'
-                    ].map(chip => (
-                      <button
-                        key={chip}
-                        type="button"
+                      </div>
+
+                      <Link
+                        to={`/catalog?brands=${encodeURIComponent(matchedBrand.name)}`}
                         onClick={() => {
-                          setSearchValue(chip);
+                          addToHistory(matchedBrand.name);
+                          setSearchOpen(false);
                         }}
-                        className="px-3 py-1.5 border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 text-xs text-zinc-900 transition-colors cursor-pointer"
+                        className="px-4 py-2 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-medium uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-all cursor-pointer shadow-xs active:scale-95"
                       >
-                        {chip}
-                      </button>
-                    ))}
+                        <span>Каталог {matchedBrand.name}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  )}
+
+                  {searchResults.length > 0 ? (
+                    <div className="divide-y divide-zinc-100">
+                      <div className="py-2 text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex justify-between">
+                        <span>Найдено ароматов ({searchResults.length})</span>
+                        <button
+                          type="button"
+                          onClick={() => handleSearchSubmit()}
+                          className="text-black hover:underline cursor-pointer font-bold"
+                        >
+                          Смотреть все в каталоге →
+                        </button>
+                      </div>
+                      {searchResults.map(perf => (
+                        <Link
+                          key={perf.id}
+                          to={`/product/${perf.slug}`}
+                          onClick={() => {
+                            addToHistory(perf.name);
+                            setSearchOpen(false);
+                          }}
+                          className="py-3 px-3 rounded-2xl flex items-center gap-3 hover:bg-zinc-50 transition-colors group"
+                        >
+                          <img
+                            src={perf.images[0] || '/assets/placeholder-product.svg'}
+                            alt=""
+                            className="w-12 h-12 object-contain bg-zinc-50 border border-zinc-100 rounded-xl shrink-0 p-1"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider truncate">
+                              {perf.brand}
+                            </div>
+                            <div className="text-sm font-semibold text-zinc-950 truncate group-hover:text-black">
+                              {perf.name}
+                            </div>
+                            <div className="text-xs text-zinc-600 mt-0.5">
+                              {perf.volumes?.[0]?.label} · от {(perf.minPrice || 0).toLocaleString('ru-RU')} ₽
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-black shrink-0" />
+                        </Link>
+                      ))}
+                      <div className="pt-3 text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleSearchSubmit()}
+                          className="w-full py-3 bg-zinc-100 hover:bg-zinc-200 text-xs font-medium uppercase tracking-wider text-black rounded-full transition-colors cursor-pointer"
+                        >
+                          Показать все результаты для «{searchValue}»
+                        </button>
+                      </div>
+                    </div>
+                  ) : !matchedBrand ? (
+                    <div className="py-12 text-center text-sm text-zinc-500">
+                      По запросу «{searchValue}» ничего не найдено.
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="pt-2 space-y-5">
+                  {/* Search History */}
+                  {searchHistory.length > 0 && (
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Недавние поиски</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={clearHistory}
+                          className="text-[11px] text-zinc-400 hover:text-black transition-colors font-light cursor-pointer"
+                        >
+                          Очистить
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {searchHistory.map(item => (
+                          <div
+                            key={item}
+                            onClick={() => {
+                              setSearchValue(item);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-zinc-200 hover:border-black bg-zinc-50 hover:bg-zinc-100 text-xs text-zinc-800 transition-all cursor-pointer group"
+                          >
+                            <span>{item}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => removeFromHistory(item, e)}
+                              className="text-zinc-400 hover:text-black p-0.5 cursor-pointer"
+                              title="Удалить"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Popular Queries */}
+                  <div className="space-y-2.5">
+                    <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                      Популярные запросы
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        'Baccarat Rouge 540',
+                        'Creed Aventus',
+                        'Tom Ford Tobacco Vanille',
+                        'Ganymede',
+                        'Lattafa Khamrah',
+                        'Delina',
+                        'Fleur Narcotique',
+                        'Lost Cherry',
+                        'Angels Share',
+                        'Le Labo Santal 33'
+                      ].map(chip => (
+                        <button
+                          key={chip}
+                          type="button"
+                          onClick={() => {
+                            setSearchValue(chip);
+                          }}
+                          className="px-4 py-2 rounded-full border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 text-xs text-zinc-900 font-light transition-all cursor-pointer active:scale-95"
+                        >
+                          {chip}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -615,7 +754,7 @@ export const Header: React.FC = () => {
                   {[
                     { id: 'sale', label: 'скидки', path: '/catalog?filter=sale', badge: '−10%' },
                     { id: 'new', label: 'новинки', path: '/catalog?filter=new', badge: 'NEW' },
-                    { id: 'hits', label: 'подборки', path: '/catalog?filter=hits', badge: 'ТОП' },
+                    { id: 'hits', label: 'подборки', path: '/collections', badge: 'ТОП' },
                     { id: 'perfume', label: 'парфюмерия', path: '/catalog?kind=perfume' },
                     { id: 'decant', label: 'распивы (3, 5, 10, 15 мл)', path: '/catalog?type=decant', badge: 'ХИТ' },
                     { id: 'skincare', label: 'уход за кожей', path: '/catalog?kind=skincare' },
@@ -632,7 +771,7 @@ export const Header: React.FC = () => {
                       <Link
                         to={cat.path}
                         onClick={() => setNavDrawerTab(null)}
-                        className={`flex items-center justify-between py-2 px-3 transition-colors ${
+                        className={`flex items-center justify-between py-2 px-3.5 rounded-full transition-colors ${
                           hoveredCategory === cat.id
                             ? 'bg-zinc-100 font-bold text-black'
                             : 'text-zinc-800 hover:text-black hover:bg-zinc-50 font-medium'
@@ -641,7 +780,7 @@ export const Header: React.FC = () => {
                         <span className="flex items-center gap-2">
                           <span>{cat.label}</span>
                           {cat.badge && (
-                            <span className="text-[9px] uppercase font-bold bg-[#5A6B32] text-white px-1.5 py-0.2 tracking-wider">
+                            <span className="text-[9px] uppercase font-bold bg-[#5A6B32] text-white px-2 py-0.5 rounded-full tracking-wider">
                               {cat.badge}
                             </span>
                           )}
@@ -794,20 +933,20 @@ export const Header: React.FC = () => {
                   )}
 
                   {/* Banner Card: Подарочные сертификаты */}
-                  <div className="mt-8 p-4 bg-zinc-950 text-white flex items-center justify-between gap-4">
+                  <div className="mt-8 p-5 bg-zinc-950 text-white flex items-center justify-between gap-4 rounded-2xl shadow-xs">
                     <div>
-                      <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+                      <div className="flex items-center gap-2 text-amber-400 text-xs font-medium uppercase tracking-wider">
                         <Gift className="w-3.5 h-3.5" />
                         <span>Подарочные сертификаты</span>
                       </div>
-                      <div className="text-sm font-semibold mt-1">
+                      <div className="text-sm font-light mt-1 text-zinc-100">
                         Подарите близким выбор оригинального селективного парфюма
                       </div>
                     </div>
                     <Link
                       to="/certificates"
                       onClick={() => setNavDrawerTab(null)}
-                      className="px-4 py-2 bg-[#5A6B32] text-white text-xs font-bold uppercase tracking-wider hover:bg-black transition-colors shrink-0"
+                      className="px-5 py-2.5 bg-white text-black hover:bg-zinc-200 text-xs font-medium tracking-wider rounded-full transition-all shrink-0"
                     >
                       Выбрать
                     </Link>
@@ -840,16 +979,17 @@ export const Header: React.FC = () => {
                       placeholder="Поиск бренда (например: Creed, Tom Ford, Kilian, Chanel)..."
                       value={brandSearchQuery}
                       onChange={e => setBrandSearchQuery(e.target.value)}
-                      className="w-full bg-[#f4f4f5] text-xs text-zinc-900 placeholder:text-zinc-400 pl-9 pr-4 py-2.5 border border-zinc-200 outline-none focus:border-black font-medium"
+                      className="w-full bg-[#f4f4f5] text-xs text-zinc-900 placeholder:text-zinc-400 pl-9 pr-4 py-2.5 rounded-full border border-zinc-200 outline-none focus:border-black font-medium"
                     />
                     <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     {brandSearchQuery && (
                       <button
                         type="button"
                         onClick={() => setBrandSearchQuery('')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-black font-bold"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black cursor-pointer"
+                        title="Очистить"
                       >
-                        ✕
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     )}
                   </div>
@@ -861,9 +1001,9 @@ export const Header: React.FC = () => {
                         key={letter}
                         type="button"
                         onClick={() => setSelectedLetter(letter)}
-                        className={`px-2.5 py-1 text-xs font-semibold tracking-wider transition-colors ${
+                        className={`px-3 py-1 rounded-full text-xs font-medium tracking-wider transition-colors cursor-pointer ${
                           selectedLetter === letter
-                            ? 'bg-black text-white font-bold'
+                            ? 'bg-black text-white font-medium'
                             : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-black'
                         }`}
                       >
@@ -885,7 +1025,7 @@ export const Header: React.FC = () => {
                           key={b.slug}
                           type="button"
                           onClick={() => handleBrandClick(b.searchQuery)}
-                          className="px-3 py-1.5 border border-zinc-200 hover:border-black bg-white text-zinc-900 hover:bg-black hover:text-white text-xs font-semibold tracking-wide transition-colors flex items-center gap-1.5"
+                          className="px-3.5 py-1.5 rounded-full border border-zinc-200 hover:border-black bg-white text-zinc-900 hover:bg-black hover:text-white text-xs font-normal tracking-wide transition-colors flex items-center gap-1.5 cursor-pointer"
                         >
                           <span>{b.name}</span>
                           {b.country && (

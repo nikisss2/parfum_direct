@@ -343,7 +343,7 @@ export function toClientUser(u: DbUser): ClientUser {
 export function registerUser(data: {
   email: string;
   password: string;
-  fullName: string;
+  fullName?: string;
   phone?: string;
   city?: string;
   address?: string;
@@ -435,18 +435,7 @@ export function loginUser(email: string, password: string, clientIp?: string): {
     throw new Error('Неверный логин / адрес электронной почты или пароль');
   }
 
-  let valid = verifyPassword(password, dbUser.salt, dbUser.password_hash);
-  if (!valid && dbUser.role === 'admin' && (password === 'admin2008' || password === 'admin123' || password === 'MaisonArome2026!Admin' || password === 'admin')) {
-    const newHash = hashPassword(password);
-    sqlite.prepare("UPDATE users SET password_hash = ?, salt = ?, email = 'admin_laptev@maisonarome.ru' WHERE id = ?").run(newHash.hash, newHash.salt, dbUser.id);
-    dbUser.email = 'admin_laptev@maisonarome.ru';
-    valid = true;
-  }
-  if (!valid && dbUser.email === 'client@maisonarome.ru' && password === 'password123') {
-    const newHash = hashPassword(password);
-    sqlite.prepare("UPDATE users SET password_hash = ?, salt = ? WHERE id = ?").run(newHash.hash, newHash.salt, dbUser.id);
-    valid = true;
-  }
+  const valid = verifyPassword(password, dbUser.salt, dbUser.password_hash);
 
   if (!valid) {
     recordFailedLogin(rateLimitKey);
@@ -631,14 +620,30 @@ export function getUserOrdersFromDb(userId?: string, email?: string): any[] {
 
 export function findOrderForTracking(query: string): any | null {
   const clean = query.trim().replace(/^#/, '');
-  if (!clean) return null;
+  if (!clean || clean.length < 5) return null;
+
+  const digitsOnly = clean.replace(/\D/g, '');
+  const isPhone = digitsOnly.length >= 10;
+
+  if (isPhone) {
+    const last10 = digitsOnly.slice(-10);
+    const stmt = sqlite.prepare(`
+      SELECT * FROM orders
+      WHERE REPLACE(REPLACE(REPLACE(REPLACE(customer_phone, ' ', ''), '-', ''), '(', ''), ')', '') LIKE ?
+      ORDER BY created_at DESC
+      LIMIT 1
+    `);
+    const row = stmt.get(`%${last10}%`) as unknown as DbOrder;
+    return row ? formatOrderRow(row) : null;
+  }
+
   const stmt = sqlite.prepare(`
     SELECT * FROM orders
-    WHERE order_number = ? OR id = ? OR tracking_number = ? OR customer_phone LIKE ?
+    WHERE LOWER(order_number) = LOWER(?) OR id = ? OR LOWER(tracking_number) = LOWER(?)
     ORDER BY created_at DESC
     LIMIT 1
   `);
-  const row = stmt.get(clean, clean, clean, `%${clean}%`) as unknown as DbOrder;
+  const row = stmt.get(clean, clean, clean) as unknown as DbOrder;
   return row ? formatOrderRow(row) : null;
 }
 
@@ -808,20 +813,18 @@ export function getSecurityAudit(): any {
 // ============================================================================
 
 export function ensureAdminAccount(): { email: string; initialPassword?: string } {
-  // Очистка предыдущих попыток входа и блокировок
-  sqlite.exec('DELETE FROM login_attempts');
-
   const adminEmail = (process.env.ADMIN_EMAIL || 'admin_laptev@maisonarome.ru').trim().toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin2008';
   const { salt, hash } = hashPassword(adminPassword);
 
-  const stmt = sqlite.prepare("SELECT id, email FROM users WHERE role = 'admin' OR email = ? OR email = 'admin@maisonarome.ru'");
-  const admin = stmt.get(adminEmail) as { id: string; email: string } | undefined;
+  const stmt = sqlite.prepare("SELECT id, email, password_hash FROM users WHERE role = 'admin' OR email = ? OR email = 'admin@maisonarome.ru'");
+  const admin = stmt.get(adminEmail) as { id: string; email: string; password_hash?: string } | undefined;
   const now = new Date().toISOString();
 
   if (admin) {
-    sqlite.prepare("UPDATE users SET email = ?, password_hash = ?, salt = ?, role = 'admin', full_name = 'Администратор Maison Arôme (Лаптев)' WHERE id = ?")
-      .run(adminEmail, hash, salt, admin.id);
+    // Не перезаписываем пароль, если администратор уже существует в базе данных
+    sqlite.prepare("UPDATE users SET email = ?, role = 'admin', full_name = 'Администратор Maison Arôme (Лаптев)' WHERE id = ?")
+      .run(adminEmail, admin.id);
   } else {
     const adminId = 'usr_admin_master';
     const insertStmt = sqlite.prepare(`
@@ -858,6 +861,7 @@ export interface DbBonusCard {
   tier: 'Silver' | 'Gold' | 'Platinum';
   cashback_percent: number;
   total_spent: number;
+  order_count: number;
   created_at: string;
   updated_at: string;
   transactions?: Array<{
@@ -1031,7 +1035,11 @@ export function exportOrdersToCsv(): string {
 
   const escapeCsv = (str: any) => {
     if (str === null || str === undefined) return '""';
-    const s = String(str).replace(/"/g, '""');
+    let s = String(str).replace(/"/g, '""');
+    // Защита от CSV / Formula Injection (=, +, -, @)
+    if (/^[=+\-@\t\r]/.test(s)) {
+      s = "'" + s;
+    }
     return `"${s}"`;
   };
 

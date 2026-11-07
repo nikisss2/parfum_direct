@@ -55,8 +55,8 @@ export const CrmPage: React.FC = () => {
   // Active navigation tab
   const [activeTab, setActiveTab] = useState<'orders' | 'customers' | 'analytics' | 'create-order' | 'security'>('orders');
 
-  // Token: from safe storage or fallback
-  const adminToken = safeGetItem('parfum_admin_token') || 'parfum-admin-change-me';
+  // Token: from authenticated admin session
+  const adminToken = safeGetItem('parfum_admin_token') || safeGetItem('maison_auth_token') || '';
 
   // State data
   const [loading, setLoading] = useState(true);
@@ -309,9 +309,9 @@ export const CrmPage: React.FC = () => {
         <div className="max-w-[1720px] mx-auto px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-emerald-500 rounded-none animate-pulse" />
+              <span className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
               <span className="font-serif text-lg font-bold uppercase tracking-wider text-white">
-                Maison Arôme <span className="text-amber-400 font-sans tabular-nums text-xs px-2 py-0.5 bg-amber-400/10 border border-amber-400/30 ml-1">CRM 2.0</span>
+                Maison Arôme <span className="text-amber-400 font-sans tabular-nums text-xs px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 ml-1">CRM 2.0</span>
               </span>
             </div>
             <span className="text-zinc-600 hidden md:inline">|</span>
@@ -340,7 +340,7 @@ export const CrmPage: React.FC = () => {
             <button
               onClick={loadAllCrmData}
               disabled={loading}
-              className="p-1.5 border border-zinc-700 hover:border-white text-zinc-300 hover:text-white transition-colors"
+              className="p-2 rounded-full border border-zinc-700 hover:border-white text-zinc-300 hover:text-white transition-colors"
               title="Обновить данные"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -348,7 +348,7 @@ export const CrmPage: React.FC = () => {
 
             <Link
               to="/account"
-              className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold uppercase tracking-wider border border-zinc-700 transition-colors"
+              className="px-4 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium tracking-wider border border-zinc-700 transition-colors"
             >
               Личный профиль
             </Link>
@@ -370,7 +370,7 @@ export const CrmPage: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap border-b-2 ${
+                className={`flex items-center gap-2 px-5 py-3.5 text-xs font-medium tracking-wider transition-all whitespace-nowrap border-b-2 ${
                   isCurrent
                     ? 'border-amber-400 text-amber-400 bg-white/5'
                     : 'border-transparent text-zinc-400 hover:text-white hover:bg-white/5'
@@ -379,7 +379,7 @@ export const CrmPage: React.FC = () => {
                 <Icon className="w-4 h-4" />
                 <span>{tab.label}</span>
                 {tab.badge !== undefined && (
-                  <span className={`px-1.5 py-0.2 rounded-none text-[10px] font-sans tabular-nums ${isCurrent ? 'bg-amber-400 text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-sans tabular-nums ${isCurrent ? 'bg-amber-400 text-black' : 'bg-zinc-800 text-zinc-400'}`}>
                     {tab.badge}
                   </span>
                 )}
@@ -393,7 +393,7 @@ export const CrmPage: React.FC = () => {
       <main className="max-w-[1720px] mx-auto px-4 sm:px-8 py-8 space-y-8">
         {/* KPI Snapshot Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+          <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs flex items-center justify-between">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Общая выручка</div>
               <div className="text-2xl font-black font-sans tabular-nums text-zinc-950 mt-1">
@@ -403,12 +403,12 @@ export const CrmPage: React.FC = () => {
                 <ArrowUpRight className="w-3 h-3" /> Оплата через СБП и карты
               </div>
             </div>
-            <div className="w-12 h-12 bg-zinc-950 text-amber-400 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-zinc-100 text-zinc-900 flex items-center justify-center">
               <DollarSign className="w-6 h-6" />
             </div>
           </div>
 
-          <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+          <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs flex items-center justify-between">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Всего заказов</div>
               <div className="text-2xl font-black font-sans tabular-nums text-zinc-950 mt-1">
@@ -418,12 +418,12 @@ export const CrmPage: React.FC = () => {
                 Сборка на складе: {orders.filter(o => o.status === 'assembling').length}
               </div>
             </div>
-            <div className="w-12 h-12 bg-zinc-950 text-white flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-zinc-100 text-zinc-900 flex items-center justify-center">
               <Package className="w-6 h-6" />
             </div>
           </div>
 
-          <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+          <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs flex items-center justify-between">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">База клиентов (SQLite)</div>
               <div className="text-2xl font-black font-sans tabular-nums text-zinc-950 mt-1">
@@ -433,12 +433,12 @@ export const CrmPage: React.FC = () => {
                 Зарегистрированные клиенты
               </div>
             </div>
-            <div className="w-12 h-12 bg-zinc-950 text-white flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-zinc-100 text-zinc-900 flex items-center justify-center">
               <Users className="w-6 h-6" />
             </div>
           </div>
 
-          <div className="p-5 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+          <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs flex items-center justify-between">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Безопасность БД</div>
               <div className="text-2xl font-black font-sans tabular-nums text-emerald-600 mt-1">
@@ -448,7 +448,7 @@ export const CrmPage: React.FC = () => {
                 WAL Mode · scrypt · 0 SQLi
               </div>
             </div>
-            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center">
               <ShieldCheck className="w-6 h-6" />
             </div>
           </div>
@@ -458,7 +458,7 @@ export const CrmPage: React.FC = () => {
         {activeTab === 'orders' && (
           <div className="space-y-6">
             {/* Control Strip: Search & Filter */}
-            <div className="p-4 bg-white border border-zinc-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="p-4 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                 {[
                   { id: 'all', label: 'Все заказы' },
@@ -471,7 +471,7 @@ export const CrmPage: React.FC = () => {
                   <button
                     key={st.id}
                     onClick={() => setStatusFilter(st.id)}
-                    className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    className={`px-3.5 py-1.5 text-xs font-medium tracking-wider rounded-full transition-colors ${
                       statusFilter === st.id
                         ? 'bg-black text-white'
                         : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
@@ -490,7 +490,7 @@ export const CrmPage: React.FC = () => {
                     placeholder="Поиск по №, имени, телефону, городу..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 text-xs border border-zinc-300 rounded-none outline-none focus:border-black bg-zinc-50/50"
+                    className="w-full pl-9 pr-4 py-2 text-xs border border-zinc-300 rounded-full outline-none focus:border-black bg-zinc-50/50"
                   />
                 </div>
 
@@ -499,7 +499,7 @@ export const CrmPage: React.FC = () => {
                     href="https://docs.google.com/spreadsheets/d/1vXuMV4APjZ3k78eq4Y6DwBMoEYeFFIokZdVS_iwAFTo/edit?gid=943365437#gid=943365437"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 sm:flex-initial px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs cursor-pointer"
+                    className="flex-1 sm:flex-initial px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium tracking-wider rounded-full flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs cursor-pointer"
                     title="Открыть онлайн Google Таблицу заказов (автосинхронизация с БД)"
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -509,7 +509,7 @@ export const CrmPage: React.FC = () => {
                   <a
                     href="/api/orders/download-xlsx"
                     download="Таблица_Заказов_Maison_Arome.xlsx"
-                    className="flex-1 sm:flex-initial px-3.5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs cursor-pointer"
+                    className="flex-1 sm:flex-initial px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-medium tracking-wider rounded-full flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs cursor-pointer"
                     title="Скачать готовую таблицу Excel (.xlsx) с 4 листами и формулами"
                   >
                     <Download className="w-4 h-4" />
@@ -519,7 +519,7 @@ export const CrmPage: React.FC = () => {
                   <a
                     href={`/api/orders/export-csv?token=${encodeURIComponent(adminToken)}`}
                     download="orders_maison_arome.csv"
-                    className="flex-1 sm:flex-initial px-3.5 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs cursor-pointer border border-zinc-700"
+                    className="flex-1 sm:flex-initial px-4 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-medium tracking-wider rounded-full flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs cursor-pointer border border-zinc-700"
                     title="Экспорт всех актуальных заказов в CSV файл"
                   >
                     <Download className="w-4 h-4" />
@@ -530,7 +530,7 @@ export const CrmPage: React.FC = () => {
             </div>
 
             {/* Orders Table */}
-            <div className="bg-white border border-zinc-200 shadow-xs overflow-x-auto">
+            <div className="bg-white rounded-[28px] border border-zinc-200/70 shadow-2xs overflow-hidden overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-zinc-950 text-white font-sans tabular-nums uppercase text-[10px] tracking-wider border-b border-zinc-800">
@@ -602,7 +602,7 @@ export const CrmPage: React.FC = () => {
                             <select
                               value={order.status}
                               onChange={e => handleUpdateStatus(order.id, e.target.value)}
-                              className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-white border border-zinc-300 outline-none focus:border-black cursor-pointer"
+                              className="text-xs font-medium px-3 py-1 rounded-full bg-white border border-zinc-200 outline-none focus:border-black cursor-pointer"
                             >
                               <option value="assembling">В сборке</option>
                               <option value="paid">Оплачен</option>
@@ -622,7 +622,7 @@ export const CrmPage: React.FC = () => {
                                   handleUpdateStatus(order.id, order.status, e.target.value.trim());
                                 }
                               }}
-                              className="text-xs font-sans tabular-nums px-2 py-1 border border-zinc-300 rounded-none w-32 focus:border-black outline-none bg-white"
+                              className="text-xs font-sans tabular-nums px-2 py-1 border border-zinc-300 rounded-full w-32 focus:border-black outline-none bg-white"
                             />
                           </td>
 
@@ -630,14 +630,14 @@ export const CrmPage: React.FC = () => {
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => setSelectedOrder(order)}
-                                className="p-1.5 bg-black text-white hover:bg-zinc-800 transition-colors"
+                                className="p-2 rounded-full bg-black text-white hover:bg-zinc-800 transition-colors"
                                 title="Детали заказа"
                               >
                                 <Eye className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleDeleteOrder(order.id, order.orderNumber)}
-                                className="p-1.5 bg-zinc-100 hover:bg-rose-600 hover:text-white text-zinc-500 transition-colors"
+                                className="p-2 rounded-full bg-zinc-100 hover:bg-rose-600 hover:text-white text-zinc-500 transition-colors"
                                 title="Удалить заказ"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -668,7 +668,7 @@ export const CrmPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-zinc-200 shadow-xs overflow-x-auto">
+            <div className="bg-white rounded-[28px] border border-zinc-200/70 shadow-2xs overflow-hidden overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-zinc-950 text-white font-sans tabular-nums uppercase text-[10px] tracking-wider">
@@ -699,7 +699,7 @@ export const CrmPage: React.FC = () => {
                         <tr key={u.id} className="hover:bg-zinc-50 transition-colors">
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-none bg-zinc-900 text-white flex items-center justify-center font-bold text-xs font-serif">
+                              <div className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs font-serif">
                                 {(u.full_name || u.email || 'U').charAt(0).toUpperCase()}
                               </div>
                               <div>
@@ -726,15 +726,15 @@ export const CrmPage: React.FC = () => {
 
                           <td className="py-3.5 px-4">
                             {isVip ? (
-                              <span className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold uppercase font-sans tabular-nums">
+                              <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-medium font-sans tabular-nums">
                                 VIP Privilège
                               </span>
                             ) : isRegular ? (
-                              <span className="px-2 py-0.5 bg-sky-100 text-sky-900 border border-sky-300 text-[10px] font-bold uppercase font-sans tabular-nums">
+                              <span className="px-3 py-1 rounded-full bg-sky-50 text-sky-900 border border-sky-200 text-[10px] font-medium font-sans tabular-nums">
                                 Постоянный
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 bg-zinc-100 text-zinc-700 text-[10px] font-bold uppercase font-sans tabular-nums">
+                              <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 text-[10px] font-medium font-sans tabular-nums">
                                 Новый
                               </span>
                             )}
@@ -749,7 +749,7 @@ export const CrmPage: React.FC = () => {
                               {u.phone && (
                                 <a
                                   href={`tel:${u.phone}`}
-                                  className="p-1.5 border border-zinc-200 hover:border-black text-zinc-700"
+                                  className="p-2 rounded-full border border-zinc-200 hover:border-black text-zinc-700"
                                   title="Позвонить"
                                 >
                                   <Phone className="w-3.5 h-3.5" />
@@ -757,7 +757,7 @@ export const CrmPage: React.FC = () => {
                               )}
                               <a
                                 href={`mailto:${u.email}`}
-                                className="p-1.5 border border-zinc-200 hover:border-black text-zinc-700"
+                                className="p-2 rounded-full border border-zinc-200 hover:border-black text-zinc-700"
                                 title="Написать на Email"
                               >
                                 <Mail className="w-3.5 h-3.5" />
@@ -778,7 +778,7 @@ export const CrmPage: React.FC = () => {
         {activeTab === 'analytics' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 bg-white border border-zinc-200 space-y-4">
+              <div className="p-6 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs space-y-4">
                 <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Финансовые показатели</div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b border-zinc-100">
@@ -806,7 +806,7 @@ export const CrmPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 bg-white border border-zinc-200 space-y-4">
+              <div className="p-6 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs space-y-4">
                 <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Воронка заказов</div>
                 <div className="space-y-2.5">
                   {[
@@ -824,8 +824,8 @@ export const CrmPage: React.FC = () => {
                           <span className="text-zinc-700">{step.label}</span>
                           <span className="font-sans tabular-nums font-bold">{count} ({pct}%)</span>
                         </div>
-                        <div className="w-full h-2 bg-zinc-100 overflow-hidden">
-                          <div className={`h-full ${step.color}`} style={{ width: `${pct}%` }} />
+                        <div className="w-full h-2 bg-zinc-100 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full ${step.color}`} style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     );
@@ -833,24 +833,24 @@ export const CrmPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 bg-white border border-zinc-200 space-y-4">
+              <div className="p-6 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs space-y-4">
                 <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans tabular-nums">Логистические каналы</div>
                 <div className="space-y-3">
-                  <div className="p-3 bg-zinc-50 border border-zinc-200 flex items-center justify-between">
+                  <div className="p-3 bg-zinc-50/80 rounded-[18px] border border-zinc-200/80 flex items-center justify-between">
                     <div>
                       <div className="font-bold text-xs uppercase text-zinc-950">СДЭК Доставка</div>
                       <div className="text-[10px] text-zinc-500 mt-0.5">Основной партнер курьерской логистики</div>
                     </div>
                     <span className="font-sans tabular-nums font-bold text-xs">от 50 ₽</span>
                   </div>
-                  <div className="p-3 bg-zinc-50 border border-zinc-200 flex items-center justify-between">
+                  <div className="p-3 bg-zinc-50/80 rounded-[18px] border border-zinc-200/80 flex items-center justify-between">
                     <div>
                       <div className="font-bold text-xs uppercase text-zinc-950">Яндекс Маркет / Экспресс</div>
                       <div className="text-[10px] text-zinc-500 mt-0.5">Срочная доставка по Москве и РФ</div>
                     </div>
                     <span className="font-sans tabular-nums font-bold text-xs">от 50 ₽</span>
                   </div>
-                  <div className="p-3 bg-zinc-50 border border-zinc-200 flex items-center justify-between">
+                  <div className="p-3 bg-zinc-50/80 rounded-[18px] border border-zinc-200/80 flex items-center justify-between">
                     <div>
                       <div className="font-bold text-xs uppercase text-zinc-950">5POST / Ozon / Почта</div>
                       <div className="text-[10px] text-zinc-500 mt-0.5">Выдача у дома и авиа-отправления</div>
@@ -865,7 +865,7 @@ export const CrmPage: React.FC = () => {
 
         {/* TAB 4: MANUAL ORDER CREATOR */}
         {activeTab === 'create-order' && (
-          <div className="bg-white border border-zinc-200 shadow-xs p-6 sm:p-8 space-y-6">
+          <div className="bg-white rounded-[28px] border border-zinc-200/70 shadow-2xs p-6 sm:p-8 space-y-6">
             <div className="border-b border-zinc-200 pb-4">
               <h2 className="font-serif text-xl font-bold uppercase tracking-wide text-zinc-950">
                 Ручное создание заказа в CRM
@@ -892,7 +892,7 @@ export const CrmPage: React.FC = () => {
                       placeholder="Иван Петров"
                       value={newCustomerName}
                       onChange={e => setNewCustomerName(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 outline-none focus:border-black bg-white font-light"
                     />
                   </div>
                   <div>
@@ -905,7 +905,7 @@ export const CrmPage: React.FC = () => {
                       placeholder="+7 999 123-45-67"
                       value={newCustomerPhone}
                       onChange={e => setNewCustomerPhone(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 outline-none focus:border-black bg-white font-light"
                     />
                   </div>
                   <div>
@@ -917,7 +917,7 @@ export const CrmPage: React.FC = () => {
                       placeholder="client@mail.ru"
                       value={newCustomerEmail}
                       onChange={e => setNewCustomerEmail(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 outline-none focus:border-black bg-white font-light"
                     />
                   </div>
                 </div>
@@ -933,7 +933,7 @@ export const CrmPage: React.FC = () => {
                       placeholder="Москва, Санкт-Петербург, Казань..."
                       value={newCustomerCity}
                       onChange={e => setNewCustomerCity(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 outline-none focus:border-black bg-white font-light"
                     />
                   </div>
                   <div>
@@ -945,7 +945,7 @@ export const CrmPage: React.FC = () => {
                       placeholder="ул. Ленина 25 (ПВЗ СДЭК)"
                       value={newCustomerAddress}
                       onChange={e => setNewCustomerAddress(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 outline-none focus:border-black bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 outline-none focus:border-black bg-white font-light"
                     />
                   </div>
                 </div>
@@ -1090,7 +1090,7 @@ export const CrmPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submittingOrder}
-                  className="px-8 py-3.5 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-8 py-3.5 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
                 >
                   {submittingOrder ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
                   <span>Зарегистрировать заказ в базе</span>
@@ -1103,9 +1103,9 @@ export const CrmPage: React.FC = () => {
         {/* TAB 5: SECURITY AUDIT & DB HEALTH */}
         {activeTab === 'security' && (
           <div className="space-y-6">
-            <div className="p-6 bg-white border border-zinc-200 shadow-xs space-y-4">
+            <div className="p-6 bg-white rounded-[28px] border border-zinc-200/70 shadow-2xs space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-50 border border-emerald-300 text-emerald-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-600 flex items-center justify-center">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
@@ -1119,7 +1119,7 @@ export const CrmPage: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-zinc-100">
-                <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-2">
+                <div className="p-5 bg-zinc-50/80 rounded-[20px] border border-zinc-200/80 space-y-2">
                   <div className="font-bold text-xs uppercase text-zinc-950 font-sans tabular-nums">Архитектурная защита</div>
                   <ul className="text-xs text-zinc-600 space-y-1.5 font-light">
                     <li>• <strong>Zero SQL Injection:</strong> 100% параметризованные prepared statements.</li>
@@ -1129,7 +1129,7 @@ export const CrmPage: React.FC = () => {
                   </ul>
                 </div>
 
-                <div className="p-4 bg-zinc-50 border border-zinc-200 space-y-2 font-sans tabular-nums text-xs">
+                <div className="p-5 bg-zinc-50/80 rounded-[20px] border border-zinc-200/80 space-y-2 font-sans tabular-nums text-xs">
                   <div className="font-bold uppercase text-zinc-950">Системные показатели</div>
                   <div className="text-zinc-600 space-y-1">
                     <div>Движок: <span className="font-bold text-zinc-900">{audit?.database || 'node:sqlite'}</span></div>
@@ -1151,7 +1151,7 @@ export const CrmPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in">
           <div
             onClick={e => e.stopPropagation()}
-            className="w-full max-w-3xl bg-white border border-black shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-6"
+            className="w-full max-w-3xl bg-white rounded-[32px] border border-zinc-200/80 shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-6"
           >
             <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
               <div>
@@ -1165,14 +1165,14 @@ export const CrmPage: React.FC = () => {
 
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="p-1.5 border border-zinc-200 hover:border-black text-zinc-500 hover:text-black transition-colors"
+                className="p-2 rounded-full border border-zinc-200 hover:border-black text-zinc-500 hover:text-black transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Customer Details Box */}
-            <div className="p-4 bg-zinc-50 border border-zinc-200 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="p-5 bg-zinc-50/80 rounded-[24px] border border-zinc-200/70 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 font-sans tabular-nums">Получатель:</div>
                 <div className="font-bold text-sm text-zinc-950 mt-0.5">
@@ -1211,7 +1211,7 @@ export const CrmPage: React.FC = () => {
               <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 font-sans tabular-nums">
                 Состав заказа ({(selectedOrder.items || []).length} товаров)
               </div>
-              <div className="border border-zinc-200 divide-y divide-zinc-200">
+              <div className="rounded-2xl border border-zinc-200/70 divide-y divide-zinc-100 overflow-hidden">
                 {(selectedOrder.items || []).map((it: any, idx: number) => (
                   <div key={idx} className="p-3 flex items-center justify-between gap-4 text-xs">
                     <div className="flex items-center gap-3">

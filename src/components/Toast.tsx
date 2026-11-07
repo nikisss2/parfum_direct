@@ -13,13 +13,13 @@ export const ToastContainer: React.FC = () => {
         return (
           <div
             key={toast.id}
-            className="pointer-events-auto bg-white border border-black shadow-2xl rounded-none p-4 flex items-start gap-3 transition-all duration-200 animate-in slide-in-from-bottom-3"
+            className="pointer-events-auto bg-white border border-zinc-200/80 shadow-xl rounded-[20px] p-4 flex items-start gap-3 transition-all duration-200 animate-in slide-in-from-bottom-3"
           >
             {toast.image ? (
               <img
                 src={toast.image}
                 alt=""
-                className="w-12 h-12 object-cover rounded-none shrink-0 border border-zinc-200"
+                className="w-12 h-12 object-cover rounded-full shrink-0 border border-zinc-200 p-1"
               />
             ) : (
               <div className="shrink-0 mt-0.5">

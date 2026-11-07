@@ -323,14 +323,6 @@ class DatabaseService {
       cleanEmail = 'admin_laptev@maisonarome.ru';
     }
 
-    if (cleanEmail === 'admin_laptev@maisonarome.ru' && (password === 'admin2008' || password === 'admin123')) {
-      const admin = this.getUsers().find(u => u.role === 'admin') || DEFAULT_ADMIN;
-      this.setActiveUserId(admin.id);
-      this.saveSingleUser(admin);
-      const { passwordHash, ...cleanUser } = admin;
-      return cleanUser;
-    }
-
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',

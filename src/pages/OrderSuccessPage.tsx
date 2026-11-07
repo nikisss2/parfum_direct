@@ -13,7 +13,6 @@ import {
   Copy,
   Check,
   ExternalLink,
-  MessageSquare
 } from 'lucide-react';
 import { TELEGRAM_MANAGER_USERNAME } from './CheckoutPage';
 
@@ -30,24 +29,24 @@ export const OrderSuccessPage: React.FC = () => {
   const initialOrderText = (location.state as any)?.orderText || '';
   const [copied, setCopied] = useState(true);
 
-  // Generate fallback order text if not in location state
+  // Clean formatted order text without unicode emojis
   const orderText =
     initialOrderText ||
     (order
-      ? `🛍️ ЗАКАЗ №${order.orderNumber}
-MAISON ARÔME (maisonarome.ru)
+      ? `ЗАКАЗ №${order.orderNumber}
+MAISON ARÔME (maison-arome.ru)
 
-👤 Покупатель: ${order.recipient.fullName}
-📱 Телефон: ${order.recipient.phone}
-💬 Telegram: ${order.recipient.telegram || 'Не указан'}
-📍 Город: ${order.recipient.city}
-🚚 Доставка: ${order.deliveryMethod}
-🏠 Адрес: ${order.recipient.address}
-${order.recipient.comment ? `📝 Комментарий: ${order.recipient.comment}\n` : ''}
-🛒 СОСТАВ:
+Покупатель: ${order.recipient.fullName}
+Телефон: ${order.recipient.phone}
+Telegram: ${order.recipient.telegram || 'Не указан'}
+Город: ${order.recipient.city}
+Доставка: ${order.deliveryMethod}
+Адрес: ${order.recipient.address}
+${order.recipient.comment ? `Комментарий: ${order.recipient.comment}\n` : ''}
+СОСТАВ:
 ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} — ${it.volumeLabel} × ${it.quantity} = ${(it.price * it.quantity).toLocaleString('ru-RU')} ₽`).join('\n')}
 
-💰 ИТОГО: ${order.totalAmount.toLocaleString('ru-RU')} ₽`
+ИТОГО К ОПЛАТЕ: ${order.totalAmount.toLocaleString('ru-RU')} ₽`
       : '');
 
   const handleCopyAgain = async () => {
@@ -66,35 +65,35 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
     : `https://t.me/${TELEGRAM_MANAGER_USERNAME}`;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
       <div className="text-center space-y-3.5">
-        <div className="w-16 h-16 rounded-none bg-zinc-100 text-black border border-zinc-900 mx-auto flex items-center justify-center shadow-xs">
-          <CheckCircle2 className="w-9 h-9" />
+        <div className="w-16 h-16 rounded-full bg-zinc-100 text-black mx-auto flex items-center justify-center shadow-2xs">
+          <CheckCircle2 className="w-8 h-8 stroke-[1.5]" />
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none border border-emerald-300 bg-emerald-50 text-emerald-900 text-[11px] font-bold uppercase tracking-wider">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-900 text-[11px] font-normal uppercase tracking-wider">
           <Check className="w-3.5 h-3.5 text-emerald-700" />
           <span>Текст заказа скопирован в буфер обмена</span>
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950 uppercase tracking-wide">
+        <h1 className="text-2xl sm:text-4xl font-light text-zinc-950 tracking-tight">
           Заказ №{orderNumber || (order ? order.orderNumber : 'PD-84210')}
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-600 max-w-lg mx-auto font-light leading-relaxed">
-          Заказ успешно сформирован! Перейдите в диалог Telegram с нашим менеджером и отправьте скопированный текст.
+        <p className="text-xs sm:text-sm text-zinc-500 max-w-lg mx-auto font-light leading-relaxed text-delicate">
+          Заказ успешно сформирован. Откройте диалог в Telegram для согласования и фотоотчета флаконов.
         </p>
       </div>
 
       {/* Main Telegram Action CTA Card */}
-      <div className="mt-8 p-6 sm:p-8 rounded-none bg-zinc-950 text-white space-y-6">
+      <div className="mt-8 p-6 sm:p-8 rounded-[32px] bg-zinc-950 text-white space-y-6 shadow-md">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-left">
-            <div className="text-xs font-bold uppercase tracking-widest text-[#C5D86D] flex items-center justify-center sm:justify-start gap-1.5">
+            <div className="text-xs font-normal uppercase tracking-widest text-zinc-400 flex items-center justify-center sm:justify-start gap-1.5">
               <Send className="w-3.5 h-3.5" />
-              <span>Личный менеджер в Telegram</span>
+              <span>Написать в Telegram</span>
             </div>
-            <div className="text-sm font-semibold text-white">
-              Менеджер онлайн: ответит и согласует отправку за 5 минут
+            <div className="text-sm font-medium text-white">
+              Онлайн: ответим и пришлем фото за 5 минут
             </div>
           </div>
 
@@ -102,7 +101,7 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
             href={telegramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto px-6 py-3.5 bg-white text-zinc-950 hover:bg-[#C5D86D] hover:text-black rounded-none text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors shrink-0 shadow-sm"
+            className="w-full sm:w-auto px-7 py-3.5 bg-white text-zinc-950 hover:bg-zinc-100 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-colors shrink-0 shadow-xs cursor-pointer"
           >
             <Send className="w-4 h-4" />
             <span>Открыть диалог в Telegram</span>
@@ -113,29 +112,29 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
         {/* 3 Step Instruction */}
         <div className="pt-6 border-t border-zinc-800 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
           <div className="space-y-1">
-            <div className="font-bold text-[#C5D86D] uppercase tracking-wider text-[11px]">
+            <div className="font-normal text-zinc-300 uppercase tracking-wider text-[11px]">
               1. Откройте чат
             </div>
-            <div className="text-zinc-400 leading-relaxed font-light">
-              Нажмите кнопку выше или перейдите по ссылке @{TELEGRAM_MANAGER_USERNAME}
+            <div className="text-zinc-400 leading-relaxed font-light text-delicate">
+              Нажмите кнопку выше для перехода в Telegram к @{TELEGRAM_MANAGER_USERNAME}
             </div>
           </div>
 
           <div className="space-y-1">
-            <div className="font-bold text-[#C5D86D] uppercase tracking-wider text-[11px]">
-              2. Вставьте текст
+            <div className="font-normal text-zinc-300 uppercase tracking-wider text-[11px]">
+              2. Отправьте текст
             </div>
-            <div className="text-zinc-400 leading-relaxed font-light">
-              Вставьте скопированный заказ (Ctrl+V или «Вставить» на телефоне) и отправьте.
+            <div className="text-zinc-400 leading-relaxed font-light text-delicate">
+              Вставьте скопированный заказ (Ctrl+V или «Вставить» на телефоне).
             </div>
           </div>
 
           <div className="space-y-1">
-            <div className="font-bold text-[#C5D86D] uppercase tracking-wider text-[11px]">
-              3. Согласование
+            <div className="font-normal text-zinc-300 uppercase tracking-wider text-[11px]">
+              3. Фотоконтроль
             </div>
-            <div className="text-zinc-400 leading-relaxed font-light">
-              Менеджер пришлет фото флаконов перед отправкой и согласует оплату (СБП/карта).
+            <div className="text-zinc-400 leading-relaxed font-light text-delicate">
+              Пришлем реальные фото собранных флаконов перед отправкой.
             </div>
           </div>
         </div>
@@ -143,31 +142,31 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
 
       {/* Copy Fallback Box */}
       {orderText && (
-        <div className="mt-6 p-5 rounded-none bg-zinc-50 border border-zinc-200 space-y-3">
+        <div className="mt-6 p-5 rounded-[24px] bg-[#F7F7F8] border border-zinc-200/70 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
-              Текст сообщения для отправки в Telegram:
+            <span className="text-[11px] font-normal uppercase tracking-wider text-zinc-500">
+              Текст сообщения для отправки:
             </span>
             <button
               type="button"
               onClick={handleCopyAgain}
-              className="px-3 py-1.5 bg-white hover:bg-black hover:text-white border border-zinc-300 rounded-none text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5"
+              className="pill-btn-outline py-1.5 px-3 rounded-full text-xs font-light flex items-center gap-1.5 cursor-pointer"
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <Check className="w-3 h-3 text-emerald-600" />
                   <span className="text-emerald-700">Скопировано!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5" />
+                  <Copy className="w-3 h-3" />
                   <span>Скопировать ещё раз</span>
                 </>
               )}
             </button>
           </div>
 
-          <pre className="p-3 bg-white border border-zinc-200 text-xs font-sans tabular-nums text-zinc-800 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+          <pre className="p-4 bg-white rounded-2xl border border-zinc-200/70 text-xs font-mono tabular-nums text-zinc-800 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed no-scrollbar">
             {orderText}
           </pre>
         </div>
@@ -175,12 +174,12 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
 
       {/* Order preview breakdown */}
       {order && (
-        <div className="mt-6 p-6 sm:p-8 rounded-none bg-white border border-zinc-200 space-y-4">
+        <div className="mt-6 p-6 sm:p-8 rounded-[32px] bg-white border border-zinc-200/70 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
-            <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+            <span className="text-xs font-normal uppercase tracking-widest text-zinc-400">
               Состав заказа
             </span>
-            <span className="text-xs text-zinc-500 uppercase tracking-wider text-[11px] font-sans tabular-nums">
+            <span className="text-xs text-zinc-500 uppercase tracking-wider text-[11px] tabular-nums font-light">
               {order.date}
             </span>
           </div>
@@ -193,63 +192,63 @@ ${order.items.map((it: any, idx: number) => `${idx + 1}. ${it.brand} ${it.name} 
                     <img
                       src={item.image}
                       alt=""
-                      className="w-10 h-10 object-contain bg-zinc-50 rounded-none border border-zinc-200 shrink-0 p-0.5"
+                      className="w-10 h-10 object-contain bg-zinc-50 rounded-full border border-zinc-200/70 shrink-0 p-1"
                     />
                   )}
                   <div className="truncate">
-                    <span className="font-bold text-zinc-900 uppercase tracking-tight">{item.brand}</span>{' '}
-                    <span className="text-zinc-700">{item.name}</span>
-                    <span className="text-zinc-500 uppercase tracking-wider text-[11px] font-sans tabular-nums">
+                    <span className="font-semibold text-zinc-900 uppercase tracking-tight text-[11px]">{item.brand}</span>{' '}
+                    <span className="text-zinc-700 font-light text-delicate">{item.name}</span>
+                    <span className="text-zinc-400 uppercase tracking-wider text-[10px] tabular-nums">
                       {' '}· {item.volumeLabel} × {item.quantity}
                     </span>
                   </div>
                 </div>
-                <div className="font-bold text-zinc-900 shrink-0 font-sans tabular-nums">
+                <div className="font-medium text-zinc-900 shrink-0 tabular-nums">
                   {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-sm font-bold text-zinc-950 uppercase tracking-wide">
-            <span>Итого к оплате:</span>
-            <span className="text-base font-serif">{order.totalAmount.toLocaleString('ru-RU')} ₽</span>
+          <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-sm font-normal text-zinc-950">
+            <span className="text-zinc-500 font-light">Итого к оплате</span>
+            <span className="text-base font-medium tabular-nums">{order.totalAmount.toLocaleString('ru-RU')} ₽</span>
           </div>
 
-          <div className="pt-2 text-xs text-zinc-600 space-y-1 font-light border-t border-zinc-100">
+          <div className="pt-2 text-xs text-zinc-500 space-y-1 font-light border-t border-zinc-100 text-delicate">
             <div>
-              <strong className="font-bold uppercase tracking-wider text-[11px]">Получатель:</strong>{' '}
+              <span className="text-zinc-400 uppercase tracking-wider text-[10px]">Получатель:</span>{' '}
               {order.recipient.fullName} ({order.recipient.phone})
             </div>
             {order.recipient.telegram && (
               <div>
-                <strong className="font-bold uppercase tracking-wider text-[11px]">Telegram:</strong>{' '}
+                <span className="text-zinc-400 uppercase tracking-wider text-[10px]">Telegram:</span>{' '}
                 {order.recipient.telegram}
               </div>
             )}
             <div>
-              <strong className="font-bold uppercase tracking-wider text-[11px]">Доставка:</strong>{' '}
+              <span className="text-zinc-400 uppercase tracking-wider text-[10px]">Доставка:</span>{' '}
               {order.deliveryMethod}, {order.recipient.city}, {order.recipient.address}
             </div>
           </div>
         </div>
       )}
 
-      {/* CTAs */}
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+      {/* Bottom Nav Actions */}
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
           to="/account?tab=orders"
-          className="px-7 py-4 rounded-none bg-black text-white hover:bg-zinc-800 text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm"
+          className="pill-btn-black py-3 px-6 rounded-full text-xs font-light flex items-center gap-2"
         >
-          <User className="w-4 h-4" />
-          <span>Смотреть заказы в личном кабинете</span>
+          <User className="w-3.5 h-3.5" />
+          <span>Личный кабинет</span>
         </Link>
         <Link
           to="/catalog"
-          className="px-7 py-4 rounded-none border border-black bg-white hover:bg-black hover:text-white text-zinc-900 text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all"
+          className="pill-btn-outline py-3 px-6 rounded-full text-xs font-light flex items-center gap-2"
         >
-          <span>Вернуться в каталог</span>
-          <ArrowRight className="w-4 h-4" />
+          <span>В каталог</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     </div>

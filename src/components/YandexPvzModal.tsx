@@ -187,7 +187,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
             </div>
           `,
           balloonContentFooter: `
-            <button id="pvz-btn-${p.id}" style="margin-top:8px;padding:6px 12px;background:#000;color:#fff;border:none;font-size:11px;font-weight:bold;cursor:pointer;width:100%;text-transform:uppercase;">
+            <button id="pvz-btn-${p.id}" style="margin-top:8px;padding:8px 16px;background:#000;color:#fff;border:none;border-radius:9999px;font-size:11px;font-weight:600;cursor:pointer;width:100%;text-transform:uppercase;">
               Выбрать этот пункт
             </button>
           `,
@@ -325,14 +325,14 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-xs animate-in fade-in">
       <div
         onClick={e => e.stopPropagation()}
-        className="w-full max-w-6xl bg-white border border-black shadow-2xl h-[92vh] max-h-[850px] flex flex-col overflow-hidden text-zinc-900"
+        className="w-full max-w-6xl bg-white rounded-3xl border border-zinc-200 shadow-2xl h-[92vh] max-h-[850px] flex flex-col overflow-hidden text-zinc-900"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-zinc-200 flex items-center justify-between bg-zinc-50 shrink-0">
+        <div className="p-4 sm:p-5 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/70 shrink-0">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-[#5A6B32] rounded-full" />
-              <h2 className="font-serif text-lg sm:text-xl font-normal text-zinc-950 uppercase tracking-wide">
+              <h2 className="text-base sm:text-lg font-normal text-zinc-950 uppercase tracking-wide">
                 Выбор пункта выдачи (ПВЗ)
               </h2>
             </div>
@@ -343,7 +343,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 border border-zinc-200 hover:border-black text-zinc-400 hover:text-black transition-colors"
+            className="p-2 rounded-full border border-zinc-200 hover:border-black text-zinc-400 hover:text-black transition-colors cursor-pointer"
             title="Закрыть"
           >
             <X className="w-5 h-5" />
@@ -351,7 +351,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="p-3 sm:p-4 border-b border-zinc-200 space-y-3 shrink-0 bg-white">
+        <div className="p-3 sm:p-4 border-b border-zinc-100 space-y-3 shrink-0 bg-white">
           <div className="flex flex-col sm:flex-row gap-2">
             {/* Search input */}
             <form onSubmit={handleSearchSubmit} className="relative flex-1">
@@ -360,13 +360,13 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                 placeholder="Поиск по городу, улице, метро (напр. Казань Баумана, СПб Невский)..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-16 py-2 border border-zinc-300 text-xs outline-none focus:border-black bg-white"
+                className="w-full pl-9 pr-20 py-2.5 rounded-full border border-zinc-200 text-xs outline-none focus:border-black bg-white"
               />
               <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <button
                 type="submit"
                 disabled={isGeocoding}
-                className="absolute right-1 top-1 bottom-1 px-3 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-wider transition-colors"
+                className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-black hover:bg-zinc-800 text-white text-[10px] font-medium uppercase tracking-wider rounded-full transition-colors cursor-pointer"
               >
                 {isGeocoding ? 'Поиск...' : 'Найти'}
               </button>
@@ -376,7 +376,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
             <button
               type="button"
               onClick={handleUseGeolocation}
-              className="px-3.5 py-2 border border-zinc-300 hover:border-black bg-zinc-50 hover:bg-black hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shrink-0 font-sans"
+              className="px-4 py-2 rounded-full border border-zinc-200 hover:border-black bg-zinc-50 hover:bg-black hover:text-white text-xs font-normal flex items-center justify-center gap-1.5 transition-colors shrink-0 font-sans cursor-pointer"
             >
               <Navigation className="w-3.5 h-3.5" />
               <span>Рядом со мной</span>
@@ -401,9 +401,9 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                       mapInstanceRef.current.setCenter([c.lat, c.lng], 12, { duration: 300 });
                     }
                   }}
-                  className={`px-2.5 py-1 text-[11px] font-medium whitespace-nowrap transition-colors border ${
+                  className={`px-3 py-1 rounded-full text-[11px] font-normal whitespace-nowrap transition-colors border cursor-pointer ${
                     isSelected
-                      ? 'bg-black text-white border-black font-semibold'
+                      ? 'bg-black text-white border-black font-medium shadow-xs'
                       : 'bg-white text-zinc-700 border-zinc-200 hover:border-black'
                   }`}
                 >
@@ -415,7 +415,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
 
           {/* Networks Filter Tabs */}
           <div className="flex items-center justify-between gap-2 pt-1 border-t border-zinc-100">
-            <div className="flex flex-wrap gap-1 text-xs">
+            <div className="flex flex-wrap gap-1.5 text-xs">
               {[
                 { id: 'all', label: 'Все ПВЗ' },
                 { id: 'yandex', label: 'Яндекс Доставка' },
@@ -427,9 +427,9 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                   key={tab.id}
                   type="button"
                   onClick={() => setNetworkFilter(tab.id as any)}
-                  className={`px-3 py-1 text-[10px] uppercase font-bold tracking-wider transition-colors border ${
+                  className={`px-3.5 py-1 rounded-full text-[10px] uppercase font-medium tracking-wider transition-colors border cursor-pointer ${
                     networkFilter === tab.id
-                      ? 'bg-black text-white border-black'
+                      ? 'bg-black text-white border-black shadow-xs'
                       : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-black'
                   }`}
                 >
@@ -439,12 +439,12 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
             </div>
 
             {/* Mobile View Toggle */}
-            <div className="sm:hidden flex border border-zinc-300">
+            <div className="sm:hidden flex p-0.5 rounded-full bg-zinc-100 border border-zinc-200">
               <button
                 type="button"
                 onClick={() => setActiveTab('map')}
-                className={`px-2.5 py-1 text-[10px] font-bold uppercase ${
-                  activeTab === 'map' ? 'bg-black text-white' : 'bg-white text-zinc-700'
+                className={`px-3 py-1 text-[10px] font-medium uppercase rounded-full transition-colors ${
+                  activeTab === 'map' ? 'bg-black text-white shadow-xs' : 'text-zinc-600 hover:text-black'
                 }`}
               >
                 Карта
@@ -452,8 +452,8 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('list')}
-                className={`px-2.5 py-1 text-[10px] font-bold uppercase ${
-                  activeTab === 'list' ? 'bg-black text-white' : 'bg-white text-zinc-700'
+                className={`px-3 py-1 text-[10px] font-medium uppercase rounded-full transition-colors ${
+                  activeTab === 'list' ? 'bg-black text-white shadow-xs' : 'text-zinc-600 hover:text-black'
                 }`}
               >
                 Список ({filteredPoints.length})
@@ -474,26 +474,26 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
 
             {/* Selected point popup card on map bottom */}
             {selectedPoint && (
-              <div className="absolute left-4 right-4 bottom-4 bg-white border border-black p-4 shadow-2xl z-20 animate-in slide-in-from-bottom-2 sm:max-w-md sm:left-4 sm:right-auto">
+              <div className="absolute left-4 right-4 bottom-4 bg-white rounded-2xl border border-zinc-200 p-4 sm:p-5 shadow-2xl z-20 animate-in slide-in-from-bottom-2 sm:max-w-md sm:left-4 sm:right-auto">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-zinc-500">
+                    <span className="text-[10px] font-sans font-medium uppercase tracking-wider text-zinc-500">
                       {selectedPoint.networkName}
                     </span>
-                    <h4 className="font-serif text-sm font-bold text-zinc-950 mt-0.5 leading-snug">
+                    <h4 className="text-sm font-semibold text-zinc-950 mt-0.5 leading-snug">
                       {selectedPoint.name}
                     </h4>
                   </div>
                   <button
                     onClick={() => setSelectedPoint(null)}
-                    className="text-zinc-400 hover:text-black p-1"
+                    className="text-zinc-400 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
-                <div className="mt-2 space-y-1 text-xs text-zinc-600">
-                  <div className="flex items-center gap-1.5 font-medium text-zinc-900">
+                <div className="mt-2.5 space-y-1 text-xs text-zinc-600 font-light">
+                  <div className="flex items-center gap-1.5 font-normal text-zinc-900">
                     <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
                     <span>{selectedPoint.address}</span>
                   </div>
@@ -506,7 +506,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                     <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                     <span>{selectedPoint.workTime}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#5A6B32]">
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-700">
                     <Truck className="w-3.5 h-3.5 shrink-0" />
                     <span>Срок: {selectedPoint.deliveryDays} · Доставка от {selectedPoint.price} ₽</span>
                   </div>
@@ -518,7 +518,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                     onSelectPvz(selectedPoint);
                     onClose();
                   }}
-                  className="mt-3.5 w-full py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                  className="mt-3.5 w-full py-2.5 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-medium uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99]"
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>Выбрать этот ПВЗ</span>
@@ -558,17 +558,17 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                     <div
                       key={p.id}
                       onClick={() => handleFocusPoint(p)}
-                      className={`p-3 bg-white border cursor-pointer transition-all ${
+                      className={`p-3.5 bg-white rounded-2xl border cursor-pointer transition-all ${
                         isSelected
-                          ? 'border-black shadow-md bg-zinc-50'
-                          : 'border-zinc-200 hover:border-zinc-400'
+                          ? 'border-black shadow-sm bg-zinc-50/80'
+                          : 'border-zinc-200/80 hover:border-zinc-400'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span
-                              className={`text-[9px] font-sans uppercase font-bold px-1.5 py-0.5 border ${
+                              className={`text-[9px] font-sans uppercase font-medium px-2 py-0.5 rounded-full border ${
                                 p.network === 'yandex'
                                   ? 'border-amber-400 text-amber-900 bg-amber-50'
                                   : p.network === 'cdek'
@@ -614,7 +614,7 @@ export const YandexPvzModal: React.FC<YandexPvzModalProps> = ({
                             onSelectPvz(p);
                             onClose();
                           }}
-                          className="px-2.5 py-1 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-wider transition-colors font-sans"
+                          className="px-3 py-1 bg-black hover:bg-zinc-800 text-white text-[10px] font-medium uppercase tracking-wider rounded-full transition-colors cursor-pointer shadow-xs"
                         >
                           Выбрать
                         </button>

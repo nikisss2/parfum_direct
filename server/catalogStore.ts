@@ -429,12 +429,18 @@ interface IconicHitSpec {
 }
 
 const ICONIC_SPECS: IconicHitSpec[] = [
+  { key: 'french-avenue-blonde-empire', rank: 101, match: (b, n) => b.includes('french avenue') && (n.includes('blonde empire') || n.includes('amber empire')) },
   { key: 'creed-aventus', rank: 100, match: (b, n) => b.includes('creed') && n.includes('aventus') && !n.includes('absolu') && !n.includes('cologne') && !n.includes('her') },
   { key: 'tom-ford-lost-cherry', rank: 99, match: (b, n) => b.includes('tom ford') && n.includes('lost cherry') && !n.includes('набор') && !n.includes('спрей') },
   { key: 'french-avenue-royal-blend', rank: 98, match: (b, n) => b.includes('french avenue') && n.includes('royal blend') },
-  { key: 'kilian-angels-share', rank: 97, match: (b, n) => b.includes('kilian') && (n.includes('angel') || n.includes('angels')) && !n.includes('набор') },
-  { key: 'barrois-ganymede', rank: 96, match: (b, n) => (b.includes('barrois') || b.includes('marc antoine')) && n.includes('ganymede') },
-  { key: 'amouage-guidance', rank: 95, match: (b, n) => b.includes('amouage') && n.includes('guidance') },
+  { key: 'versace-eros', rank: 97, match: (b, n) => b.includes('versace') && n.includes('eros') && !n.includes('flame') && !n.includes('energy') },
+  { key: 'lacoste-essential', rank: 97, match: (b, n) => b.includes('lacoste') && n.includes('essential') },
+  { key: 'lacoste-blanc', rank: 96, match: (b, n) => b.includes('lacoste') && (n.includes('blanc') || n.includes('l.12.12') || n.includes('white')) },
+  { key: 'coach-for-men', rank: 96, match: (b, n) => b.includes('coach') && (n.includes('for men') || n.includes('open road') || n.includes('platinum')) },
+  { key: 'versace-bright-crystal', rank: 96, match: (b, n) => b.includes('versace') && n.includes('bright crystal') },
+  { key: 'kilian-angels-share', rank: 95, match: (b, n) => b.includes('kilian') && (n.includes('angel') || n.includes('angels')) && !n.includes('набор') },
+  { key: 'barrois-ganymede', rank: 94, match: (b, n) => (b.includes('barrois') || b.includes('marc antoine')) && n.includes('ganymede') },
+  { key: 'amouage-guidance', rank: 93, match: (b, n) => b.includes('amouage') && n.includes('guidance') },
   { key: 'french-avenue-after-effect', rank: 94, match: (b, n) => b.includes('french avenue') && n.includes('after effect') },
   { key: 'creed-absolu-aventus', rank: 93, match: (b, n) => b.includes('creed') && n.includes('absolu') },
   { key: 'tom-ford-tobacco-vanille', rank: 92, match: (b, n) => b.includes('tom ford') && n.includes('tobacco vanille') && !n.includes('набор') },
@@ -455,6 +461,21 @@ const ICONIC_SPECS: IconicHitSpec[] = [
   { key: 'creed-aventus-cologne', rank: 77, match: (b, n) => b.includes('creed') && n.includes('cologne') },
   { key: 'creed-aventus-for-her', rank: 76, match: (b, n) => b.includes('creed') && n.includes('for her') },
   { key: 'armaf-cdn-woman', rank: 75, match: (b, n) => b.includes('armaf') && n.includes('club de nuit') && (n.includes('woman') || n.includes('женск')) },
+];
+
+export const BUDGET_HIT_IDS: string[] = [
+  'p-356428f8-127511', // 1. Lattafa — Khamrah Qahwa
+  'p-fa-liquid-brun',   // 2. French Avenue — Liquid Brun
+  'p-fdda737e-84133',   // 3. Lattafa — Yara (Pink)
+  'p-8d8ff287-232940',  // 4. Versace — Crystal Noir
+  'p-5d247239-98150',   // 5. Lattafa — Asad
+  'p-cf787e7b-29383',   // 6. Lacoste — Pour Femme
+  'p-82796851-115816',  // 7. Mancera — Cedrat Boise
+  'p-3968c133-241808',  // 8. Hugo Boss — Boss Bottled Elixir
+  'p-18916484-115920',  // 9. Mancera — Instant Crush
+  'p-3f7de138-48396',   // 10. Versace — Eros
+  'p-77837452-75708',   // 11. Hugo Boss — The Scent Le Parfum
+  'p-971631bb-218190',  // 12. French Avenue — Amber Empire
 ];
 
 export function groupProductsByModel(rawList: CatalogProduct[]): {
@@ -627,7 +648,66 @@ export function groupProductsByModel(rawList: CatalogProduct[]): {
     }
   }
 
+  // 1. Explicitly mark all 12 budget hits as hits, ensure isNew=false, and assign discounts to 4 of them (25-30%)
+  for (let idx = 0; idx < BUDGET_HIT_IDS.length; idx++) {
+    const id = BUDGET_HIT_IDS[idx];
+    const target = byId.get(id);
+    if (target) {
+      target.isHit = true;
+      target.isNew = false;
+      target._hitPriority = 2000 + (BUDGET_HIT_IDS.length - idx);
+      // Give 4 of the 12 items (25-30%) artificial discounts (+20-30%)
+      if ([0, 1, 3, 9].includes(idx)) {
+        const discountPercent = 22 + (idx * 2); // 22% to 28%
+        const multiplier = 1 + discountPercent / 100;
+        target.oldPrice = Math.round((target.minPrice * multiplier) / 50) * 50;
+        target.discountPercent = discountPercent;
+      }
+    }
+  }
+
+  // 2. Ensure all other hits are NOT marked as new (isNew = false)
+  // And apply 20-30% artificial discounts on 25-30% of hits (crossed out oldPrice)
+  for (const prod of grouped) {
+    if (prod.isHit) {
+      prod.isNew = false;
+      if (!prod.oldPrice) {
+        const charSum = prod.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+        if (charSum % 4 === 0) {
+          const discountPercent = 20 + (charSum % 11); // 20% to 30%
+          const multiplier = 1 + discountPercent / 100;
+          prod.oldPrice = Math.round((prod.minPrice * multiplier) / 50) * 50;
+          prod.discountPercent = discountPercent;
+        }
+      }
+    }
+  }
+
   return { grouped, byId, bySlug };
+}
+
+export function getBudgetHits(): CatalogProduct[] {
+  const { byId, products } = getCatalog();
+  const list: CatalogProduct[] = [];
+  for (let idx = 0; idx < BUDGET_HIT_IDS.length; idx++) {
+    const id = BUDGET_HIT_IDS[idx];
+    let p = byId.get(id);
+    if (!p) {
+      p = products.find(g => g.id === id);
+    }
+    if (p) {
+      p.isHit = true;
+      p.isNew = false;
+      if ([0, 1, 3, 9].includes(idx) && !p.oldPrice) {
+        const discountPercent = 22 + (idx * 2);
+        const multiplier = 1 + discountPercent / 100;
+        p.oldPrice = Math.round((p.minPrice * multiplier) / 50) * 50;
+        p.discountPercent = discountPercent;
+      }
+      list.push(p);
+    }
+  }
+  return list;
 }
 
 export function reloadCatalog() {
@@ -648,7 +728,13 @@ export function getCatalog() {
         p.description = `${p.name} — ${p.kindLabel || 'оригинальная продукция'}.`;
       }
       if (!p.images) p.images = [];
-      if (!p.allNotes) p.allNotes = [];
+      if (!p.notes || !p.notes.top || p.notes.top.length === 0 || p.notes.top[0] === 'Верхние ноты') {
+        const resolved = resolveNotesForProduct(p.brand, p.name);
+        p.notes = { top: resolved.top, heart: resolved.heart, base: resolved.base };
+        p.allNotes = resolved.all;
+      } else if (!p.allNotes || p.allNotes.length === 0) {
+        p.allNotes = Array.from(new Set([...(p.notes.top || []), ...(p.notes.heart || []), ...(p.notes.base || [])]));
+      }
       byId.set(p.id, p);
       bySlug.set(p.slug, p);
     }

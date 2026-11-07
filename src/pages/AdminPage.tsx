@@ -201,7 +201,7 @@ export const AdminPage: React.FC = () => {
     if (user?.role === 'admin') {
       setAuthed(true);
       fetchMeta().then(m => setMetaCount(m.count)).catch(() => {});
-      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || '';
       if (!token && activeToken) {
         setToken(activeToken);
       }
@@ -233,7 +233,7 @@ export const AdminPage: React.FC = () => {
         throw new Error('Этот аккаунт не обладает правами администратора магазина');
       }
       setAuthed(true);
-      const authToken = safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
+      const authToken = safeGetItem('maison_auth_token') || safeGetItem(TOKEN_KEY) || '';
       setToken(authToken);
       safeSetItem(TOKEN_KEY, authToken);
       loadAdminData(authToken);
@@ -331,7 +331,7 @@ export const AdminPage: React.FC = () => {
     };
 
     try {
-      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || '';
       await adminSaveProduct(activeToken, payload as Record<string, unknown>);
       setStatus('Товар сохранён в catalog.custom.json');
       showToast('Товар создан', `Товар «${form.name}» успешно добавлен в каталог`, 'success');
@@ -538,7 +538,7 @@ export const AdminPage: React.FC = () => {
     };
 
     try {
-      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || '';
       const res = await adminUpdateProduct(activeToken, editingProduct.id, payload);
       setEditingProduct(res.product);
       setEditStatus({
@@ -585,7 +585,7 @@ export const AdminPage: React.FC = () => {
     if (!editingProduct) return;
     if (!window.confirm(`Вы уверены, что хотите удалить товар «${editingProduct.name}»?`)) return;
     try {
-      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
+      const activeToken = token || safeGetItem(TOKEN_KEY) || safeGetItem('maison_auth_token') || '';
       await adminDeleteProduct(activeToken, editingProduct.id);
       showToast('Удалено', `Товар «${editingProduct.name}» удалён`, 'info');
       setEditingProduct(null);
@@ -619,35 +619,35 @@ export const AdminPage: React.FC = () => {
     switch (status) {
       case 'paid':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-300">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
             <CreditCard className="w-3 h-3" />
             Оплачен онлайн
           </span>
         );
       case 'assembling':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-300">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-50 text-amber-900 border border-amber-200">
             <Clock className="w-3 h-3" />
             В сборке
           </span>
         );
       case 'sent':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-900 border border-zinc-400">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-zinc-100 text-zinc-900 border border-zinc-300">
             <Truck className="w-3 h-3" />
             Отправлен
           </span>
         );
       case 'delivered':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-950 border border-emerald-400">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-950 border border-emerald-300">
             <CheckCircle2 className="w-3 h-3" />
             Доставлен
           </span>
         );
       case 'cancelled':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-800 border border-rose-300">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-rose-50 text-rose-800 border border-rose-200">
             <AlertCircle className="w-3 h-3" />
             Отменен
           </span>
@@ -695,7 +695,7 @@ export const AdminPage: React.FC = () => {
   if (!authed) {
     return (
       <div className="max-w-md mx-auto px-4 py-16">
-        <div className="bg-white p-8 rounded-none border border-zinc-900 shadow-sm space-y-5">
+        <div className="bg-white p-6 sm:p-8 rounded-[28px] border border-zinc-200/70 shadow-2xs space-y-5">
           <div className="text-center space-y-1 pb-2 border-b border-zinc-200">
             <div className="w-12 h-12 bg-black text-white flex items-center justify-center mx-auto mb-3">
               <ShieldCheck className="w-6 h-6 text-white" />
@@ -744,7 +744,7 @@ export const AdminPage: React.FC = () => {
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
                   placeholder="admin_laptev@maisonarome.ru"
-                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
+                  className="w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
                   required
                 />
               </div>
@@ -757,13 +757,13 @@ export const AdminPage: React.FC = () => {
                   value={loginPassword}
                   onChange={e => setLoginPassword(e.target.value)}
                   placeholder="Введите пароль"
-                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
+                  className="w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs outline-none focus:border-black font-light transition-colors"
                   required
                 />
               </div>
 
               {status && (
-                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-none font-light">
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-2xl font-light">
                   {status}
                 </p>
               )}
@@ -771,7 +771,7 @@ export const AdminPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loginLoading}
-                className="w-full py-3.5 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-sm disabled:opacity-50"
+                className="pill-btn-black w-full py-3.5 text-xs disabled:opacity-50"
               >
                 {loginLoading ? 'Проверка доступа...' : 'Войти в панель управления'}
               </button>
@@ -786,20 +786,20 @@ export const AdminPage: React.FC = () => {
                   type="password"
                   value={token}
                   onChange={e => setToken(e.target.value)}
-                  placeholder="parfum-admin-change-me"
-                  className="w-full border border-zinc-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-black font-sans tabular-nums transition-colors"
+                  placeholder="Секретный токен администратора"
+                  className="w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs outline-none focus:border-black font-sans tabular-nums transition-colors"
                 />
               </div>
 
               {status && (
-                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-none font-light">
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-2xl font-light">
                   {status}
                 </p>
               )}
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-sm"
+                className="pill-btn-black w-full py-3.5 text-xs"
               >
                 Войти по токену API
               </button>
@@ -835,13 +835,13 @@ export const AdminPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/catalog"
-            className="px-4 py-2.5 rounded-none border border-zinc-300 bg-white hover:bg-zinc-100 text-xs font-bold uppercase tracking-wider text-black transition-colors"
+            className="pill-btn-outline py-2.5 px-5 text-xs"
           >
             В каталог
           </Link>
           <Link
             to="/account"
-            className="px-4 py-2.5 rounded-none bg-black hover:bg-zinc-800 text-xs font-bold uppercase tracking-wider text-white transition-colors"
+            className="pill-btn-black py-2.5 px-5 text-xs"
           >
             Мой аккаунт
           </Link>
@@ -850,7 +850,7 @@ export const AdminPage: React.FC = () => {
 
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <CreditCard className="w-3.5 h-3.5 text-zinc-700" /> Выручка заказов
           </p>
@@ -858,7 +858,7 @@ export const AdminPage: React.FC = () => {
             {(adminStats?.totalRevenue || totalRevenue).toLocaleString('ru-RU')} ₽
           </p>
         </div>
-        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <ShoppingBag className="w-3.5 h-3.5 text-zinc-700" /> Всего заказов
           </p>
@@ -866,7 +866,7 @@ export const AdminPage: React.FC = () => {
             {adminStats?.totalOrders ?? allOrders.length}
           </p>
         </div>
-        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-amber-700" /> В обработке / сборке
           </p>
@@ -874,7 +874,7 @@ export const AdminPage: React.FC = () => {
             {adminStats?.activeOrders ?? allOrders.filter(o => o.status === 'assembling' || o.status === 'paid').length}
           </p>
         </div>
-        <div className="p-4 bg-white border border-zinc-200 shadow-xs">
+        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5 text-emerald-700" /> Клиенты в БД (SQLite)
           </p>
@@ -936,10 +936,10 @@ export const AdminPage: React.FC = () => {
       {activeTab === 'orders' && (
         <div className="space-y-6">
           {/* Telegram Notification Integration Banner */}
-          <div className="p-4 sm:p-5 rounded-none border border-zinc-200 bg-white">
+          <div className="p-5 sm:p-6 rounded-[24px] border border-zinc-200/70 bg-white shadow-2xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-none bg-zinc-100 flex items-center justify-center text-zinc-900 border border-zinc-200 shrink-0">
+                <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 border border-zinc-200 shrink-0">
                   <Bot className="w-5 h-5 text-black" />
                 </div>
                 <div>
@@ -995,7 +995,7 @@ export const AdminPage: React.FC = () => {
                       placeholder="1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ"
                       value={telegramConfig.botToken}
                       onChange={e => setTelegramConfig({ ...telegramConfig, botToken: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3 py-2 text-xs font-sans tabular-nums outline-none focus:border-black"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-3.5 py-1.5 text-xs font-sans tabular-nums outline-none focus:border-black"
                     />
                   </label>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
@@ -1005,7 +1005,7 @@ export const AdminPage: React.FC = () => {
                       placeholder="Например: 987654321"
                       value={telegramConfig.chatId}
                       onChange={e => setTelegramConfig({ ...telegramConfig, chatId: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3 py-2 text-xs font-sans tabular-nums outline-none focus:border-black"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-3.5 py-1.5 text-xs font-sans tabular-nums outline-none focus:border-black"
                     />
                   </label>
                 </div>
@@ -1016,7 +1016,7 @@ export const AdminPage: React.FC = () => {
                       type="checkbox"
                       checked={telegramConfig.enabled}
                       onChange={e => setTelegramConfig({ ...telegramConfig, enabled: e.target.checked })}
-                      className="rounded-none accent-black w-4 h-4"
+                      className="rounded-2xl accent-black w-4 h-4"
                     />
                     <span>Включить автоматическую отправку заказов в Telegram</span>
                   </label>
@@ -1038,7 +1038,7 @@ export const AdminPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isSavingTg}
-                    className="px-5 py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider disabled:opacity-50 transition-colors flex items-center gap-1.5"
+                    className="px-5 py-2.5 rounded-full bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider disabled:opacity-50 transition-colors flex items-center gap-1.5"
                   >
                     {isSavingTg ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                     <span>Сохранить настройки</span>
@@ -1048,7 +1048,7 @@ export const AdminPage: React.FC = () => {
                     type="button"
                     onClick={handleTestTg}
                     disabled={isTestingTg || !telegramConfig.botToken || !telegramConfig.chatId}
-                    className="px-5 py-2.5 border border-zinc-300 hover:border-black bg-white text-zinc-900 text-xs font-bold uppercase tracking-wider disabled:opacity-50 transition-colors flex items-center gap-1.5"
+                    className="px-5 py-2.5 rounded-full border border-zinc-300 hover:border-black bg-white text-zinc-900 text-xs font-bold uppercase tracking-wider disabled:opacity-50 transition-colors flex items-center gap-1.5"
                   >
                     {isTestingTg ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     <span>Проверить отправку теста в TG</span>
@@ -1060,35 +1060,35 @@ export const AdminPage: React.FC = () => {
 
           {/* KPI Dashboard */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="p-4 rounded-none bg-white border border-zinc-200">
+            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 shadow-2xs">
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Всего заказов</div>
               <div className="text-xl font-serif text-zinc-950 mt-1">{allOrders.length}</div>
             </div>
-            <div className="p-4 rounded-none bg-emerald-50/60 border border-emerald-200">
+            <div className="p-4 rounded-[20px] bg-emerald-50/60 border border-emerald-200">
               <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Оплачено онлайн</div>
               <div className="text-xl font-serif text-emerald-950 mt-1">
                 {allOrders.filter(o => o.status === 'paid').length}
               </div>
             </div>
-            <div className="p-4 rounded-none bg-amber-50/60 border border-amber-200">
+            <div className="p-4 rounded-[20px] bg-amber-50/60 border border-amber-200">
               <div className="text-[10px] font-bold text-amber-800 uppercase tracking-widest">В сборке</div>
               <div className="text-xl font-serif text-amber-950 mt-1">
                 {allOrders.filter(o => o.status === 'assembling').length}
               </div>
             </div>
-            <div className="p-4 rounded-none bg-zinc-50 border border-zinc-200">
+            <div className="p-4 rounded-[20px] bg-zinc-50 border border-zinc-200">
               <div className="text-[10px] font-bold text-zinc-800 uppercase tracking-widest">Отправлено</div>
               <div className="text-xl font-serif text-zinc-950 mt-1">
                 {allOrders.filter(o => o.status === 'sent').length}
               </div>
             </div>
-            <div className="p-4 rounded-none bg-teal-50/60 border border-teal-200">
+            <div className="p-4 rounded-[20px] bg-teal-50/60 border border-teal-200">
               <div className="text-[10px] font-bold text-teal-800 uppercase tracking-widest">Доставлено</div>
               <div className="text-xl font-serif text-teal-950 mt-1">
                 {allOrders.filter(o => o.status === 'delivered').length}
               </div>
             </div>
-            <div className="p-4 rounded-none bg-zinc-950 text-white border border-zinc-900">
+            <div className="p-4 rounded-[20px] bg-zinc-950 text-white border border-zinc-900">
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1">
                 <TrendingUp className="w-3 h-3 text-emerald-400" />
                 Выручка
@@ -1100,14 +1100,14 @@ export const AdminPage: React.FC = () => {
           </div>
 
           {/* Search & Filter Bar */}
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white p-4 rounded-none border border-zinc-200">
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white p-4 sm:p-5 rounded-[24px] border border-zinc-200/70 shadow-2xs">
             <div className="relative w-full sm:w-80">
               <input
                 type="text"
                 placeholder="Поиск по номеру, имени или телефону..."
                 value={orderSearch}
                 onChange={e => setOrderSearch(e.target.value)}
-                className="w-full text-xs pl-9 pr-3.5 py-2.5 rounded-none bg-zinc-50 border border-zinc-200 outline-none focus:border-black transition-colors"
+                className="w-full text-xs pl-9 pr-3.5 py-2.5 rounded-full bg-zinc-50 border border-zinc-200 outline-none focus:border-black transition-colors"
               />
               <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
             </div>
@@ -1125,7 +1125,7 @@ export const AdminPage: React.FC = () => {
                   key={tab.id}
                   type="button"
                   onClick={() => setOrderStatusFilter(tab.id as any)}
-                  className={`px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider transition-colors border ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wider transition-colors border ${
                     orderStatusFilter === tab.id
                       ? 'bg-black text-white border-black'
                       : 'bg-white text-zinc-600 border-zinc-200 hover:border-black hover:text-black'
@@ -1139,7 +1139,7 @@ export const AdminPage: React.FC = () => {
 
           {/* Orders List */}
           {filteredOrders.length === 0 ? (
-            <div className="p-12 text-center bg-white rounded-none border border-zinc-200 space-y-3">
+            <div className="p-12 text-center bg-white rounded-2xl border border-zinc-200/70 space-y-3">
               <ShoppingBag className="w-10 h-10 text-zinc-300 mx-auto" />
               <div className="text-sm font-bold text-zinc-800">
                 {allOrders.length === 0
@@ -1161,7 +1161,7 @@ export const AdminPage: React.FC = () => {
                 return (
                   <div
                     key={order.id}
-                    className="p-6 bg-white rounded-none border border-zinc-200 shadow-none space-y-4 transition-all hover:border-black"
+                    className="p-6 bg-white rounded-2xl border border-zinc-200/70 shadow-none space-y-4 transition-all hover:border-black"
                   >
                     {/* Header: Number, Date, Status */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-100">
@@ -1184,7 +1184,7 @@ export const AdminPage: React.FC = () => {
                               updateOrderStatus(order.id, newStatus, order.trackingNumber);
                               showToast('Статус обновлен', `Заказ ${order.orderNumber} обновлен`, 'success');
                             }}
-                            className="text-xs font-bold uppercase tracking-wider px-3 py-2 rounded-none border border-zinc-300 bg-white hover:border-black outline-none text-zinc-900 cursor-pointer transition-colors"
+                            className="text-xs font-bold uppercase tracking-wider px-3 py-2 rounded-2xl border border-zinc-300 bg-white hover:border-black outline-none text-zinc-900 cursor-pointer transition-colors"
                           >
                             <option value="paid">Оплачен онлайн</option>
                             <option value="assembling">В сборке (отлив атомайзеров)</option>
@@ -1203,7 +1203,7 @@ export const AdminPage: React.FC = () => {
                               showToast('Заказ удален', `Заказ №${order.orderNumber} удален`, 'info');
                             }
                           }}
-                          className="p-2 rounded-none text-zinc-400 hover:text-black border border-transparent hover:border-zinc-300 transition-colors"
+                          className="p-2 rounded-2xl text-zinc-400 hover:text-black border border-transparent hover:border-zinc-300 transition-colors"
                           title="Удалить заказ"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1214,7 +1214,7 @@ export const AdminPage: React.FC = () => {
                     {/* Middle: Recipient & Tracking */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                       {/* Recipient Details */}
-                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-none space-y-2">
+                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
                         <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
                           Получатель & Контакты
                         </div>
@@ -1228,7 +1228,7 @@ export const AdminPage: React.FC = () => {
                             href={`https://wa.me/${order.recipient.phone.replace(/\D/g, '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-emerald-100 text-emerald-900 text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-200 transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-2xl bg-emerald-100 text-emerald-900 text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-200 transition-colors"
                           >
                             <MessageCircle className="w-3 h-3" />
                             WhatsApp
@@ -1241,7 +1241,7 @@ export const AdminPage: React.FC = () => {
                       </div>
 
                       {/* Delivery & Tracking */}
-                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-none space-y-2">
+                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
                         <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
                           Доставка и Трек-номер
                         </div>
@@ -1263,7 +1263,7 @@ export const AdminPage: React.FC = () => {
                             onChange={e =>
                               setEditingTracking(prev => ({ ...prev, [order.id]: e.target.value }))
                             }
-                            className="px-3 py-2 text-xs rounded-none border border-zinc-300 bg-white font-sans tabular-nums flex-1 outline-none focus:border-black transition-colors"
+                            className="px-3 py-2 text-xs rounded-2xl border border-zinc-300 bg-white font-sans tabular-nums flex-1 outline-none focus:border-black transition-colors"
                           />
                           <button
                             type="button"
@@ -1271,7 +1271,7 @@ export const AdminPage: React.FC = () => {
                               updateOrderStatus(order.id, order.status, currentTracking);
                               showToast('Трек-номер сохранен', `Трек ${currentTracking} сохранен`, 'success');
                             }}
-                            className="px-4 py-2 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-none transition-colors shrink-0"
+                            className="px-4 py-2 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors shrink-0"
                           >
                             Сохранить
                           </button>
@@ -1280,7 +1280,7 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     {order.recipient.comment && (
-                      <div className="text-xs text-zinc-700 bg-zinc-50 p-3 rounded-none border border-zinc-200 font-light">
+                      <div className="text-xs text-zinc-700 bg-zinc-50 p-3 rounded-2xl border border-zinc-200/70 font-light">
                         <strong className="font-bold uppercase tracking-wider text-[10px] block mb-0.5">Комментарий клиента:</strong> {order.recipient.comment}
                       </div>
                     )}
@@ -1298,7 +1298,7 @@ export const AdminPage: React.FC = () => {
                                 <img
                                   src={item.image}
                                   alt=""
-                                  className="w-10 h-12 object-cover rounded-none border border-zinc-200 shrink-0"
+                                  className="w-10 h-12 object-cover rounded-2xl border border-zinc-200/70 shrink-0"
                                 />
                               )}
                               <div className="truncate">
@@ -1320,7 +1320,7 @@ export const AdminPage: React.FC = () => {
                       <div className="pt-3 mt-2 border-t border-zinc-100 flex items-center justify-between text-xs sm:text-sm font-bold text-zinc-950">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-normal text-zinc-500 uppercase tracking-wider text-[11px]">Способ оплаты:</span>
-                          <span className="text-xs text-zinc-900 font-bold uppercase tracking-wider bg-zinc-100 px-2.5 py-1 rounded-none border border-zinc-200">
+                          <span className="text-xs text-zinc-900 font-bold uppercase tracking-wider bg-zinc-100 px-2.5 py-1 rounded-2xl border border-zinc-200/70">
                             {order.paymentMethod || 'СБП / Онлайн'}
                           </span>
                         </div>
@@ -1340,7 +1340,7 @@ export const AdminPage: React.FC = () => {
       {/* Tab: Users Management (SQLite Database) */}
       {activeTab === 'users' && (
         <div className="space-y-6">
-          <div className="p-6 rounded-none border border-zinc-200 bg-white space-y-4">
+          <div className="p-6 rounded-2xl border border-zinc-200/70 bg-white space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-base font-normal font-serif text-zinc-900 uppercase tracking-wide flex items-center gap-2">
@@ -1353,7 +1353,7 @@ export const AdminPage: React.FC = () => {
               </div>
               <button
                 onClick={() => {
-                  const activeToken = token || safeGetItem('maison_auth_token') || 'parfum-admin-change-me';
+                  const activeToken = token || safeGetItem('maison_auth_token') || safeGetItem(TOKEN_KEY) || '';
                   loadAdminData(activeToken);
                   showToast('Обновлено', 'Список пользователей обновлен из базы', 'success');
                 }}
@@ -1371,13 +1371,13 @@ export const AdminPage: React.FC = () => {
                 value={userSearch}
                 onChange={e => setUserSearch(e.target.value)}
                 placeholder="Поиск по имени, email или телефону..."
-                className="w-full pl-9 pr-4 py-2.5 text-xs border border-zinc-300 rounded-none outline-none focus:border-black font-light transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 text-xs border border-zinc-300 rounded-2xl outline-none focus:border-black font-light transition-colors"
               />
             </div>
           </div>
 
           {/* Users Table */}
-          <div className="bg-white border border-zinc-200 rounded-none overflow-hidden">
+          <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-zinc-50 border-b border-zinc-200 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
@@ -1448,7 +1448,7 @@ export const AdminPage: React.FC = () => {
       {activeTab === 'edit' && (
         <div className="space-y-6">
           {/* Search product for editing */}
-          <div className="p-6 rounded-none border border-zinc-200 bg-white space-y-4">
+          <div className="p-6 rounded-2xl border border-zinc-200/70 bg-white space-y-4">
             <div className="space-y-1">
               <h2 className="text-base font-normal font-serif text-zinc-900 uppercase tracking-wide flex items-center gap-2">
                 <Search className="w-4 h-4 text-black" />
@@ -1471,12 +1471,12 @@ export const AdminPage: React.FC = () => {
                 placeholder="Поиск по 45 000+ товаров..."
                 value={searchEditQuery}
                 onChange={e => setSearchEditQuery(e.target.value)}
-                className="flex-1 text-xs border border-zinc-300 rounded-none px-3.5 py-3 outline-none focus:border-black bg-zinc-50 transition-colors"
+                className="flex-1 text-xs border border-zinc-300 rounded-2xl px-3.5 py-3 outline-none focus:border-black bg-zinc-50 transition-colors"
               />
               <button
                 type="submit"
                 disabled={isSearchingEdit}
-                className="px-6 py-3 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest disabled:opacity-50 transition-colors flex items-center gap-1.5"
+                className="px-6 py-3 bg-black hover:bg-zinc-800 text-white rounded-2xl text-xs font-bold uppercase tracking-widest disabled:opacity-50 transition-colors flex items-center gap-1.5"
               >
                 {isSearchingEdit ? (
                   <>
@@ -1508,7 +1508,7 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {editSearchStatus && (
-              <p className="text-xs text-zinc-900 bg-zinc-50 border border-zinc-200 p-3 rounded-none font-medium">
+              <p className="text-xs text-zinc-900 bg-zinc-50 border border-zinc-200 p-3 rounded-2xl font-medium">
                 {editSearchStatus}
               </p>
             )}
@@ -1523,13 +1523,13 @@ export const AdminPage: React.FC = () => {
                   {editSearchResults.map(prod => (
                     <div
                       key={prod.id}
-                      className="p-3 rounded-none border border-zinc-200 hover:border-black bg-white flex items-center justify-between gap-3 transition-colors"
+                      className="p-3 rounded-2xl border border-zinc-200/70 hover:border-black bg-white flex items-center justify-between gap-3 transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <img
                           src={prod.image}
                           alt=""
-                          className="w-12 h-14 object-cover rounded-none border border-zinc-200 shrink-0"
+                          className="w-12 h-14 object-cover rounded-2xl border border-zinc-200/70 shrink-0"
                         />
                         <div className="min-w-0 text-xs">
                           <div className="text-[10px] uppercase font-bold text-zinc-400 truncate">
@@ -1575,7 +1575,7 @@ export const AdminPage: React.FC = () => {
 
           {/* Comprehensive Product Editor */}
           {editingProduct && !isLoadingProduct && (
-            <form onSubmit={handleSaveProductEdit} className="p-6 sm:p-8 rounded-none border border-zinc-900 bg-white space-y-8 animate-in fade-in">
+            <form onSubmit={handleSaveProductEdit} className="p-6 sm:p-8 rounded-[28px] border border-zinc-200/80 shadow-2xl bg-white space-y-8 animate-in fade-in">
               {/* Header with Title and Actions */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-200">
                 <div className="flex items-center gap-3">
@@ -1621,7 +1621,7 @@ export const AdminPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleDeleteProduct}
-                    className="px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider border border-rose-200 hover:border-rose-400 text-rose-700 hover:bg-rose-50 transition-colors flex items-center gap-1"
+                    className="px-3.5 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider border border-rose-200 hover:border-rose-400 text-rose-700 hover:bg-rose-50 transition-colors flex items-center gap-1"
                     title="Удалить товар"
                   >
                     <Trash2 className="w-3 h-3" />
@@ -1633,7 +1633,7 @@ export const AdminPage: React.FC = () => {
               {/* Status banner */}
               {editStatus && (
                 <div
-                  className={`p-4 rounded-none text-xs font-bold uppercase tracking-wider border ${
+                  className={`p-4 rounded-2xl text-xs font-bold uppercase tracking-wider border ${
                     editStatus.type === 'success'
                       ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
                       : 'bg-rose-50 text-rose-900 border-rose-300'
@@ -1655,7 +1655,7 @@ export const AdminPage: React.FC = () => {
                       required
                       value={editForm.brand}
                       onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                     />
                   </label>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
@@ -1664,7 +1664,7 @@ export const AdminPage: React.FC = () => {
                       required
                       value={editForm.name}
                       onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                     />
                   </label>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
@@ -1672,7 +1672,7 @@ export const AdminPage: React.FC = () => {
                     <input
                       value={editForm.sku}
                       onChange={e => setEditForm({ ...editForm, sku: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                       placeholder="SKU-12345"
                     />
                   </label>
@@ -1681,7 +1681,7 @@ export const AdminPage: React.FC = () => {
                     <select
                       value={editForm.kind}
                       onChange={e => setEditForm({ ...editForm, kind: e.target.value as ProductKind })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
                     >
                       {PRODUCT_KIND_OPTIONS.map(k => (
                         <option key={k.id} value={k.id}>
@@ -1695,7 +1695,7 @@ export const AdminPage: React.FC = () => {
                     <select
                       value={editForm.gender}
                       onChange={e => setEditForm({ ...editForm, gender: e.target.value as Gender })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
                     >
                       <option value="unisex">Унисекс</option>
                       <option value="female">Женский</option>
@@ -1708,7 +1708,7 @@ export const AdminPage: React.FC = () => {
                       <select
                         value={editForm.category}
                         onChange={e => setEditForm({ ...editForm, category: e.target.value })}
-                        className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
+                        className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
                       >
                         <option value="niche">Нишевая</option>
                         <option value="arabian">Арабская</option>
@@ -1733,7 +1733,7 @@ export const AdminPage: React.FC = () => {
                       type="number"
                       value={editForm.minPrice}
                       onChange={e => setEditForm({ ...editForm, minPrice: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                     />
                   </label>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700">
@@ -1750,7 +1750,7 @@ export const AdminPage: React.FC = () => {
                         }
                         setEditForm({ ...editForm, oldPrice: e.target.value, discountPercent: disc });
                       }}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                       placeholder="Например: 24000"
                     />
                   </label>
@@ -1760,7 +1760,7 @@ export const AdminPage: React.FC = () => {
                       type="number"
                       value={editForm.discountPercent}
                       onChange={e => setEditForm({ ...editForm, discountPercent: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                       placeholder="Например: 10"
                     />
                   </label>
@@ -1772,21 +1772,21 @@ export const AdminPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleApplyDiscountPreset(7)}
-                    className="px-2.5 py-1 text-[11px] border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 font-bold transition-colors"
+                    className="px-2.5 py-1 rounded-full text-[11px] border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 font-bold transition-colors"
                   >
                     +7% скидка
                   </button>
                   <button
                     type="button"
                     onClick={() => handleApplyDiscountPreset(10)}
-                    className="px-2.5 py-1 text-[11px] border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 font-bold transition-colors"
+                    className="px-2.5 py-1 rounded-full text-[11px] border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 font-bold transition-colors"
                   >
                     +10% скидка
                   </button>
                   <button
                     type="button"
                     onClick={() => handleApplyDiscountPreset(15)}
-                    className="px-2.5 py-1 text-[11px] border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 font-bold transition-colors"
+                    className="px-2.5 py-1 rounded-full text-[11px] border border-zinc-200 hover:border-black bg-white hover:bg-zinc-50 font-bold transition-colors"
                   >
                     +15% скидка
                   </button>
@@ -1794,7 +1794,7 @@ export const AdminPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleClearDiscount}
-                      className="px-2.5 py-1 text-[11px] border border-zinc-200 text-rose-700 hover:border-rose-400 font-bold transition-colors"
+                      className="px-2.5 py-1 rounded-full text-[11px] border border-zinc-200 text-rose-700 hover:border-rose-400 font-bold transition-colors"
                     >
                       Сбросить скидку
                     </button>
@@ -1813,7 +1813,7 @@ export const AdminPage: React.FC = () => {
                     <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-700 block">
                       Текущее / Выбранное фото:
                     </span>
-                    <div className="w-36 h-44 rounded-none border border-zinc-200 overflow-hidden bg-zinc-50 flex items-center justify-center">
+                    <div className="w-36 h-44 rounded-2xl border border-zinc-200/70 overflow-hidden bg-zinc-50 flex items-center justify-center">
                       <img
                         src={editForm.imageData || editForm.imageUrl || editingProduct.images?.[0]}
                         alt="preview"
@@ -1832,7 +1832,7 @@ export const AdminPage: React.FC = () => {
                         type="url"
                         value={editForm.imageUrl}
                         onChange={e => setEditForm({ ...editForm, imageUrl: e.target.value, imageData: null })}
-                        className="w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                        className="w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                         placeholder="https://..."
                       />
                     </div>
@@ -1841,7 +1841,7 @@ export const AdminPage: React.FC = () => {
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700 block mb-1.5">
                         Или загрузить новый файл с компьютера:
                       </label>
-                      <label className="flex items-center gap-2 px-3.5 py-3 border border-dashed border-zinc-300 rounded-none cursor-pointer hover:border-black text-xs text-zinc-600 transition-colors">
+                      <label className="flex items-center gap-2 px-3.5 py-3 border border-dashed border-zinc-300 rounded-2xl cursor-pointer hover:border-black text-xs text-zinc-600 transition-colors">
                         <Upload className="w-4 h-4 text-black" />
                         <span className="uppercase tracking-wider text-[11px] font-bold">
                           {editForm.imageData ? 'Файл выбран ✓' : 'Выбрать JPEG / PNG / WebP'}
@@ -1867,7 +1867,7 @@ export const AdminPage: React.FC = () => {
                   rows={4}
                   value={editForm.description}
                   onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                  className="w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                  className="w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                   placeholder="Опишите характер аромата, шлейф, стойкость и ключевые ноты..."
                 />
               </div>
@@ -1899,7 +1899,7 @@ export const AdminPage: React.FC = () => {
                             type="text"
                             value={vol.label}
                             onChange={e => handleUpdateVolume(idx, { label: e.target.value })}
-                            className="w-full text-xs border border-zinc-300 rounded-none px-2.5 py-1.5 bg-white outline-none focus:border-black"
+                            className="w-full text-xs border border-zinc-300 rounded-2xl px-2.5 py-1.5 bg-white outline-none focus:border-black"
                             placeholder="50 мл (флакон)"
                           />
                         </div>
@@ -1911,7 +1911,7 @@ export const AdminPage: React.FC = () => {
                             type="number"
                             value={vol.volumeMl}
                             onChange={e => handleUpdateVolume(idx, { volumeMl: Number(e.target.value) })}
-                            className="w-full text-xs border border-zinc-300 rounded-none px-2.5 py-1.5 bg-white outline-none focus:border-black"
+                            className="w-full text-xs border border-zinc-300 rounded-2xl px-2.5 py-1.5 bg-white outline-none focus:border-black"
                           />
                         </div>
                         <div>
@@ -1922,7 +1922,7 @@ export const AdminPage: React.FC = () => {
                             type="number"
                             value={vol.price}
                             onChange={e => handleUpdateVolume(idx, { price: Number(e.target.value) })}
-                            className="w-full text-xs border border-zinc-300 rounded-none px-2.5 py-1.5 bg-white outline-none focus:border-black font-sans tabular-nums font-bold"
+                            className="w-full text-xs border border-zinc-300 rounded-2xl px-2.5 py-1.5 bg-white outline-none focus:border-black font-sans tabular-nums font-bold"
                           />
                         </div>
                       </div>
@@ -1933,7 +1933,7 @@ export const AdminPage: React.FC = () => {
                             type="checkbox"
                             checked={vol.inStock}
                             onChange={e => handleUpdateVolume(idx, { inStock: e.target.checked })}
-                            className="rounded-none accent-black"
+                            className="rounded-2xl accent-black"
                           />
                           <span>В наличии</span>
                         </label>
@@ -2011,7 +2011,7 @@ export const AdminPage: React.FC = () => {
                     <input
                       value={editForm.topNotes}
                       onChange={e => setEditForm({ ...editForm, topNotes: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                       placeholder="Бергамот, Ананас, Яблоко"
                     />
                   </label>
@@ -2020,7 +2020,7 @@ export const AdminPage: React.FC = () => {
                     <input
                       value={editForm.heartNotes}
                       onChange={e => setEditForm({ ...editForm, heartNotes: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                       placeholder="Береза, Пачули, Жасмин"
                     />
                   </label>
@@ -2029,7 +2029,7 @@ export const AdminPage: React.FC = () => {
                     <input
                       value={editForm.baseNotes}
                       onChange={e => setEditForm({ ...editForm, baseNotes: e.target.value })}
-                      className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                      className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                       placeholder="Мускус, Дубовый мох, Серая амбра"
                     />
                   </label>
@@ -2047,7 +2047,7 @@ export const AdminPage: React.FC = () => {
                       type="checkbox"
                       checked={editForm.isHit}
                       onChange={e => setEditForm({ ...editForm, isHit: e.target.checked })}
-                      className="rounded-none accent-[#5A6B32] w-4 h-4"
+                      className="rounded-2xl accent-[#5A6B32] w-4 h-4"
                     />
                     <span className="inline-flex items-center gap-1.5">
                       Хит продаж <span className="text-[10px] bg-[#5A6B32] text-white px-1.5 py-0.5">ХИТ</span>
@@ -2058,7 +2058,7 @@ export const AdminPage: React.FC = () => {
                       type="checkbox"
                       checked={editForm.isNew}
                       onChange={e => setEditForm({ ...editForm, isNew: e.target.checked })}
-                      className="rounded-none accent-black w-4 h-4"
+                      className="rounded-2xl accent-black w-4 h-4"
                     />
                     <span>Новинка</span>
                   </label>
@@ -2068,7 +2068,7 @@ export const AdminPage: React.FC = () => {
               {/* Status banner above submit button */}
               {editStatus && (
                 <div
-                  className={`p-4 rounded-none text-xs font-bold uppercase tracking-wider border ${
+                  className={`p-4 rounded-2xl text-xs font-bold uppercase tracking-wider border ${
                     editStatus.type === 'success'
                       ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
                       : 'bg-rose-50 text-rose-900 border-rose-300'
@@ -2083,7 +2083,7 @@ export const AdminPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={editSaving}
-                  className="w-full py-4 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest disabled:opacity-50 flex items-center justify-center gap-2 transition-colors shadow-sm"
+                  className="pill-btn-black w-full py-4 text-xs disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {editSaving ? (
                     <>
@@ -2105,7 +2105,7 @@ export const AdminPage: React.FC = () => {
 
       {/* Tab 3: Create Product */}
       {activeTab === 'create' && (
-        <form onSubmit={handleSubmit} className="space-y-4 p-6 sm:p-8 rounded-none border border-zinc-200 bg-white">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6 sm:p-8 rounded-[28px] border border-zinc-200/70 bg-white shadow-2xs">
           <div className="text-xs font-bold uppercase tracking-wider text-zinc-900 mb-2">
             Заполните параметры нового товара для каталога:
           </div>
@@ -2115,7 +2115,7 @@ export const AdminPage: React.FC = () => {
               <input
                 value={form.sku}
                 onChange={e => setForm({ ...form, sku: e.target.value })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                 placeholder="CUSTOM-001"
               />
             </label>
@@ -2125,7 +2125,7 @@ export const AdminPage: React.FC = () => {
                 required
                 value={form.brand}
                 onChange={e => setForm({ ...form, brand: e.target.value })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                 placeholder="Creed"
               />
             </label>
@@ -2135,7 +2135,7 @@ export const AdminPage: React.FC = () => {
                 required
                 value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                 placeholder="Aventus Absolu"
               />
             </label>
@@ -2144,7 +2144,7 @@ export const AdminPage: React.FC = () => {
               <select
                 value={form.kind}
                 onChange={e => setForm({ ...form, kind: e.target.value as ProductKind })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
               >
                 {PRODUCT_KIND_OPTIONS.map(k => (
                   <option key={k.id} value={k.id}>{k.label}</option>
@@ -2156,7 +2156,7 @@ export const AdminPage: React.FC = () => {
               <select
                 value={form.gender}
                 onChange={e => setForm({ ...form, gender: e.target.value as Gender })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
               >
                 <option value="unisex">Унисекс</option>
                 <option value="female">Женский</option>
@@ -2169,7 +2169,7 @@ export const AdminPage: React.FC = () => {
                 <select
                   value={form.category}
                   onChange={e => setForm({ ...form, category: e.target.value })}
-                  className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
+                  className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal bg-white outline-none focus:border-black transition-colors"
                 >
                   <option value="niche">Нишевая</option>
                   <option value="arabian">Арабская</option>
@@ -2182,7 +2182,7 @@ export const AdminPage: React.FC = () => {
               <input
                 value={form.volumeMl}
                 onChange={e => setForm({ ...form, volumeMl: e.target.value, volumeLabel: `${e.target.value} мл` })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                 placeholder="50"
               />
             </label>
@@ -2193,7 +2193,7 @@ export const AdminPage: React.FC = () => {
                 type="number"
                 value={form.price}
                 onChange={e => setForm({ ...form, price: e.target.value })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                 placeholder="15000"
               />
             </label>
@@ -2203,7 +2203,7 @@ export const AdminPage: React.FC = () => {
                 type="url"
                 value={form.imageUrl}
                 onChange={e => setForm({ ...form, imageUrl: e.target.value, imageData: null })}
-                className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+                className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
                 placeholder="https://..."
               />
             </label>
@@ -2211,7 +2211,7 @@ export const AdminPage: React.FC = () => {
               <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-700 block mb-1.5">
                 Или загрузить картинку с устройства
               </label>
-              <label className="flex items-center gap-2 px-3.5 py-3 border border-dashed border-zinc-300 rounded-none cursor-pointer hover:border-black text-xs text-zinc-600 transition-colors">
+              <label className="flex items-center gap-2 px-3.5 py-3 border border-dashed border-zinc-300 rounded-2xl cursor-pointer hover:border-black text-xs text-zinc-600 transition-colors">
                 <Upload className="w-4 h-4 text-black" />
                 <span className="uppercase tracking-wider text-[11px] font-bold">{form.imageData ? 'Файл выбран ✓' : 'Выбрать JPEG / PNG / WebP'}</span>
                 <input
@@ -2230,28 +2230,28 @@ export const AdminPage: React.FC = () => {
               rows={3}
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
-              className="mt-1.5 w-full border border-zinc-300 rounded-none px-3.5 py-3 text-xs font-normal outline-none focus:border-black transition-colors"
+              className="mt-1.5 w-full border border-zinc-300 rounded-full px-4 py-2.5 text-xs font-normal outline-none focus:border-black transition-colors"
               placeholder="Ноты аромата, характер, стойкость..."
             />
           </label>
 
           <div className="flex flex-wrap gap-4 text-xs">
             <label className="flex items-center gap-2 cursor-pointer uppercase tracking-wider text-[11px] font-bold">
-              <input type="checkbox" checked={form.isHit} onChange={e => setForm({ ...form, isHit: e.target.checked })} className="rounded-none accent-black" />
+              <input type="checkbox" checked={form.isHit} onChange={e => setForm({ ...form, isHit: e.target.checked })} className="rounded-2xl accent-black" />
               Хит продаж
             </label>
             <label className="flex items-center gap-2 cursor-pointer uppercase tracking-wider text-[11px] font-bold">
-              <input type="checkbox" checked={form.isNew} onChange={e => setForm({ ...form, isNew: e.target.checked })} className="rounded-none accent-black" />
+              <input type="checkbox" checked={form.isNew} onChange={e => setForm({ ...form, isNew: e.target.checked })} className="rounded-2xl accent-black" />
               Новинка
             </label>
           </div>
 
-          {status && <p className="text-xs text-zinc-900 bg-zinc-50 border border-zinc-300 p-3 rounded-none font-medium">{status}</p>}
+          {status && <p className="text-xs text-zinc-900 bg-zinc-50 border border-zinc-300 p-3 rounded-2xl font-medium">{status}</p>}
 
           <button
             type="submit"
             disabled={saving}
-            className="w-full py-4 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest disabled:opacity-50 transition-colors shadow-sm"
+            className="pill-btn-black w-full py-4 text-xs disabled:opacity-50"
           >
             {saving ? 'Сохранение…' : 'Добавить в каталог'}
           </button>

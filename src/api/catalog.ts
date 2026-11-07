@@ -123,6 +123,10 @@ export function fetchProducts(query: ProductsQuery) {
   return apiFetch<ProductsResponse>(`/api/products?${qs}`);
 }
 
+export function fetchBudgetHits() {
+  return apiFetch<{ items: CatalogListItem[] }>('/api/products/budget-hits');
+}
+
 export function fetchProductBySlug(slug: string) {
   return apiFetch<Perfume>(`/api/products/slug/${encodeURIComponent(slug)}`);
 }
@@ -167,8 +171,7 @@ export function fetchMeta() {
 function resolveAdminToken(token?: string): string {
   if (token && token.trim()) return token.trim();
   const t = safeGetItem('parfum_admin_token') || safeGetItem('maison_auth_token') || '';
-  if (t) return t;
-  return 'parfum-admin-change-me';
+  return t;
 }
 
 export function adminSaveProduct(token: string, product: Record<string, unknown>) {

@@ -39,13 +39,13 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex flex-wrap gap-2 border-b border-zinc-200 pb-2">
+      <div className="flex flex-wrap gap-2 border-b border-zinc-100 pb-3">
         <Link
           to="/terms"
           onClick={() => setActiveTab('terms')}
-          className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors border ${
+          className={`px-5 py-2.5 rounded-full text-xs font-light uppercase tracking-wider transition-all border cursor-pointer ${
             activeTab === 'terms'
-              ? 'bg-black text-white border-black'
+              ? 'bg-black text-white border-black shadow-xs'
               : 'bg-white text-zinc-700 border-zinc-200 hover:border-black'
           }`}
         >
@@ -54,9 +54,9 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
         <Link
           to="/offer"
           onClick={() => setActiveTab('offer')}
-          className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors border ${
+          className={`px-5 py-2.5 rounded-full text-xs font-light uppercase tracking-wider transition-all border cursor-pointer ${
             activeTab === 'offer'
-              ? 'bg-black text-white border-black'
+              ? 'bg-black text-white border-black shadow-xs'
               : 'bg-white text-zinc-700 border-zinc-200 hover:border-black'
           }`}
         >
@@ -65,9 +65,9 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
         <Link
           to="/privacy"
           onClick={() => setActiveTab('privacy')}
-          className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors border ${
+          className={`px-5 py-2.5 rounded-full text-xs font-light uppercase tracking-wider transition-all border cursor-pointer ${
             activeTab === 'privacy'
-              ? 'bg-black text-white border-black'
+              ? 'bg-black text-white border-black shadow-xs'
               : 'bg-white text-zinc-700 border-zinc-200 hover:border-black'
           }`}
         >
@@ -278,7 +278,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
             <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
               5. Реквизиты Оператора персональных данных
             </h2>
-            <div className="p-4 bg-zinc-50 border border-zinc-200 font-sans tabular-nums text-xs space-y-1.5 text-zinc-800">
+            <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 font-sans tabular-nums text-xs space-y-1.5 text-zinc-800">
               <div><strong>Оператор:</strong> Maison Arôme (ИНН: 667221490551)</div>
               <div><strong>Склад комплектации и отправки:</strong> г. Москва</div>
               <div><strong>Контакты для отзыва согласия:</strong> <a href="mailto:order@maisonarome.ru" className="underline">order@maisonarome.ru</a> или Telegram @nikisss2</div>
@@ -288,7 +288,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
       )}
 
       {/* Trust Signoff */}
-      <div className="pt-8 border-t border-zinc-200 p-5 bg-zinc-50 flex items-center gap-3">
+      <div className="mt-8 rounded-2xl border border-zinc-200/80 p-5 bg-zinc-50 flex items-center gap-3">
         <ShieldCheck className="w-5 h-5 text-[#5A6B32] shrink-0" />
         <div className="text-xs text-zinc-600">
           Maison Arôme соблюдает законодательство РФ о защите прав потребителей и гарантирует конфиденциальность информации каждого клиента.

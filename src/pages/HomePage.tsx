@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchMeta, fetchProducts, listItemToPerfume } from '../api/catalog';
+import { fetchMeta, fetchProducts, fetchBudgetHits, listItemToPerfume } from '../api/catalog';
 import { ProductCard } from '../components/ProductCard';
-import { Perfume, PRODUCT_KIND_OPTIONS } from '../types';
+import { Perfume } from '../types';
 import {
   ArrowRight,
   ShieldCheck,
@@ -10,68 +10,55 @@ import {
   CheckCircle2,
   Truck,
   Droplet,
-  Package,
-  Check,
-  Gift
+  ArrowUpRight,
+  Check
 } from 'lucide-react';
 import { FAQSection } from '../components/FAQSection';
 import { ORDERS_GALLERY } from '../data/ordersGalleryData';
 import { SEO } from '../components/SEO';
 
-interface Category3DCard {
+interface CategoryCardItem {
   id: string;
   label: string;
   subtitle: string;
   image: string;
-  pngFallback: string;
   link: string;
 }
 
-const CATEGORY_3D_CARDS: Category3DCard[] = [
+const CATEGORY_ITEMS: CategoryCardItem[] = [
   {
-    id: 'perfume',
-    label: 'Парфюмерия',
-    subtitle: 'Люкс, селектив, ниша',
-    image: '/assets/categories/perfume.webp',
-    pngFallback: '/assets/categories/perfume.png',
-    link: '/catalog?kind=perfume',
+    id: 'niche',
+    label: 'Селектив & Ниша',
+    subtitle: 'Creed, Byredo, Tom Ford, MFK, Kilian',
+    image: '/assets/renders/tom_ford_3d_1793863567514.png',
+    link: '/catalog?category=niche',
   },
   {
-    id: 'skincare',
-    label: 'Уход за кожей',
-    subtitle: 'Кремы, сыворотки, уход',
-    image: '/assets/categories/skincare.webp',
-    pngFallback: '/assets/categories/skincare.png',
-    link: '/catalog?kind=skincare',
+    id: 'arabian',
+    label: 'Арабский эксклюзив',
+    subtitle: 'Lattafa, Afnan, Armaf, Attar Collection',
+    image: '/assets/renders/arabic_crown_3d_1793863593163.png',
+    link: '/catalog?category=arabian',
   },
   {
-    id: 'haircare',
-    label: 'Уход за волосами',
-    subtitle: 'Шампуни, масла, стайлинг',
-    image: '/assets/categories/haircare.webp',
-    pngFallback: '/assets/categories/haircare.png',
-    link: '/catalog?kind=haircare',
+    id: 'testers',
+    label: 'Оригинальные тестеры',
+    subtitle: 'Флаконы в тех. коробках со скидкой до 40%',
+    image: '/assets/renders/tester_bottle_3d_1793863624145.png',
+    link: '/catalog?type=decant',
   },
   {
-    id: 'makeup',
-    label: 'Макияж',
-    subtitle: 'Помады, тон, пудры',
-    image: '/assets/categories/makeup.webp',
-    pngFallback: '/assets/categories/makeup.png',
-    link: '/catalog?kind=makeup',
-  },
-  {
-    id: 'bodycare',
-    label: 'Уход за телом',
-    subtitle: 'Лосьоны, скрабы, масла',
-    image: '/assets/categories/bodycare.webp',
-    pngFallback: '/assets/categories/bodycare.png',
-    link: '/catalog?kind=bodycare',
+    id: 'decants',
+    label: 'Распивы & Отливанты',
+    subtitle: 'Стеклянные атомайзеры 1–20 мл от 490 ₽',
+    image: '/assets/renders/decant_atomizer_3d_1793863658833.png',
+    link: '/catalog?type=decant',
   },
 ];
 
 export const HomePage: React.FC = () => {
   const [hitPerfumes, setHitPerfumes] = useState<Perfume[]>([]);
+  const [budgetPerfumes, setBudgetPerfumes] = useState<Perfume[]>([]);
   const [newPerfumes, setNewPerfumes] = useState<Perfume[]>([]);
   const [totalCount, setTotalCount] = useState<number | null>(null);
 
@@ -80,9 +67,13 @@ export const HomePage: React.FC = () => {
       .then(m => setTotalCount(m.count))
       .catch(() => setTotalCount(null));
 
-    fetchProducts({ isHit: true, limit: 8, sort: 'popular' })
+    fetchProducts({ isHit: true, limit: 12, sort: 'popular' })
       .then(r => setHitPerfumes(r.items.map(listItemToPerfume)))
       .catch(() => setHitPerfumes([]));
+
+    fetchBudgetHits()
+      .then(r => setBudgetPerfumes(r.items.map(listItemToPerfume)))
+      .catch(() => setBudgetPerfumes([]));
 
     fetchProducts({ isNew: true, limit: 8, sort: 'new' })
       .then(r => setNewPerfumes(r.items.map(listItemToPerfume)))
@@ -96,7 +87,7 @@ export const HomePage: React.FC = () => {
     url: 'https://maison-arome.ru',
     logo: 'https://maison-arome.ru/favicon-512.png',
     description:
-      'Интернет-магазин оригинальной нишевой и люксовой парфюмерии. Распивы от 1 мл и целые флаконы с быстрой доставкой по России.',
+      'Концептуальный интернет-магазин оригинальной парфюмерии и распивов от 1 мл. Более 100 000 позиций, 100% оригинал, доставка по всей России.',
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'RU',
@@ -109,209 +100,416 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-20">
+    <div className="space-y-14 sm:space-y-20 md:space-y-24 pb-16 sm:pb-24">
       <SEO
-        title="Maison Arôme — Оригинальная парфюмерия и распивы от 1 мл"
-        description="Интернет-магазин оригинальной парфюмерии Maison Arôme. Распивы от 1 мл и целые флаконы. Более 44 000 товаров, 100% гарантия подлинности, доставка по всей России."
+        title="Maison Arôme — Чистая эстетика оригинальной парфюмерии"
+        description="Концептуальный интернет-магазин оригинальной парфюмерии Maison Arôme. Распивы от 1 мл и целые флаконы. 100% оригинал, проверка батч-кодов, доставка по РФ."
         canonical="https://maison-arome.ru"
         schema={homeSchema}
       />
-      <section className="relative bg-zinc-950 text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-40">
+
+      {/* 1. HERO BANNER: Full-Width edge-to-edge as on theact.ru with Photo 5 (Amouage model) */}
+      <section className="relative w-full overflow-hidden bg-black min-h-[500px] sm:min-h-[600px] md:min-h-[680px] lg:min-h-[740px] flex items-center">
+        {/* Full-bleed Photo 5 */}
+        <div className="absolute inset-0 z-0">
           <img
-            src="/assets/hero-banner.jpg"
-            alt="Maison Arôme"
-            className="w-full h-full object-cover object-center filter brightness-50"
+            src="/assets/hero-original.png"
+            alt="Maison Arôme Селективная парфюмерия"
+            className="w-full h-full object-cover object-[78%_center] sm:object-center"
             decoding="async"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-10" />
 
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-24 lg:py-32">
-          <div className="max-w-2xl space-y-6">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-normal font-serif tracking-tight leading-[1.1]">
-              {totalCount ? `${totalCount.toLocaleString('ru-RU')}+` : '100 000+'} позиций.
-              <span className="block text-zinc-400 font-sans font-light text-2xl sm:text-4xl mt-2">
-                Парфюмерия и профессиональный уход
-              </span>
+        {/* Cinematic dark overlay to make white text pop on the left */}
+        <div className="absolute inset-0 z-1 bg-gradient-to-r from-black/85 via-black/55 to-black/20 sm:from-black/80 sm:via-black/40 sm:to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/60 to-transparent z-1" />
+
+        {/* Content Container */}
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-16 sm:py-24 md:py-32 flex flex-col justify-between h-full min-h-[500px] sm:min-h-[600px] md:min-h-[680px] lg:min-h-[740px]">
+          {/* Top subtle bar inside banner */}
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] sm:text-xs font-light uppercase tracking-[0.24em] text-white/80">
+              Maison Arôme
+            </span>
+            <div className="hidden sm:flex items-center gap-6 text-[11px] uppercase tracking-[0.14em] text-white/70 font-light">
+              <span>Селектив</span>
+              <span>·</span>
+              <span>Распивы от 1 мл</span>
+              <span>·</span>
+              <span>Оригинал</span>
+            </div>
+          </div>
+
+          {/* Center-Left Content */}
+          <div className="max-w-2xl space-y-4 sm:space-y-6 my-auto pt-8 sm:pt-14">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/25 text-[11px] sm:text-xs text-white font-medium tracking-wide w-fit shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span>Оригинал 100% · Сертифицированный бутик</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white tracking-tight leading-[1.08]">
+              44 730+ позиций. <br className="hidden sm:inline" />
+              Парфюмерия и профессиональный уход
             </h1>
 
-            <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-light max-w-xl">
-              Духи, косметика, уход за кожей и волосами — с удобными фильтрами по бренду, объёму и категории.
+            <p className="text-sm sm:text-base md:text-lg text-white font-normal leading-relaxed max-w-xl drop-shadow-md">
+              Оригинальные флаконы от мировых нишевых домов и распивы от 1 мл. 100% оригинал с гарантией подлинности и проверкой каждого батч-кода перед отправкой.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
+            {/* Two Pill Buttons: White Solid + Outlined with Arrow */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link
                 to="/catalog"
-                className="px-7 py-4 rounded-none bg-white text-zinc-950 hover:bg-zinc-200 font-bold uppercase tracking-widest text-xs flex items-center gap-2 transition-colors"
+                className="bg-white text-zinc-950 hover:bg-zinc-100 rounded-full py-3 px-7 sm:py-3.5 sm:px-8 text-xs sm:text-sm font-medium transition-all shadow-lg active:scale-95"
               >
-                <span>Перейти в каталог</span>
-                <ArrowRight className="w-4 h-4" />
+                В каталог
               </Link>
+
               <Link
                 to="/catalog?type=decant"
-                className="px-7 py-4 rounded-none bg-black border border-white text-white hover:bg-white hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2 transition-colors"
+                className="border border-white/70 hover:border-white bg-black/25 backdrop-blur-xs text-white hover:bg-white/10 rounded-full py-3 px-6 sm:py-3.5 sm:px-7 text-xs sm:text-sm font-light transition-all flex items-center gap-2 active:scale-95"
               >
-                <Droplet className="w-4 h-4 text-amber-400" />
                 <span>Распивы от 1 мл</span>
-              </Link>
-              <Link
-                to="/catalog?kind=perfume"
-                className="px-7 py-4 rounded-none border border-white/40 text-white text-xs font-semibold uppercase tracking-widest hover:border-white transition-colors"
-              >
-                Только парфюмерия
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
+          </div>
+
+          {/* Bottom right indicator dots */}
+          <div className="hidden sm:flex items-center gap-1.5 self-end opacity-60">
+            <span className="w-2 h-2 rounded-full bg-white"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-white/40"></span>
           </div>
         </div>
       </section>
 
-      {/* Секция категорий с лаконичными 3D-плашками в строгом стиле Maison Arôme */}
+      {/* 2. CATEGORY SWITCHER (Clean white cards, zero white squares, no superscripts) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between mb-3 pb-1 border-b border-zinc-200">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
-            Категории
+        <div className="mb-6 pb-2.5 border-b border-zinc-200/70">
+          <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+            Коллекция
           </h2>
-          <Link
-            to="/catalog"
-            className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 hover:text-black transition-colors flex items-center gap-1"
-          >
-            Весь каталог <ArrowRight className="w-3 h-3" />
-          </Link>
+          <div className="text-xl sm:text-2xl font-light text-zinc-950 mt-0.5">
+            Направления парфюмерии
+          </div>
         </div>
 
-        {/* Сетка плашек категорий: строгая геометрия (0px скруглений), лаконичный текст, товар слегка выглядывает снизу */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5 md:gap-4">
-          {CATEGORY_3D_CARDS.map(cat => (
+        {/* 4 Clean Category Cards on Pure White (Zero visible image squares) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          {CATEGORY_ITEMS.map((cat) => (
             <Link
               key={cat.id}
               to={cat.link}
-              className="group relative rounded-none border border-zinc-200 bg-[#F8F8F9] hover:bg-[#F0F1F3] hover:border-black transition-all duration-300 p-4 sm:p-5 h-[165px] sm:h-[180px] md:h-[190px] flex flex-col justify-between overflow-hidden last:col-span-2 sm:last:col-span-1"
+              className="bg-white rounded-[24px] sm:rounded-[28px] border border-zinc-200/70 hover:border-black p-4 sm:p-6 h-[220px] sm:h-[270px] flex flex-col justify-between overflow-hidden relative group transition-all duration-300 shadow-2xs hover:shadow-md"
             >
-              {/* Лаконичный текст: строго название и краткий подзаголовок без лишнего шума */}
               <div className="relative z-10">
-                <h3 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight leading-snug">
-                  {cat.label}
-                </h3>
-                <p className="text-[11px] sm:text-xs text-zinc-500 font-normal mt-0.5 leading-snug">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-normal text-zinc-900 tracking-tight">
+                    {cat.label}
+                  </h3>
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-zinc-100 text-zinc-500 group-hover:bg-black group-hover:text-white flex items-center justify-center transition-colors shadow-2xs">
+                    <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  </div>
+                </div>
+                <p className="text-[11px] sm:text-xs text-zinc-500 mt-1 leading-relaxed text-delicate line-clamp-2">
                   {cat.subtitle}
                 </p>
               </div>
 
-              {/* 3D мокап: аккуратно выглядывает из нижней границы плашки (overflow-hidden срезает низ флакона, как на референсе) */}
-              <div className="absolute -bottom-2 sm:-bottom-3 inset-x-0 flex items-end justify-center pointer-events-none z-0 h-[105px] sm:h-[115px] md:h-[125px]">
-                <picture className="h-full w-auto flex items-end justify-center">
-                  <source srcSet={cat.image} type="image/webp" />
-                  <img
-                    src={cat.pngFallback}
-                    alt={cat.label}
-                    loading="lazy"
-                    className="h-full w-auto max-w-[80%] object-contain object-bottom drop-shadow-[0_8px_16px_rgba(0,0,0,0.10)] group-hover:scale-105 group-hover:-translate-y-1 transition-transform duration-300 ease-out"
-                  />
-                </picture>
+              {/* Centered 3D Flacon with bottom cut off by card boundary (example in photo 5) */}
+              <div className="relative w-full h-[240px] sm:h-[278px] -mb-4 sm:-mb-6 flex items-end justify-center z-0 overflow-hidden pointer-events-none">
+                <img
+                  src={cat.image}
+                  alt={cat.label}
+                  loading="lazy"
+                  className="h-full w-auto object-contain object-bottom translate-y-[52px] sm:translate-y-[62px] group-hover:translate-y-[46px] sm:group-hover:translate-y-[54px] group-hover:scale-105 transition-transform duration-300 ease-out"
+                />
               </div>
             </Link>
           ))}
         </div>
       </section>
 
+      {/* 3. BESTSELLERS (Хиты продаж: pure white borderless cards) */}
       {hitPerfumes.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-end justify-between mb-6 pb-2 border-b border-zinc-200">
-            <h2 className="text-2xl sm:text-3xl font-serif font-normal text-zinc-950">Хиты продаж</h2>
-            <Link to="/catalog?filter=hits" className="text-xs font-bold uppercase tracking-widest text-zinc-950 hover:underline flex items-center gap-1">
-              В каталог <ArrowRight className="w-3.5 h-3.5" />
+          <div className="flex items-end justify-between mb-4 sm:mb-6 pb-2.5 border-b border-zinc-200/70">
+            <div>
+              <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Бестселлеры
+              </h2>
+              <div className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+                Ароматы, покорившие сердца
+              </div>
+            </div>
+            <Link
+              to="/catalog?filter=hits"
+              className="pill-btn-outline py-1.5 px-3.5 sm:py-2 sm:px-5 text-[11px] whitespace-nowrap"
+            >
+              <span>Все хиты</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-            {hitPerfumes.map(p => (
+            {hitPerfumes.slice(0, 12).map((p) => (
               <ProductCard key={p.id} perfume={p} />
             ))}
           </div>
         </section>
       )}
 
-      {newPerfumes.length > 0 && (
+      {/* 4. BUDGET HITS (Бюджетные хиты: Lacoste, French Avenue, Versace, Coach) */}
+      {budgetPerfumes.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-end justify-between mb-6 pb-2 border-b border-zinc-200">
-            <h2 className="text-2xl sm:text-3xl font-serif font-normal text-zinc-950">Новинки</h2>
-            <Link to="/catalog?filter=new" className="text-xs font-bold uppercase tracking-widest text-zinc-950 hover:underline flex items-center gap-1">
-              Смотреть все <ArrowRight className="w-3.5 h-3.5" />
+          <div className="flex items-end justify-between mb-4 sm:mb-6 pb-2.5 border-b border-zinc-200/70">
+            <div>
+              <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Доступный люкс
+              </h2>
+              <div className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+                Бюджетные хиты
+              </div>
+            </div>
+            <Link
+              to="/catalog?brands=French Avenue,Lacoste,Versace,Coach,Lattafa"
+              className="pill-btn-outline py-1.5 px-3.5 sm:py-2 sm:px-5 text-[11px] whitespace-nowrap"
+            >
+              <span>Смотреть все</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-            {newPerfumes.map(p => (
+            {budgetPerfumes.slice(0, 12).map((p) => (
               <ProductCard key={p.id} perfume={p} />
             ))}
           </div>
         </section>
       )}
 
-      {/* Галерея собранных заказов */}
+      {/* 4. "ПОЧЕМУ МЫ?" / ФИЛОСОФИЯ (TK Beauty reference) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-zinc-200">
-          <div>
-            <h2 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">
-              Галерея наших заказов
+        <div className="rounded-[28px] sm:rounded-[36px] md:rounded-[44px] bg-[#F7F7F9] border border-zinc-200/70 p-6 sm:p-12 lg:p-16">
+          <div className="text-center max-w-xl mx-auto mb-8 sm:mb-12 space-y-1.5 sm:space-y-2">
+            <span className="text-[10px] sm:text-[11px] font-normal uppercase tracking-[0.2em] text-zinc-400">
+              Стандарты Maison Arôme
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-light text-zinc-950">
+              Почему ценители выбирают нас?
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 mt-1 max-w-2xl font-light">
-              Каждую позицию мы собираем вручную, проверяем качество и отправляем покупателю фотоотчёт перед упаковкой.
+            <p className="text-xs sm:text-sm text-zinc-500 font-light text-delicate">
+              Прозрачность, контроль каждого миллилитра и бережное отношение к оригинальной композиции.
             </p>
           </div>
-          <div className="flex items-center gap-4">
+
+          {/* 4 Frosted Glass Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5 md:gap-6">
+            <div className="glass-card p-5 sm:p-7 md:p-8 rounded-[24px] sm:rounded-[28px] border border-white/90 bg-white/80 hover:bg-white transition-all shadow-xs">
+              <div className="flex items-center justify-between mb-3.5">
+                <span className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-400">
+                  01
+                </span>
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900">
+                  <ShieldCheck className="w-4 h-4 stroke-[1.5]" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-normal text-zinc-900 mb-1.5">
+                100% Подлинность и батч-коды
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed font-light text-delicate">
+                Прямые поставки от проверенных дистрибьюторов Европы и Ближнего Востока. На каждом целом флаконе присутствует заводской батч-код, который легко проверить в международных базах.
+              </p>
+            </div>
+
+            <div className="glass-card p-5 sm:p-7 md:p-8 rounded-[24px] sm:rounded-[28px] border border-white/90 bg-white/80 hover:bg-white transition-all shadow-xs">
+              <div className="flex items-center justify-between mb-3.5">
+                <span className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-400">
+                  02
+                </span>
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900">
+                  <Camera className="w-4 h-4 stroke-[1.5]" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-normal text-zinc-900 mb-1.5">
+                Фотоотчет перед отправкой
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed font-light text-delicate">
+                Никаких неприятных сюрпризов. Перед передачей посылки курьеру мы отправляем подробные фотографии собранного заказа, атомайзеров и упаковки вам в Telegram или WhatsApp.
+              </p>
+            </div>
+
+            <div className="glass-card p-5 sm:p-7 md:p-8 rounded-[24px] sm:rounded-[28px] border border-white/90 bg-white/80 hover:bg-white transition-all shadow-xs">
+              <div className="flex items-center justify-between mb-3.5">
+                <span className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-400">
+                  03
+                </span>
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900">
+                  <Droplet className="w-4 h-4 stroke-[1.5]" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-normal text-zinc-900 mb-1.5">
+                Стерильный распив от 1 мл
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed font-light text-delicate">
+                Используем только итальянские стеклянные флаконы с металлическим мелкодисперсным распылителем. Стерильный забор шприцем исключает контакт аромата с воздухом.
+              </p>
+            </div>
+
+            <div className="glass-card p-5 sm:p-7 md:p-8 rounded-[24px] sm:rounded-[28px] border border-white/90 bg-white/80 hover:bg-white transition-all shadow-xs">
+              <div className="flex items-center justify-between mb-3.5">
+                <span className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-400">
+                  04
+                </span>
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900">
+                  <Truck className="w-4 h-4 stroke-[1.5]" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-normal text-zinc-900 mb-1.5">
+                Бережная экспресс-доставка
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed font-light text-delicate">
+                Многослойная защитная упаковка в воздушно-пузырчатую пленку и жесткие крафтовые тубусы. Доставка СДЭК, Яндекс или курьером прямо до двери или в удобный ПВЗ.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. EDITORIAL: "Curated Scent Experience" */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-center py-4 sm:py-6">
+          <div className="lg:col-span-5 space-y-3 sm:space-y-4">
+            <span className="text-[10px] sm:text-[11px] font-normal uppercase tracking-[0.2em] text-zinc-400">
+              Философия осознанности
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-light text-zinc-950 leading-tight">
+              Искусство <br />
+              <span className="font-serif italic font-normal text-zinc-800">
+                слышать аромат
+              </span>
+            </h2>
+            <div className="pt-1">
+              <Link
+                to="/catalog?type=decant"
+                className="pill-btn-outline py-2 px-5 text-xs inline-flex items-center gap-2"
+              >
+                <span>Собрать сет распивов</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm text-zinc-500 leading-relaxed font-light text-delicate">
+            <p>
+              Высокая нишевая парфюмерия раскрывается индивидуально на каждом человеке. Формат распивов от 1 мл освобождает от необходимости покупать флакон за 30 000 ₽ вслепую. Вы знакомитесь со шлейфом в привычном ритме жизни — на прогулке, в офисе или вечером.
+            </p>
+            <p>
+              Мы заботимся о каждой детали: от чистоты стерильного розлива до удобной маркировки с названием и концентрацией. Это делает коллекционирование редких ароматов доступным, эстетичным и осознанным ритуалом.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. NEW ARRIVALS (Новинки) */}
+      {newPerfumes.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-4 sm:mb-6 pb-2.5 border-b border-zinc-200/70">
+            <div>
+              <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Свежие поступления
+              </h2>
+              <div className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+                Новинки сезона
+              </div>
+            </div>
+            <Link
+              to="/catalog?filter=new"
+              className="pill-btn-outline py-1.5 px-3.5 sm:py-2 sm:px-5 text-[11px] whitespace-nowrap"
+            >
+              <span>Все новинки</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            {newPerfumes.slice(0, 8).map((p) => (
+              <ProductCard key={p.id} perfume={p} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 7. REAL CUSTOMER ORDERS GALLERY */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5 sm:mb-8 pb-2.5 border-b border-zinc-200/70">
+          <div>
+            <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+              Прозрачность
+            </h2>
+            <div className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+              Галерея собранных заказов
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-1 font-light text-delicate">
+              Каждую позицию мы собираем вручную и отправляем фотоотчёт покупателю перед передачей курьеру.
+            </p>
+          </div>
+          <div className="flex items-center gap-2.5">
             <Link
               to="/reviews"
-              className="text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-black flex items-center gap-1"
+              className="pill-btn-outline py-1.5 px-3.5 sm:py-2 sm:px-4 text-[11px]"
             >
-              Смотреть отзывы <ArrowRight className="w-3.5 h-3.5" />
+              Отзывы
             </Link>
             <Link
-              to="/catalog"
-              className="text-xs font-bold uppercase tracking-wider text-black hover:underline flex items-center gap-1"
+              to="/gallery"
+              className="pill-btn-black py-1.5 px-3.5 sm:py-2 sm:px-4 text-[11px]"
             >
-              Собрать свой заказ <ArrowRight className="w-3.5 h-3.5" />
+              Вся галерея
             </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {ORDERS_GALLERY.slice(0, 4).map((item) => (
             <Link
               key={item.id}
               to="/gallery"
-              className="group bg-white rounded-none overflow-hidden border border-zinc-200 hover:border-black hover:shadow-xl transition-all duration-300 flex flex-col"
+              className="bg-white rounded-[24px] sm:rounded-[28px] border border-zinc-200/70 hover:border-black overflow-hidden flex flex-col justify-between group transition-all duration-300 shadow-2xs hover:shadow-md"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+              <div className="relative aspect-4/3 overflow-hidden bg-zinc-100">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-none font-sans tabular-nums">
+                <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-normal uppercase tracking-[0.12em] rounded-full">
                   {item.orderNumber}
                 </span>
-                <span className="absolute bottom-3 right-3 px-2 py-0.5 bg-white/95 text-zinc-950 text-[10px] font-bold uppercase tracking-wider rounded-none font-sans shadow-xs backdrop-blur-xs">
+                <span className="absolute bottom-2.5 right-2.5 px-2.5 py-0.5 bg-white/90 backdrop-blur-xs text-zinc-900 text-[9px] sm:text-[10px] font-normal tracking-wide rounded-full shadow-2xs">
                   г. {item.city}
                 </span>
               </div>
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+              <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
                 <div>
-                  <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-0.5 font-sans">
+                  <div className="text-[9px] sm:text-[10px] uppercase font-normal tracking-[0.14em] text-zinc-400 mb-0.5">
                     Заказ для {item.customerName}
                   </div>
-                  <h3 className="font-bold text-sm text-zinc-950 group-hover:underline transition-colors uppercase tracking-tight">
+                  <h3 className="font-normal text-xs sm:text-sm text-zinc-900 group-hover:text-zinc-600 transition-colors line-clamp-1">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light line-clamp-2">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 mt-0.5 leading-relaxed font-light text-delicate line-clamp-2">
                     {item.description}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400 font-sans">
-                  <span className="flex items-center gap-1 text-black font-semibold uppercase tracking-wider text-[10px]">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> 100% оригинал
+                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px] sm:text-[11px] text-zinc-400">
+                  <span className="flex items-center gap-1 text-zinc-900 font-normal">
+                    <Check className="w-3 h-3 text-zinc-900" /> Оригинал
                   </span>
-                  <span className="text-[10px] uppercase text-zinc-500">{item.badge}</span>
+                  <span className="font-light">{item.badge}</span>
                 </div>
               </div>
             </Link>
@@ -319,41 +517,8 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { icon: ShieldCheck, title: 'Оригинал', text: 'Работаем с проверенными поставщиками' },
-            { icon: Camera, title: 'Фото перед отправкой', text: 'Покажем флакон перед упаковкой' },
-            { icon: Truck, title: 'Доставка', text: 'СДЭК и курьер по России' },
-            { icon: Droplet, title: 'Распив', text: 'Парфюмерия от 3 мл по запросу' },
-          ].map(item => (
-            <div key={item.title} className="p-5 rounded-none border border-zinc-200 bg-white hover:border-black transition-colors">
-              <item.icon className="w-5 h-5 text-zinc-900 mb-2" />
-              <div className="text-xs font-bold uppercase tracking-wider text-zinc-950">{item.title}</div>
-              <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light">{item.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <Package className="w-8 h-8 mx-auto text-zinc-900" />
-        <h2 className="text-2xl font-serif font-normal text-zinc-950">Как заказать</h2>
-        <ol className="text-left sm:text-center text-xs uppercase tracking-wider font-semibold text-zinc-700 space-y-2.5 max-w-lg mx-auto">
-          <li className="flex gap-2 sm:justify-center items-center">
-            <Check className="w-4 h-4 text-black shrink-0" /> 1. Выберите товар в каталоге
-          </li>
-          <li className="flex gap-2 sm:justify-center items-center">
-            <CheckCircle2 className="w-4 h-4 text-black shrink-0" /> 2. Оформите корзину и доставку
-          </li>
-          <li className="flex gap-2 sm:justify-center items-center">
-            <Check className="w-4 h-4 text-black shrink-0" /> 3. Получите заказ с проверкой подлинности
-          </li>
-        </ol>
-      </section>
-
-      {/* Ответы на частые вопросы (FAQ) в конце главной страницы */}
-      <FAQSection className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-6" />
+      {/* 8. FAQ SECTION */}
+      <FAQSection className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-2" />
     </div>
   );
 };

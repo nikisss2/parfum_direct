@@ -199,7 +199,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
             </div>
           `,
           balloonContentFooter: `
-            <button id="inline-pvz-btn-${p.id}" style="margin-top:8px;padding:7px 12px;background:#000;color:#fff;border:none;font-size:11px;font-weight:bold;cursor:pointer;width:100%;text-transform:uppercase;letter-spacing:1px;">
+            <button id="inline-pvz-btn-${p.id}" style="margin-top:8px;padding:8px 16px;background:#000;color:#fff;border:none;border-radius:9999px;font-size:11px;font-weight:600;cursor:pointer;width:100%;text-transform:uppercase;letter-spacing:0.5px;">
               Выбрать этот пункт выдачи
             </button>
           `,
@@ -263,14 +263,14 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 self-end sm:self-auto">
+        <div className="flex items-center gap-1 self-end sm:self-auto p-0.5 rounded-full bg-zinc-800">
           <button
             type="button"
             onClick={() => setViewMode('map')}
-            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+            className={`px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider rounded-full transition-colors cursor-pointer ${
               viewMode === 'map'
-                ? 'bg-amber-400 text-black'
-                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                ? 'bg-amber-400 text-black font-semibold'
+                : 'text-zinc-300 hover:text-white'
             }`}
           >
             Карта
@@ -278,10 +278,10 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
           <button
             type="button"
             onClick={() => setViewMode('list')}
-            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+            className={`px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider rounded-full transition-colors cursor-pointer ${
               viewMode === 'list'
-                ? 'bg-amber-400 text-black'
-                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                ? 'bg-amber-400 text-black font-semibold'
+                : 'text-zinc-300 hover:text-white'
             }`}
           >
             Списком ({filteredPoints.length})
@@ -298,7 +298,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
               placeholder="Поиск по улице, метро или адресу (напр. Тверская, Арбат)..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full text-xs px-3.5 py-2 pl-9 bg-white border border-zinc-300 outline-none focus:border-black text-zinc-900"
+              className="w-full text-xs px-3.5 py-2 pl-9 bg-white border border-zinc-300 outline-none focus:border-black text-zinc-900 rounded-full"
             />
             <Search className="w-4 h-4 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
           </div>
@@ -307,7 +307,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="px-3 py-2 text-xs bg-zinc-200 text-zinc-700 hover:bg-zinc-300 transition-colors uppercase font-bold text-[10px]"
+              className="px-3.5 py-2 text-xs bg-zinc-200 text-zinc-700 hover:bg-zinc-300 transition-colors uppercase font-medium text-[10px] rounded-full cursor-pointer"
             >
               Сброс
             </button>
@@ -329,9 +329,9 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
                 key={net.id}
                 type="button"
                 onClick={() => setNetworkFilter(net.id as any)}
-                className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                className={`px-3 py-1 text-[10px] font-medium uppercase tracking-wider rounded-full transition-all border cursor-pointer ${
                   active
-                    ? 'border-black bg-black text-white'
+                    ? 'border-black bg-black text-white shadow-xs'
                     : 'border-zinc-300 bg-white text-zinc-700 hover:border-black'
                 }`}
               >
@@ -407,10 +407,10 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
                         e.stopPropagation();
                         handlePickPoint(p);
                       }}
-                      className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider shrink-0 transition-colors ${
+                      className={`px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-wider shrink-0 rounded-full transition-colors cursor-pointer ${
                         isCurrent
-                          ? 'bg-black text-white'
-                          : 'bg-zinc-100 hover:bg-black hover:text-white text-zinc-900 border border-zinc-300'
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-zinc-100 hover:bg-black hover:text-white text-zinc-900 border border-zinc-200'
                       }`}
                     >
                       {isCurrent ? 'Выбран ✓' : 'Выбрать'}
@@ -428,7 +428,7 @@ export const InlineYandexPvzMap: React.FC<InlineYandexPvzMapProps> = ({
         <div className="p-3 bg-zinc-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-none bg-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
               <span className="text-[10px] font-sans uppercase tracking-wider text-emerald-400 font-bold">
                 Выбран пункт выдачи:
               </span>

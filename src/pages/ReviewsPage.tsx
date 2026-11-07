@@ -55,8 +55,8 @@ export const ReviewsPage: React.FC = () => {
       </nav>
 
       {/* Hero Social Proof Banner */}
-      <div className="rounded-none bg-zinc-950 text-white p-6 sm:p-10 lg:p-12 relative overflow-hidden border border-zinc-900">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-800/20 rounded-none pointer-events-none" />
+      <div className="rounded-[32px] sm:rounded-[40px] bg-zinc-950 text-white p-6 sm:p-10 lg:p-12 relative overflow-hidden border border-zinc-900">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-800/20 rounded-full pointer-events-none" />
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column: Big score and summary */}
           <div className="lg:col-span-7 space-y-5">
@@ -70,14 +70,14 @@ export const ReviewsPage: React.FC = () => {
             <div className="pt-2 flex flex-wrap items-center gap-4">
               <Link
                 to="/catalog"
-                className="px-7 py-4 rounded-none bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2"
+                className="pill-btn-white py-3.5 px-7 rounded-full text-xs font-light transition-all flex items-center gap-2"
               >
                 <span>Перейти в каталог</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a
                 href="#gallery"
-                className="px-6 py-4 rounded-none border border-zinc-700 hover:border-white text-xs font-bold uppercase tracking-widest text-zinc-300 hover:text-white transition-all flex items-center gap-2"
+                className="pill-btn-outline-white py-3.5 px-6 rounded-full text-xs font-light transition-all flex items-center gap-2"
               >
                 <Camera className="w-4 h-4 text-amber-400" />
                 <span>Фото заказов в галерее</span>
@@ -86,7 +86,7 @@ export const ReviewsPage: React.FC = () => {
           </div>
 
           {/* Right Column: Score Breakdown */}
-          <div className="lg:col-span-5 bg-zinc-900/80 border border-zinc-800 rounded-none p-6 sm:p-7 space-y-5">
+          <div className="lg:col-span-5 bg-zinc-900/80 border border-zinc-800 rounded-[24px] p-6 sm:p-7 space-y-5">
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
               <div>
                 <div className="text-4xl sm:text-5xl font-serif text-white">5.0</div>
@@ -108,22 +108,22 @@ export const ReviewsPage: React.FC = () => {
             <div className="space-y-2.5 text-xs">
               <div className="flex items-center gap-3">
                 <span className="w-14 text-zinc-400 font-medium">5 звезд</span>
-                <div className="flex-1 h-1.5 bg-zinc-800 rounded-none overflow-hidden">
-                  <div className="h-full bg-white rounded-none w-[100%]" />
+                <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-white rounded-full w-[100%]" />
                 </div>
                 <span className="w-10 text-right text-zinc-300 font-bold">112 (100%)</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-14 text-zinc-400 font-medium">4 звезды</span>
-                <div className="flex-1 h-1.5 bg-zinc-800 rounded-none overflow-hidden">
-                  <div className="h-full bg-zinc-400 rounded-none w-[0%]" />
+                <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-zinc-400 rounded-full w-[0%]" />
                 </div>
                 <span className="w-10 text-right text-zinc-300 font-bold">0%</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-14 text-zinc-400 font-medium">3 звезды</span>
-                <div className="flex-1 h-1.5 bg-zinc-800 rounded-none overflow-hidden">
-                  <div className="h-full bg-zinc-600 rounded-none w-[0%]" />
+                <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-zinc-600 rounded-full w-[0%]" />
                 </div>
                 <span className="w-10 text-right text-zinc-300 font-bold">0%</span>
               </div>
@@ -157,7 +157,7 @@ export const ReviewsPage: React.FC = () => {
                 setActiveFilter(tab.id as any);
                 setVisibleCount(12);
               }}
-              className={`px-4 py-2.5 rounded-none text-xs font-bold uppercase tracking-wider transition-all border cursor-pointer ${
+              className={`px-4 py-2.5 rounded-full text-xs font-light uppercase tracking-wider transition-all border cursor-pointer ${
                 activeFilter === tab.id
                   ? 'bg-black text-white border-black shadow-sm'
                   : 'bg-white text-zinc-600 border-zinc-200 hover:border-black hover:text-black'
@@ -177,7 +177,7 @@ export const ReviewsPage: React.FC = () => {
         {displayedReviews.map(review => (
           <div
             key={review.id}
-            className="p-6 rounded-none bg-white border border-zinc-200 hover:border-black transition-all duration-200 flex flex-col justify-between space-y-4"
+            className="p-6 rounded-[28px] bg-white border border-zinc-200/70 hover:border-black shadow-2xs transition-all duration-200 flex flex-col justify-between space-y-4"
           >
             <div>
               {/* Header with name, stars, date */}
@@ -185,7 +185,7 @@ export const ReviewsPage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-sm text-zinc-950 uppercase tracking-wide">{review.author}</span>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none border border-zinc-200 bg-zinc-50 text-zinc-800 text-[10px] font-bold uppercase tracking-wider">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-zinc-200/70 bg-zinc-50 text-zinc-800 text-[10px] font-bold uppercase tracking-wider">
                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                       Покупатель
                     </span>
@@ -208,7 +208,7 @@ export const ReviewsPage: React.FC = () => {
                   {review.fragrances.map((frag, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-1 rounded-none border border-zinc-200 bg-zinc-50 text-zinc-800 text-[10px] font-bold uppercase tracking-wider"
+                      className="px-3 py-1 rounded-full border border-zinc-200/70 bg-zinc-50 text-zinc-800 text-[10px] font-bold uppercase tracking-wider"
                     >
                       {frag}
                     </span>
@@ -223,7 +223,7 @@ export const ReviewsPage: React.FC = () => {
 
               {/* Admin reply if any */}
               {review.adminReply && (
-                <div className="mt-4 p-4 rounded-none bg-zinc-50 border-l-2 border-black text-xs space-y-1">
+                <div className="mt-4 p-4 rounded-2xl bg-zinc-50 border-l-2 border-black text-xs space-y-1">
                   <div className="font-bold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5 text-[11px] font-sans">
                     <CheckCircle2 className="w-3.5 h-3.5 text-black" />
                     Ответ Maison Arôme:
@@ -239,7 +239,7 @@ export const ReviewsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => toggleLike(review.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none border text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                   likedReviews[review.id]
                     ? 'border-black bg-black text-white'
                     : 'border-zinc-200 bg-white text-zinc-700 hover:border-black'
@@ -259,7 +259,7 @@ export const ReviewsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setVisibleCount(prev => prev + 12)}
-            className="px-8 py-3.5 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
+            className="pill-btn-black py-3 px-8 rounded-full text-xs font-light inline-flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
           >
             <span>Показать еще 12 отзывов</span>
             <ChevronDown className="w-4 h-4" />
@@ -298,7 +298,7 @@ export const ReviewsPage: React.FC = () => {
             <Link
               key={idx}
               to="/gallery"
-              className="group bg-white border border-zinc-200 hover:border-black transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-xs hover:shadow-md"
+              className="group bg-white rounded-2xl border border-zinc-200/80 hover:border-black transition-all flex flex-col justify-between overflow-hidden cursor-pointer shadow-2xs hover:shadow-md"
             >
               <div className="relative aspect-[4/3] bg-zinc-100 overflow-hidden">
                 <img
@@ -307,10 +307,10 @@ export const ReviewsPage: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider font-sans tabular-nums">
+                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black text-white text-[9px] font-semibold uppercase tracking-wider font-sans tabular-nums">
                   {item.orderNumber}
                 </span>
-                <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-white/95 backdrop-blur-xs text-zinc-900 text-[8px] font-bold uppercase tracking-wider">
+                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-xs text-zinc-900 text-[8px] font-semibold uppercase tracking-wider shadow-2xs">
                   {item.badge}
                 </span>
               </div>
@@ -341,7 +341,7 @@ export const ReviewsPage: React.FC = () => {
         <div className="pt-2 text-center">
           <Link
             to="/gallery"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-xs"
+            className="pill-btn-black py-3 px-8 rounded-full text-xs font-medium uppercase tracking-wider inline-flex items-center gap-2 cursor-pointer transition-all active:scale-95"
           >
             <span>Смотреть все фото реальных посылок в галерее</span>
             <ArrowRight className="w-4 h-4" />

@@ -10,28 +10,37 @@ import { SlidersHorizontal, X, Search, RotateCcw, ChevronLeft, ChevronRight } fr
 const PAGE_SIZE = 24;
 
 const ProductCardSkeleton: React.FC = () => (
-  <div className="flex flex-col bg-white border border-zinc-100 p-2 sm:p-3 animate-pulse">
-    <div className="relative aspect-square sm:aspect-[4/5] bg-[#f4f4f5] flex items-center justify-center p-3 sm:p-4">
-      <div className="w-1/3 h-3/5 bg-zinc-200/80 rounded-none" />
-      <div className="absolute top-2.5 left-2.5 w-10 h-3.5 bg-zinc-200/70" />
+  <div className="bg-white p-2 sm:p-3 relative flex flex-col justify-between animate-pulse select-none">
+    <div>
+      {/* Top Floating Area */}
+      <div className="flex items-center justify-between gap-1.5 mb-1 min-h-[26px]">
+        <div className="h-5 w-12 bg-zinc-100 rounded-full" />
+        <div className="h-5 w-5 bg-zinc-100 rounded-full" />
+      </div>
+
+      {/* Image Area */}
+      <div className="relative aspect-square bg-[#F7F7F8] rounded-[24px] flex items-center justify-center p-4">
+        <div className="w-1/3 h-3/5 bg-zinc-200/60 rounded-full" />
+      </div>
+
+      {/* Volume selector chips */}
+      <div className="flex gap-1.5 mt-2">
+        <div className="h-6 w-11 bg-zinc-100 rounded-full" />
+        <div className="h-6 w-11 bg-zinc-100 rounded-full" />
+        <div className="h-6 w-11 bg-zinc-100 rounded-full" />
+      </div>
+
+      {/* Product Info */}
+      <div className="mt-2 space-y-1">
+        <div className="h-3 w-1/3 bg-zinc-200/80 rounded-full" />
+        <div className="h-4 w-3/4 bg-zinc-100 rounded-full" />
+      </div>
     </div>
-    <div className="pt-2.5 flex flex-col flex-1 space-y-2">
-      <div className="h-2 w-1/4 bg-zinc-200" />
-      <div className="h-3 w-1/2 bg-zinc-200" />
-      <div className="space-y-1">
-        <div className="h-3.5 w-4/5 bg-zinc-200" />
-        <div className="h-3 w-2/3 bg-zinc-100" />
-      </div>
-      <div className="flex gap-1 pt-1">
-        <div className="h-5 w-10 bg-zinc-100 border border-zinc-200" />
-        <div className="h-5 w-10 bg-zinc-100 border border-zinc-200" />
-        <div className="h-5 w-10 bg-zinc-100 border border-zinc-200" />
-      </div>
-      <div className="pt-2 flex items-baseline justify-between">
-        <div className="h-5 w-1/3 bg-zinc-200" />
-        <div className="h-3 w-1/4 bg-zinc-100" />
-      </div>
-      <div className="h-10 w-full bg-zinc-100 border border-zinc-200 mt-2" />
+
+    {/* Bottom Area: Price & Action Button (Stacked, matching real card) */}
+    <div className="mt-3 pt-2 space-y-2">
+      <div className="h-5 w-1/3 bg-zinc-200/80 rounded-full" />
+      <div className="w-full h-8 sm:h-9 bg-zinc-100 rounded-full" />
     </div>
   </div>
 );
@@ -77,7 +86,7 @@ export const CatalogPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [brands, setBrands] = useState<{ brand: string; count: number }[]>([]);
 
-  // Smooth scroll on page change only (never on filter tick)
+  // Smooth scroll on page change only
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page]);
@@ -305,21 +314,22 @@ export const CatalogPage: React.FC = () => {
     (catalogSearch ? 1 : 0);
 
   const filterPanel = (
-    <>
+    <div className="space-y-6">
+      {/* Search Input in Pill Style */}
       <div className="relative">
         <input
           type="text"
-          placeholder="Поиск по всему каталогу..."
+          placeholder="Поиск по каталогу..."
           value={catalogSearch}
           onChange={e => handleCatalogSearchChange(e.target.value)}
-          className="w-full bg-white border border-zinc-300 text-xs rounded-none pl-8 pr-8 py-2.5 outline-none focus:border-black font-medium transition-colors"
+          className="w-full bg-zinc-50 hover:bg-zinc-100/80 focus:bg-white border border-zinc-200/80 focus:border-black text-xs rounded-full pl-9 pr-9 py-2.5 outline-none font-light text-zinc-900 transition-all placeholder:text-zinc-400"
         />
-        <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         {catalogSearch && (
           <button
             type="button"
             onClick={() => handleCatalogSearchChange('')}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+            className="w-6 h-6 rounded-full hover:bg-zinc-200 flex items-center justify-center absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
             title="Очистить поиск"
           >
             <X className="w-3.5 h-3.5" />
@@ -327,23 +337,30 @@ export const CatalogPage: React.FC = () => {
         )}
       </div>
 
-      <div className="pt-4 border-t border-zinc-200">
-        <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 mb-2.5">Вид товара</div>
-        <div className="space-y-1">
+      {/* Kind pills */}
+      <div className="pt-4 border-t border-zinc-200/70">
+        <div className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400 mb-2.5">
+          Категория
+        </div>
+        <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => handleSelectKind('all')}
-            className={`w-full text-left px-3 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-colors ${
-              selectedKind === 'all' ? 'bg-black text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-black'
+            className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
+              selectedKind === 'all'
+                ? 'bg-black text-white font-normal shadow-2xs'
+                : 'bg-zinc-100/70 hover:bg-zinc-200/70 text-zinc-700 font-light'
             }`}
           >
-            Все товары
+            Все
           </button>
           {PRODUCT_KIND_OPTIONS.map(k => (
             <button
               key={k.id}
               onClick={() => handleSelectKind(k.id)}
-              className={`w-full text-left px-3 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-colors ${
-                selectedKind === k.id ? 'bg-black text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-black'
+              className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
+                selectedKind === k.id
+                  ? 'bg-black text-white font-normal shadow-2xs'
+                  : 'bg-zinc-100/70 hover:bg-zinc-200/70 text-zinc-700 font-light'
               }`}
             >
               {k.label}
@@ -352,22 +369,27 @@ export const CatalogPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Segments if perfume */}
       {selectedKind === 'perfume' && (
-        <div className="pt-4 border-t border-zinc-200">
-          <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 mb-2.5">Сегмент парфюмерии</div>
-          <div className="space-y-1">
+        <div className="pt-4 border-t border-zinc-200/70">
+          <div className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400 mb-2.5">
+            Направление
+          </div>
+          <div className="flex flex-wrap gap-1.5">
             {[
-              { id: 'all', label: 'Вся парфюмерия' },
-              { id: 'decants', label: 'Распивы (1–20 мл)' },
-              { id: 'niche', label: 'Нишевая' },
-              { id: 'arabian', label: 'Арабская' },
-              { id: 'luxury', label: 'Люксовая' },
+              { id: 'all', label: 'Все' },
+              { id: 'decants', label: 'Распивы 1–20 мл' },
+              { id: 'niche', label: 'Селектив & Ниша' },
+              { id: 'arabian', label: 'Арабские' },
+              { id: 'luxury', label: 'Люкс' },
             ].map(cat => (
               <button
                 key={cat.id}
                 onClick={() => handleSelectCategory(cat.id)}
-                className={`w-full text-left px-3 py-2 rounded-none text-xs uppercase tracking-wider font-semibold transition-colors ${
-                  selectedCategory === cat.id ? 'bg-black text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-black'
+                className={`px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer ${
+                  selectedCategory === cat.id
+                    ? 'bg-black text-white font-normal shadow-2xs'
+                    : 'bg-zinc-100/70 hover:bg-zinc-200/70 text-zinc-700 font-light'
                 }`}
               >
                 {cat.label}
@@ -377,25 +399,31 @@ export const CatalogPage: React.FC = () => {
         </div>
       )}
 
-      <div className="pt-4 border-t border-zinc-200">
-        <label className="flex items-center gap-2.5 cursor-pointer select-none">
+      {/* Sale filter */}
+      <div className="pt-4 border-t border-zinc-200/70">
+        <label className="flex items-center justify-between cursor-pointer select-none group">
+          <span className="text-xs text-zinc-800 font-light group-hover:text-black transition-colors flex items-center gap-2">
+            <span>Специальные предложения</span>
+            <span className="text-[10px] bg-zinc-900 text-white px-2 py-0.5 rounded-full font-light">
+              Sale
+            </span>
+          </span>
           <input
             type="checkbox"
             checked={onlySale}
             onChange={e => handleToggleOnlySale(e.target.checked)}
-            className="rounded-none border-zinc-400 accent-[#5A6B32] w-4 h-4 cursor-pointer"
+            className="w-4 h-4 rounded-full accent-black cursor-pointer"
           />
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-1.5">
-            <span>Только со скидкой</span>
-            <span className="text-[9px] bg-[#5A6B32] text-white px-1.5 py-0.2 font-sans font-bold">SALE</span>
-          </span>
         </label>
       </div>
 
-      <div className="pt-4 border-t border-zinc-200">
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-zinc-950 mb-2">
-          <span>Цена до:</span>
-          <span>{priceRange.toLocaleString('ru-RU')} ₽</span>
+      {/* Price filter */}
+      <div className="pt-4 border-t border-zinc-200/70">
+        <div className="flex items-center justify-between text-xs text-zinc-900 mb-2">
+          <span className="text-[11px] uppercase tracking-[0.14em] text-zinc-400 font-normal">
+            Цена до:
+          </span>
+          <span className="font-medium tabular-nums">{priceRange.toLocaleString('ru-RU')} ₽</span>
         </div>
         <input
           type="range"
@@ -404,20 +432,23 @@ export const CatalogPage: React.FC = () => {
           step={500}
           value={Math.min(priceRange, priceMax)}
           onChange={e => setPriceRange(Number(e.target.value))}
-          className="w-full accent-black h-1.5 bg-zinc-200 rounded-none cursor-pointer"
+          className="w-full accent-black h-1.5 bg-zinc-200 rounded-full cursor-pointer"
         />
       </div>
 
-      <div className="pt-4 border-t border-zinc-200">
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-zinc-950 mb-2">
-          <span>Ноты и аккорды</span>
+      {/* Notes and chords */}
+      <div className="pt-4 border-t border-zinc-200/70">
+        <div className="flex items-center justify-between text-xs mb-2">
+          <span className="text-[11px] uppercase tracking-[0.14em] text-zinc-400 font-normal">
+            Ноты и аккорды
+          </span>
           {selectedNotes.length > 0 && (
             <button
               onClick={() => {
                 setSelectedNotes([]);
                 syncToUrl({ notes: [] });
               }}
-              className="text-[10px] text-zinc-400 hover:text-black uppercase tracking-wider font-semibold"
+              className="text-[10px] text-zinc-400 hover:text-black uppercase tracking-wider font-light"
             >
               Сброс ({selectedNotes.length})
             </button>
@@ -425,12 +456,12 @@ export const CatalogPage: React.FC = () => {
         </div>
         <input
           type="text"
-          placeholder="Найти ноту (ваниль, уд, табак...)..."
+          placeholder="Поиск ноты (ваниль, уд...)..."
           value={noteSearch}
           onChange={e => setNoteSearch(e.target.value)}
-          className="w-full mb-2 bg-white border border-zinc-300 text-xs rounded-none px-2.5 py-2 outline-none focus:border-black font-medium"
+          className="w-full mb-2.5 bg-zinc-50 border border-zinc-200/80 text-xs rounded-full px-3 py-1.5 outline-none focus:border-black focus:bg-white font-light text-zinc-800"
         />
-        <div className="flex flex-wrap gap-1 max-h-40 overflow-y-auto pr-1">
+        <div className="flex flex-wrap gap-1 max-h-40 overflow-y-auto pr-1 no-scrollbar">
           {popularNotes
             .filter(n => !noteSearch.trim() || n.note.toLowerCase().includes(noteSearch.trim().toLowerCase()))
             .map(({ note, count }) => {
@@ -440,14 +471,14 @@ export const CatalogPage: React.FC = () => {
                   key={note}
                   type="button"
                   onClick={() => toggleNote(note)}
-                  className={`text-[11px] px-2 py-0.5 uppercase tracking-wider font-medium border transition-colors flex items-center gap-1.5 ${
+                  className={`text-[11px] px-2.5 py-1 rounded-full border transition-all flex items-center gap-1.5 cursor-pointer ${
                     isSelected
-                      ? 'bg-black text-white border-black'
-                      : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:border-black hover:text-black'
+                      ? 'bg-black text-white border-black font-normal shadow-2xs'
+                      : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-black hover:text-black font-light'
                   }`}
                 >
                   <span>{note}</span>
-                  <span className={`text-[9px] font-sans tabular-nums ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                  <span className={`text-[9px] tabular-nums ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
                     {count}
                   </span>
                 </button>
@@ -456,16 +487,19 @@ export const CatalogPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="pt-4 border-t border-zinc-200">
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-zinc-950 mb-2">
-          <span>Бренды</span>
+      {/* Brands list */}
+      <div className="pt-4 border-t border-zinc-200/70">
+        <div className="flex items-center justify-between text-xs mb-2">
+          <span className="text-[11px] uppercase tracking-[0.14em] text-zinc-400 font-normal">
+            Бренды
+          </span>
           {selectedBrands.length > 0 && (
             <button
               onClick={() => {
                 setSelectedBrands([]);
                 syncToUrl({ brands: [] });
               }}
-              className="text-[10px] text-zinc-400 hover:text-black uppercase tracking-wider font-semibold"
+              className="text-[10px] text-zinc-400 hover:text-black uppercase tracking-wider font-light"
             >
               Сброс ({selectedBrands.length})
             </button>
@@ -473,99 +507,123 @@ export const CatalogPage: React.FC = () => {
         </div>
         <input
           type="text"
-          placeholder="Найти бренд..."
+          placeholder="Поиск бренда..."
           value={brandSearch}
           onChange={e => setBrandSearch(e.target.value)}
-          className="w-full mb-2 bg-white border border-zinc-300 text-xs rounded-none px-2.5 py-2 outline-none focus:border-black"
+          className="w-full mb-2.5 bg-zinc-50 border border-zinc-200/80 text-xs rounded-full px-3 py-1.5 outline-none focus:border-black focus:bg-white font-light text-zinc-800"
         />
-        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+        <div className="space-y-1 max-h-48 overflow-y-auto pr-1 no-scrollbar">
           {brands.map(({ brand, count }) => (
-            <label key={brand} className="group flex items-center justify-between gap-2 text-xs text-zinc-700 hover:text-black cursor-pointer py-0.5">
-              <div className="flex items-center gap-2 min-w-0">
+            <label
+              key={brand}
+              className="group flex items-center justify-between gap-2 text-xs text-zinc-700 hover:text-black cursor-pointer py-1 px-2 rounded-lg hover:bg-zinc-50 transition-colors"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
                 <input
                   type="checkbox"
                   checked={selectedBrands.includes(brand)}
                   onChange={() => toggleBrand(brand)}
-                  className="rounded-none border-zinc-400 accent-black"
+                  className="rounded-full accent-black cursor-pointer"
                 />
-                <span className="font-medium truncate">{brand}</span>
+                <span className="font-light truncate text-delicate">{brand}</span>
               </div>
-              <span className="text-[11px] font-sans tabular-nums text-zinc-400 group-hover:text-zinc-950 transition-colors shrink-0">
+              <span className="text-[10px] tabular-nums text-zinc-400 group-hover:text-zinc-900 transition-colors shrink-0">
                 {count}
               </span>
             </label>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 
   const catalogTitle = selectedBrands.length === 1
-    ? `Парфюмерия ${selectedBrands[0]} — купить оригиналы и распивы | Maison Arôme`
+    ? `Парфюмерия ${selectedBrands[0]} — оригиналы и распивы | Maison Arôme`
     : catalogSearch
-    ? `Поиск: ${catalogSearch} — парфюмерия | Maison Arôme`
+    ? `Поиск: ${catalogSearch} | Maison Arôme`
     : selectedCategory !== 'all'
-    ? `${selectedCategory} — каталог парфюмерии | Maison Arôme`
-    : 'Каталог парфюмерии — оригинальные духи и распивы от 1 мл | Maison Arôme';
+    ? `${selectedCategory} — каталог | Maison Arôme`
+    : 'Каталог оригинальной парфюмерии и распивов | Maison Arôme';
 
   const catalogDesc = selectedBrands.length === 1
-    ? `Оригинальная парфюмерия ${selectedBrands[0]} в интернет-магазине Maison Arôme. Распивы от 1 мл и полные флаконы. Доставка по всей России.`
+    ? `Оригинальная парфюмерия ${selectedBrands[0]} в интернет-магазине Maison Arôme. Распивы от 1 мл и целые флаконы. Доставка по всей России.`
     : `Каталог оригинальной парфюмерии и уходовой косметики Maison Arôme. Более ${total.toLocaleString('ru-RU')} товаров: ниша, селектив, люкс, распивы от 1 мл. Быстрая доставка по РФ.`;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <SEO
         title={catalogTitle}
         description={catalogDesc}
         canonical="https://maison-arome.ru/catalog"
       />
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-zinc-200">
+
+      {/* Header bar */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-zinc-200/70">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">Каталог</h1>
-          <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-sans font-medium">
-            Парфюмерия и профессиональный уход · найдено {total.toLocaleString('ru-RU')}
+          <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+            Maison Arôme Collection
+          </span>
+          <h1 className="text-2xl sm:text-4xl font-light text-zinc-950 mt-0.5 tracking-tight">
+            Каталог ароматов
+          </h1>
+          <p className="text-xs sm:text-sm text-zinc-500 mt-1 font-light text-delicate">
+            Оригинальные флаконы и распивы · найдено {total.toLocaleString('ru-RU')}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setMobileFilterOpen(true)}
-            className="lg:hidden px-4 py-2.5 rounded-none border border-black bg-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-black hover:text-white transition-colors cursor-pointer"
+            className="lg:hidden pill-btn-outline py-2 px-4 rounded-full text-xs font-light flex items-center gap-2"
           >
-            <SlidersHorizontal className="w-4 h-4" />
-            Фильтры {activeFiltersCount > 0 && `(${activeFiltersCount})`}
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            <span>Фильтры</span>
+            {activeFiltersCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-black text-white text-[10px] font-medium flex items-center justify-center">
+                {activeFiltersCount}
+              </span>
+            )}
           </button>
+
           <select
             value={sortBy}
             onChange={e => handleSortChange(e.target.value as typeof sortBy)}
-            className="bg-white border border-zinc-300 text-xs font-bold uppercase tracking-wider rounded-none px-3.5 py-2.5 outline-none focus:border-black cursor-pointer"
+            className="bg-white border border-zinc-200/80 hover:border-black text-xs font-light rounded-full px-4 py-2 outline-none cursor-pointer transition-colors shadow-2xs"
           >
             <option value="popular">По популярности</option>
-            <option value="price_asc">Дешевле</option>
-            <option value="price_desc">Дороже</option>
+            <option value="price_asc">Сначала доступные</option>
+            <option value="price_desc">Сначала премиальные</option>
             <option value="rating">По рейтингу</option>
             <option value="new">Новинки</option>
           </select>
         </div>
       </div>
 
-      <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10">
+        {/* Desktop Sidebar */}
         <aside className="hidden lg:block space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold tracking-widest text-zinc-950">Фильтры</span>
+          <div className="flex items-center justify-between pb-2 border-b border-zinc-200/70">
+            <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+              Фильтры
+            </span>
             {activeFiltersCount > 0 && (
-              <button onClick={resetFilters} className="text-xs text-zinc-500 hover:text-black uppercase tracking-wider flex items-center gap-1 font-semibold cursor-pointer">
-                <RotateCcw className="w-3 h-3" /> Сбросить
+              <button
+                onClick={resetFilters}
+                className="text-xs text-zinc-500 hover:text-black flex items-center gap-1 font-light cursor-pointer transition-colors"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Сбросить ({activeFiltersCount})</span>
               </button>
             )}
           </div>
           {filterPanel}
         </aside>
 
+        {/* Product Grid Area */}
         <section className="lg:col-span-3 space-y-6">
           {error && (
-            <div className="p-4 rounded-none bg-rose-50 text-rose-800 text-xs border border-rose-200">
-              {error}. Запустите API: <code className="text-xs">npm run api</code> или{' '}
-              <code className="text-xs">npm run dev:all</code>
+            <div className="p-4 rounded-2xl bg-rose-50 text-rose-800 text-xs border border-rose-200">
+              {error}
             </div>
           )}
 
@@ -576,9 +634,15 @@ export const CatalogPage: React.FC = () => {
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="py-16 text-center bg-zinc-50 rounded-none border border-zinc-200 space-y-4">
-              <h3 className="font-serif text-lg text-zinc-900">По вашему запросу ничего не найдено</h3>
-              <button onClick={resetFilters} className="px-6 py-3 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors cursor-pointer">
+            <div className="py-20 text-center bg-zinc-50 rounded-[32px] border border-zinc-200/70 space-y-4 px-4">
+              <h3 className="text-lg font-light text-zinc-900">По вашему запросу ничего не найдено</h3>
+              <p className="text-xs text-zinc-500 font-light max-w-sm mx-auto">
+                Попробуйте изменить параметры поиска или сбросить активные фильтры.
+              </p>
+              <button
+                onClick={resetFilters}
+                className="pill-btn-black py-2.5 px-6 rounded-full text-xs font-light inline-block cursor-pointer"
+              >
                 Сбросить фильтры
               </button>
             </div>
@@ -587,28 +651,32 @@ export const CatalogPage: React.FC = () => {
               {isUpdating && (
                 <div className="absolute -top-3 left-0 right-0 h-0.5 bg-black animate-pulse z-10" />
               )}
+              {/* Clean White Borderless Product Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
                 {products.map(perfume => (
                   <ProductCard key={perfume.id} perfume={perfume} />
                 ))}
               </div>
 
+              {/* Minimal Pagination */}
               {totalPages > 1 && (
-                <div className="flex flex-wrap items-center justify-center gap-2 pt-6 border-t border-zinc-200">
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-10 border-t border-zinc-200/70 mt-8">
                   <button
                     disabled={page <= 1}
                     onClick={() => setPage(p => Math.max(1, p - 1))}
-                    className="w-10 h-10 rounded-none border border-zinc-300 hover:border-black flex items-center justify-center disabled:opacity-30 transition-colors cursor-pointer"
+                    className="w-9 h-9 rounded-full border border-zinc-200 hover:border-black flex items-center justify-center disabled:opacity-25 transition-colors cursor-pointer"
+                    aria-label="Предыдущая страница"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <span className="text-xs uppercase tracking-wider font-sans tabular-nums text-zinc-700 px-3">
-                    Стр. {page} из {totalPages}
+                  <span className="text-xs font-light text-zinc-600 px-3 tabular-nums">
+                    Страница {page} из {totalPages}
                   </span>
                   <button
                     disabled={page >= totalPages}
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                    className="w-10 h-10 rounded-none border border-zinc-300 hover:border-black flex items-center justify-center disabled:opacity-30 transition-colors cursor-pointer"
+                    className="w-9 h-9 rounded-full border border-zinc-200 hover:border-black flex items-center justify-center disabled:opacity-25 transition-colors cursor-pointer"
+                    aria-label="Следующая страница"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -619,46 +687,49 @@ export const CatalogPage: React.FC = () => {
         </section>
       </div>
 
+      {/* Mobile Filters Drawer */}
       {mobileFilterOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
             onClick={() => setMobileFilterOpen(false)}
           />
-          <div className="relative ml-auto w-full max-w-sm bg-white h-full p-6 overflow-y-auto shadow-2xl flex flex-col rounded-none border-l border-zinc-900 z-10 transform transition-transform duration-300 ease-out animate-in slide-in-from-right">
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
-              <span className="font-bold text-xs uppercase tracking-widest text-zinc-950 flex items-center gap-2">
+          <div className="relative ml-auto w-full max-w-sm bg-white h-full p-6 overflow-y-auto shadow-2xl flex flex-col rounded-l-[32px] border-l border-zinc-200 z-10 transform transition-transform duration-300 ease-out animate-in slide-in-from-right">
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-200/70">
+              <span className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-950 flex items-center gap-2">
                 <span>Фильтры</span>
                 {activeFiltersCount > 0 && (
-                  <span className="px-1.5 py-0.5 bg-black text-white text-[10px] font-sans font-bold tabular-nums">
+                  <span className="px-2 py-0.5 bg-black text-white text-[10px] rounded-full font-light tabular-nums">
                     {activeFiltersCount}
                   </span>
                 )}
               </span>
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="p-1.5 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full hover:bg-zinc-100 flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Закрыть фильтры"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
+
             <div className="flex-1 space-y-4 py-4">{filterPanel}</div>
-            <div className="pt-3 border-t border-zinc-200 flex items-center gap-2">
+
+            <div className="pt-3 border-t border-zinc-200/70 flex items-center gap-2">
               {activeFiltersCount > 0 && (
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="px-3.5 py-3.5 border border-zinc-300 hover:border-black text-xs font-bold uppercase tracking-wider text-zinc-700 hover:text-black transition-colors cursor-pointer"
+                  className="pill-btn-outline py-3 px-4 rounded-full text-xs font-light text-zinc-700 cursor-pointer"
                 >
-                  Сброс
+                  Сбросить
                 </button>
               )}
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="flex-1 py-3.5 bg-black text-white rounded-none text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-sm cursor-pointer"
+                className="flex-1 pill-btn-black py-3 rounded-full text-xs font-light cursor-pointer text-center"
               >
-                Показать ({total.toLocaleString('ru-RU')})
+                Показать {total.toLocaleString('ru-RU')}
               </button>
             </div>
           </div>

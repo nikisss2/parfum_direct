@@ -1,6 +1,204 @@
 {
   "products": [
     {
+      "id": "p-fa-liquid-brun",
+      "sku": "FA-LIQUID-BRUN",
+      "slug": "french-avenue-liquid-brun",
+      "name": "French Avenue Liquid Brun Унисекс духи (Extrait de Parfum)",
+      "brand": "French Avenue",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "arabian",
+      "categoryName": "Арабская парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "description": "French Avenue Liquid Brun — согревающий шедевр восточно-гурманской парфюмерии. Пряная корица, кардамон, флердоранж, карамельное пралине и бурбонская ваниль на древесной базе. 100% оригинал.",
+      "images": [
+        "/assets/products/custom-p-fa-liquid-brun-1794022678724.jpg",
+        "/assets/products/french-avenue-liquid-brun.jpg"
+      ],
+      "allNotes": [
+        "Корица",
+        "Кардамон",
+        "Цветок апельсина",
+        "Бергамот",
+        "Бурбонская ваниль",
+        "Бобы тонка",
+        "Пралине",
+        "Гваяковое дерево",
+        "Амброксан",
+        "Мускус"
+      ],
+      "notes": {
+        "top": [
+          "Корица",
+          "Кардамон",
+          "Цветок апельсина",
+          "Бергамот"
+        ],
+        "heart": [
+          "Бурбонская ваниль",
+          "Бобы тонка",
+          "Пралине"
+        ],
+        "base": [
+          "Гваяковое дерево",
+          "Амброксан",
+          "Мускус"
+        ]
+      },
+      "isHit": true,
+      "isNew": false,
+      "rating": 5,
+      "reviewsCount": 38,
+      "minPrice": 950,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 950,
+          "inStock": true,
+          "costPrice": 200
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 1100,
+          "inStock": true,
+          "costPrice": 350
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 1450,
+          "inStock": true,
+          "costPrice": 700
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 1950,
+          "inStock": true,
+          "costPrice": 1200
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 4300,
+          "inStock": true,
+          "costPrice": 3100
+        }
+      ],
+      "_hitPriority": 1400,
+      "custom": true,
+      "oldPrice": 1180,
+      "discountPercent": 24
+    },
+    {
+      "id": "p-fa-blonde-empire",
+      "sku": "FA-BLONDE-EMP",
+      "slug": "french-avenue-blonde-empire",
+      "name": "French Avenue Blonde Empire Унисекс духи (Extrait de Parfum)",
+      "brand": "French Avenue",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "arabian",
+      "categoryName": "Арабский эксклюзив",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "description": "French Avenue Blonde Empire (Amber Empire) — роскошная восточно-гурманская композиция. Теплые оттенки золотой амбры, выдержанного рома, благородного табака и белого шоколада. 100% оригинал.",
+      "images": [
+        "/assets/products/french-avenue-blonde-empire.jpg"
+      ],
+      "allNotes": [
+        "Ром",
+        "Кардамон",
+        "Олибанум",
+        "Горький апельсин",
+        "Табак",
+        "Белый шоколад",
+        "Османтус",
+        "Амбра",
+        "Ваниль",
+        "Бобы тонка",
+        "Мирра"
+      ],
+      "notes": {
+        "top": [
+          "Ром",
+          "Кардамон",
+          "Олибанум",
+          "Горький апельсин"
+        ],
+        "heart": [
+          "Табак",
+          "Белый шоколад",
+          "Османтус",
+          "Сандал"
+        ],
+        "base": [
+          "Серая амбра",
+          "Ваниль",
+          "Бобы тонка",
+          "Мирра"
+        ]
+      },
+      "isHit": true,
+      "isNew": true,
+      "rating": 4.9,
+      "reviewsCount": 42,
+      "minPrice": 490,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 490,
+          "inStock": true,
+          "costPrice": 200
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 790,
+          "inStock": true,
+          "costPrice": 350
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 1490,
+          "inStock": true,
+          "costPrice": 700
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 2490,
+          "inStock": true,
+          "costPrice": 1200
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 4990,
+          "inStock": true,
+          "costPrice": 3200
+        }
+      ],
+      "_hitPriority": 1500,
+      "custom": true
+    },
+    {
       "id": "p-75ddbac9-12576",
       "sku": "12576",
       "slug": "creed-aventus-creed-aventus-мужской-парфюмерная-вода-без-спрея-500-мл-12576",
@@ -207,6 +405,1196 @@
         ]
       },
       "_hitPriority": 1100,
+      "custom": true
+    },
+    {
+      "id": "p-f46807dc-209935",
+      "sku": "209935",
+      "slug": "creed-absolu-creed-absolu-aventus-2025-мужской-парфюмерная-вода-отливант-1-мл-209935",
+      "name": "Creed Absolu Aventus 2025 Мужской парфюмерная вода",
+      "brand": "Creed",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-f46807dc-209935-1793980102614.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Бергамот",
+          "Черная смородина",
+          "Грейпфрут"
+        ],
+        "heart": [
+          "Имбирь",
+          "Корица",
+          "Кардамон",
+          "Розовый перец"
+        ],
+        "base": [
+          "Пачули",
+          "Ветивер",
+          "Розовый перец",
+          "Лабданум"
+        ]
+      },
+      "allNotes": [
+        "Бергамот",
+        "Черная смородина",
+        "Грейпфрут",
+        "Имбирь",
+        "Корица",
+        "Кардамон",
+        "Розовый перец",
+        "Пачули",
+        "Ветивер",
+        "Лабданум"
+      ],
+      "isHit": true,
+      "rating": 4.9,
+      "reviewsCount": 111,
+      "minPrice": 1333,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 1333,
+          "inStock": true,
+          "costPrice": 633
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 1835,
+          "inStock": true,
+          "costPrice": 1135
+        },
+        {
+          "type": "vol_3_мл_decant",
+          "label": "3 мл (отливант)",
+          "volumeMl": 3,
+          "price": 2267,
+          "inStock": true,
+          "costPrice": 1567
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 3313,
+          "inStock": true,
+          "costPrice": 2113
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 5349,
+          "inStock": true,
+          "costPrice": 4149
+        },
+        {
+          "type": "vol_15_мл_decant",
+          "label": "15 мл (отливант)",
+          "volumeMl": 15,
+          "price": 8585,
+          "inStock": true,
+          "costPrice": 6585
+        },
+        {
+          "type": "vol_20_мл_decant",
+          "label": "20 мл (отливант)",
+          "volumeMl": 20,
+          "price": 10358,
+          "inStock": true,
+          "costPrice": 8358
+        },
+        {
+          "type": "vol_30_мл_bottle",
+          "label": "30 мл (флакон)",
+          "volumeMl": 30,
+          "price": 15301,
+          "inStock": true,
+          "costPrice": 12301
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 26035,
+          "inStock": true,
+          "costPrice": 21535
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 41739,
+          "inStock": true,
+          "costPrice": 35739
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 42238,
+          "inStock": true,
+          "costPrice": 36238
+        }
+      ],
+      "_hitPriority": 1093,
+      "description": "Creed Absolu Aventus 2025 Мужской парфюмерная вода — Парфюмерия.",
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-77837452-75708",
+      "sku": "75708",
+      "slug": "hugo-boss-hugo-boss-the-scent-le-parfum-for-him-мужской-духи-тестер-100-мл-75708",
+      "name": "Hugo Boss The Scent Le Parfum for Him Мужской духи",
+      "brand": "Hugo Boss",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "luxury",
+      "categoryName": "Люксовая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "concentration": "Eau de Parfum",
+      "description": "Hugo Boss The Scent Le Parfum for Him Мужской духи (тестер) 100 мл — оригинальная парфюмерия из нашего каталога.",
+      "images": [
+        "/assets/products/custom-p-77837452-75708-1794022768962.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Грейпфрут",
+          "Кориандр",
+          "Базилик"
+        ],
+        "heart": [
+          "Имбирь",
+          "Кардамон",
+          "Цветок апельсина"
+        ],
+        "base": [
+          "Табак",
+          "Амбра",
+          "Белый кедр"
+        ]
+      },
+      "longevity": 4,
+      "sillage": "Средний",
+      "rating": 5,
+      "reviewsCount": 52,
+      "minPrice": 872,
+      "volumes": [
+        {
+          "type": "vol_1.2_мл_bottle",
+          "label": "1.2 мл",
+          "volumeMl": 1.2,
+          "price": 872,
+          "inStock": true,
+          "costPrice": 172
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 9434,
+          "inStock": true,
+          "costPrice": 7434
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 7843,
+          "inStock": true,
+          "costPrice": 5843
+        }
+      ],
+      "allNotes": [
+        "Грейпфрут",
+        "Кориандр",
+        "Базилик",
+        "Имбирь",
+        "Кардамон",
+        "Цветок апельсина",
+        "Табак",
+        "Амбра",
+        "Белый кедр"
+      ],
+      "isHit": true,
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-5929b09f-71442",
+      "sku": "71442",
+      "slug": "versace-eros-versace-eros-parfum-мужской-духи-тестер-100-мл-71442",
+      "name": "Versace Eros Parfum Мужской духи",
+      "brand": "Versace",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "luxury",
+      "categoryName": "Люксовая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "concentration": "Eau de Parfum",
+      "description": "Versace Eros Parfum Мужской духи (тестер) 100 мл — оригинальная парфюмерия из нашего каталога.",
+      "images": [
+        "/assets/products/custom-p-5929b09f-71442-1794022904180.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Мята",
+          "Зеленое яблоко",
+          "Итальянский лимон"
+        ],
+        "heart": [
+          "Бобы тонка",
+          "Амброксан",
+          "Герань"
+        ],
+        "base": [
+          "Мадагаскарская ваниль",
+          "Виргинский кедр",
+          "Атласский кедр",
+          "Ветивер",
+          "Дубовый мох"
+        ]
+      },
+      "longevity": 4,
+      "sillage": "Средний",
+      "rating": 5,
+      "reviewsCount": 112,
+      "minPrice": 7843,
+      "volumes": [
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 7843,
+          "inStock": true,
+          "costPrice": 5843
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 9008,
+          "inStock": true,
+          "costPrice": 7008
+        },
+        {
+          "type": "vol_200_мл_bottle",
+          "label": "200 мл (флакон)",
+          "volumeMl": 200,
+          "price": 11372,
+          "inStock": true,
+          "costPrice": 9372
+        }
+      ],
+      "allNotes": [
+        "Мята",
+        "Зеленое яблоко",
+        "Итальянский лимон",
+        "Бобы тонка",
+        "Амброксан",
+        "Герань",
+        "Мадагаскарская ваниль",
+        "Виргинский кедр",
+        "Атласский кедр",
+        "Ветивер",
+        "Дубовый мох"
+      ],
+      "isHit": true,
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-831e6812-56954",
+      "sku": "56954",
+      "slug": "versace-eros-versace-eros-eau-de-parfum-мужской-парфюмерная-вода-тестер-100-мл-56954",
+      "name": "Versace Eros Eau De Parfum Мужской парфюмерная вода",
+      "brand": "Versace",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "luxury",
+      "categoryName": "Люксовая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "concentration": "Eau de Parfum",
+      "description": "Versace Eros Eau De Parfum Мужской парфюмерная вода (тестер) 100 мл — оригинальная парфюмерия из нашего каталога.",
+      "images": [
+        "/assets/products/custom-p-831e6812-56954-1794022917667.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Мята",
+          "Зеленое яблоко",
+          "Итальянский лимон"
+        ],
+        "heart": [
+          "Бобы тонка",
+          "Амброксан",
+          "Герань"
+        ],
+        "base": [
+          "Мадагаскарская ваниль",
+          "Виргинский кедр",
+          "Атласский кедр",
+          "Ветивер",
+          "Дубовый мох"
+        ]
+      },
+      "longevity": 4,
+      "sillage": "Средний",
+      "rating": 5,
+      "reviewsCount": 104,
+      "minPrice": 5560,
+      "volumes": [
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 5560,
+          "inStock": true,
+          "costPrice": 4360
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 5972,
+          "inStock": true,
+          "costPrice": 4772
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 8202,
+          "inStock": true,
+          "costPrice": 6202
+        },
+        {
+          "type": "vol_200_мл_bottle",
+          "label": "200 мл (флакон)",
+          "volumeMl": 200,
+          "price": 11238,
+          "inStock": true,
+          "costPrice": 9238
+        }
+      ],
+      "allNotes": [
+        "Мята",
+        "Зеленое яблоко",
+        "Итальянский лимон",
+        "Бобы тонка",
+        "Амброксан",
+        "Герань",
+        "Мадагаскарская ваниль",
+        "Виргинский кедр",
+        "Атласский кедр",
+        "Ветивер",
+        "Дубовый мох"
+      ],
+      "isHit": false,
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-b16caa2f-48412",
+      "sku": "48412",
+      "slug": "versace-eros-versace-eros-pour-femme-женский-парфюмерная-вода-тестер-100-мл-48412",
+      "name": "Versace Eros Pour Femme Женский парфюмерная вода",
+      "brand": "Versace",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "luxury",
+      "categoryName": "Люксовая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-b16caa2f-48412-1794022936899.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "rating": 4.8,
+      "reviewsCount": 98,
+      "minPrice": 848,
+      "volumes": [
+        {
+          "type": "vol_1_мл_bottle",
+          "label": "1 мл",
+          "volumeMl": 1,
+          "price": 848,
+          "inStock": true,
+          "costPrice": 148
+        },
+        {
+          "type": "vol_5_мл_bottle",
+          "label": "5 мл",
+          "volumeMl": 5,
+          "price": 1221,
+          "inStock": true,
+          "costPrice": 521
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 7376,
+          "inStock": true,
+          "costPrice": 5376
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 5826,
+          "inStock": true,
+          "costPrice": 4626
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 7779,
+          "inStock": true,
+          "costPrice": 5779
+        }
+      ],
+      "description": "Versace Eros Pour Femme Женский парфюмерная вода — Парфюмерия.",
+      "notes": {
+        "top": [
+          "Мята",
+          "Зеленое яблоко",
+          "Итальянский лимон"
+        ],
+        "heart": [
+          "Бобы тонка",
+          "Амброксан",
+          "Герань"
+        ],
+        "base": [
+          "Мадагаскарская ваниль",
+          "Виргинский кедр",
+          "Атласский кедр",
+          "Ветивер",
+          "Дубовый мох"
+        ]
+      },
+      "allNotes": [
+        "Мята",
+        "Зеленое яблоко",
+        "Итальянский лимон",
+        "Бобы тонка",
+        "Амброксан",
+        "Герань",
+        "Мадагаскарская ваниль",
+        "Виргинский кедр",
+        "Атласский кедр",
+        "Ветивер",
+        "Дубовый мох"
+      ],
+      "isHit": true,
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-abec58bf-207653",
+      "sku": "207653",
+      "slug": "amouage-guidance-amouage-guidance-унисекс-парфюмерная-вода-отливант-1-мл-207653",
+      "name": "Amouage Guidance Унисекс парфюмерная вода",
+      "brand": "Amouage",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-abec58bf-207653-1794022963906.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Груша",
+          "Ладан",
+          "Лесной орех"
+        ],
+        "heart": [
+          "Османтус",
+          "Роза",
+          "Шафран",
+          "Жасмин самбак"
+        ],
+        "base": [
+          "Сандал",
+          "Ваниль",
+          "Акигалавуд",
+          "Серая амбра",
+          "Лабданум"
+        ]
+      },
+      "allNotes": [
+        "Груша",
+        "Ладан",
+        "Лесной орех",
+        "Османтус",
+        "Роза",
+        "Шафран",
+        "Жасмин самбак",
+        "Сандал",
+        "Ваниль",
+        "Акигалавуд",
+        "Серая амбра",
+        "Лабданум"
+      ],
+      "isHit": true,
+      "rating": 4.8,
+      "reviewsCount": 24,
+      "minPrice": 1098,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 1098,
+          "inStock": true,
+          "costPrice": 398
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 1142,
+          "inStock": true,
+          "costPrice": 442
+        },
+        {
+          "type": "vol_2_мл_bottle",
+          "label": "2 мл",
+          "volumeMl": 2,
+          "price": 1278,
+          "inStock": true,
+          "costPrice": 578
+        },
+        {
+          "type": "vol_3_мл_decant",
+          "label": "3 мл (отливант)",
+          "volumeMl": 3,
+          "price": 1504,
+          "inStock": true,
+          "costPrice": 804
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 1941,
+          "inStock": true,
+          "costPrice": 1241
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 3638,
+          "inStock": true,
+          "costPrice": 2438
+        },
+        {
+          "type": "vol_15_мл_decant",
+          "label": "15 мл (отливант)",
+          "volumeMl": 15,
+          "price": 5024,
+          "inStock": true,
+          "costPrice": 3824
+        },
+        {
+          "type": "vol_20_мл_decant",
+          "label": "20 мл (отливант)",
+          "volumeMl": 20,
+          "price": 7150,
+          "inStock": true,
+          "costPrice": 5150
+        },
+        {
+          "type": "vol_30_мл_bottle",
+          "label": "30 мл (флакон)",
+          "volumeMl": 30,
+          "price": 9487,
+          "inStock": true,
+          "costPrice": 7487
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 17516,
+          "inStock": true,
+          "costPrice": 14516
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 26838,
+          "inStock": true,
+          "costPrice": 22338
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 27038,
+          "inStock": true,
+          "costPrice": 22538
+        }
+      ],
+      "_hitPriority": 1095,
+      "description": "Amouage Guidance Унисекс парфюмерная вода — Парфюмерия.",
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-006adddb-230543",
+      "sku": "230543",
+      "slug": "amouage-odyssey-amouage-odyssey-collection-sampler-set-4-х-2-мл-search-purpose-lineage-и-guidance-230543",
+      "name": "Amouage Odyssey Collection Sampler Set (4 х 2 мл: Search, Purpose, Lineage и Guidance)",
+      "brand": "Amouage",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-006adddb-230543-1794022977294.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Груша",
+          "Ладан",
+          "Лесной орех"
+        ],
+        "heart": [
+          "Османтус",
+          "Роза",
+          "Шафран",
+          "Жасмин самбак"
+        ],
+        "base": [
+          "Сандал",
+          "Ваниль",
+          "Акигалавуд",
+          "Серая амбра",
+          "Лабданум"
+        ]
+      },
+      "allNotes": [
+        "Груша",
+        "Ладан",
+        "Лесной орех",
+        "Османтус",
+        "Роза",
+        "Шафран",
+        "Жасмин самбак",
+        "Сандал",
+        "Ваниль",
+        "Акигалавуд",
+        "Серая амбра",
+        "Лабданум"
+      ],
+      "isHit": true,
+      "rating": 4.5,
+      "reviewsCount": 117,
+      "minPrice": 5626,
+      "oldPrice": 6130,
+      "discountPercent": 9,
+      "volumes": [
+        {
+          "type": "vol_1_мл_bottle",
+          "label": "1 мл",
+          "volumeMl": 1,
+          "price": 5626,
+          "inStock": true,
+          "costPrice": 4426
+        }
+      ],
+      "_hitPriority": 595,
+      "description": "Amouage Odyssey Collection Sampler Set (4 х 2 мл: Search, Purpose, Lineage и Guidance) — Парфюмерия.",
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-21769955-164765",
+      "sku": "164765",
+      "slug": "amouage-guidance-amouage-guidance-1ml-edp-отливант-164765",
+      "name": "Amouage GUIDANCE edp ОТЛИВАНТ",
+      "brand": "Amouage",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-21769955-164765-1794023000206.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Груша",
+          "Ладан",
+          "Лесной орех"
+        ],
+        "heart": [
+          "Османтус",
+          "Роза",
+          "Шафран",
+          "Жасмин самбак"
+        ],
+        "base": [
+          "Сандал",
+          "Ваниль",
+          "Акигалавуд",
+          "Серая амбра",
+          "Лабданум"
+        ]
+      },
+      "allNotes": [
+        "Груша",
+        "Ладан",
+        "Лесной орех",
+        "Османтус",
+        "Роза",
+        "Шафран",
+        "Жасмин самбак",
+        "Сандал",
+        "Ваниль",
+        "Акигалавуд",
+        "Серая амбра",
+        "Лабданум"
+      ],
+      "isHit": true,
+      "rating": 4.8,
+      "reviewsCount": 1,
+      "minPrice": 1206,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 1206,
+          "inStock": true,
+          "costPrice": 506
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 1564,
+          "inStock": true,
+          "costPrice": 864
+        },
+        {
+          "type": "vol_3_мл_decant",
+          "label": "3 мл (отливант)",
+          "volumeMl": 3,
+          "price": 1886,
+          "inStock": true,
+          "costPrice": 1186
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 2497,
+          "inStock": true,
+          "costPrice": 1797
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 4173,
+          "inStock": true,
+          "costPrice": 2973
+        },
+        {
+          "type": "vol_15_мл_decant",
+          "label": "15 мл (отливант)",
+          "volumeMl": 15,
+          "price": 5466,
+          "inStock": true,
+          "costPrice": 4266
+        },
+        {
+          "type": "vol_30_мл_bottle",
+          "label": "30 мл (флакон)",
+          "volumeMl": 30,
+          "price": 10052,
+          "inStock": true,
+          "costPrice": 8052
+        }
+      ],
+      "_hitPriority": 595,
+      "description": "Amouage GUIDANCE edp ОТЛИВАНТ — Парфюмерия.",
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-72a3abe7-100289",
+      "sku": "100289",
+      "slug": "amouage-reflection-amouage-reflection-man-мужской-парфюмерная-вода-отливант-1-мл-100289",
+      "name": "Amouage Reflection Man Мужской парфюмерная вода",
+      "brand": "Amouage",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-72a3abe7-100289-1794023025692.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Розмарин",
+          "Красный перец",
+          "Петитгрейн"
+        ],
+        "heart": [
+          "Корень ириса",
+          "Жасмин",
+          "Нероли",
+          "Иланг-иланг"
+        ],
+        "base": [
+          "Сандал",
+          "Белый кедр",
+          "Ветивер",
+          "Пачули"
+        ]
+      },
+      "allNotes": [
+        "Розмарин",
+        "Красный перец",
+        "Петитгрейн",
+        "Корень ириса",
+        "Жасмин",
+        "Нероли",
+        "Иланг-иланг",
+        "Сандал",
+        "Белый кедр",
+        "Ветивер",
+        "Пачули"
+      ],
+      "isHit": true,
+      "rating": 4.5,
+      "reviewsCount": 19,
+      "minPrice": 1107,
+      "volumes": [
+        {
+          "type": "vol_1_мл_decant",
+          "label": "1 мл (отливант)",
+          "volumeMl": 1,
+          "price": 1107,
+          "inStock": true,
+          "costPrice": 407
+        },
+        {
+          "type": "vol_2_мл_bottle",
+          "label": "2 мл",
+          "volumeMl": 2,
+          "price": 1210,
+          "inStock": true,
+          "costPrice": 510
+        },
+        {
+          "type": "vol_2_мл_decant",
+          "label": "2 мл (отливант)",
+          "volumeMl": 2,
+          "price": 1221,
+          "inStock": true,
+          "costPrice": 521
+        },
+        {
+          "type": "vol_3_мл_decant",
+          "label": "3 мл (отливант)",
+          "volumeMl": 3,
+          "price": 1504,
+          "inStock": true,
+          "costPrice": 804
+        },
+        {
+          "type": "vol_5_мл_decant",
+          "label": "5 мл (отливант)",
+          "volumeMl": 5,
+          "price": 1941,
+          "inStock": true,
+          "costPrice": 1241
+        },
+        {
+          "type": "vol_10_мл_decant",
+          "label": "10 мл (отливант)",
+          "volumeMl": 10,
+          "price": 3367,
+          "inStock": true,
+          "costPrice": 2167
+        },
+        {
+          "type": "vol_15_мл_decant",
+          "label": "15 мл (отливант)",
+          "volumeMl": 15,
+          "price": 4930,
+          "inStock": true,
+          "costPrice": 3730
+        },
+        {
+          "type": "vol_20_мл_decant",
+          "label": "20 мл (отливант)",
+          "volumeMl": 20,
+          "price": 6092,
+          "inStock": true,
+          "costPrice": 4892
+        },
+        {
+          "type": "vol_30_мл_bottle",
+          "label": "30 мл (флакон)",
+          "volumeMl": 30,
+          "price": 8903,
+          "inStock": true,
+          "costPrice": 6903
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 16030,
+          "inStock": true,
+          "costPrice": 13030
+        },
+        {
+          "type": "vol_50_мл_tester",
+          "label": "50 мл (тестер)",
+          "volumeMl": 50,
+          "price": 17516,
+          "inStock": true,
+          "costPrice": 14516
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 24831,
+          "inStock": true,
+          "costPrice": 20331
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 25933,
+          "inStock": true,
+          "costPrice": 21433
+        }
+      ],
+      "_hitPriority": 1089,
+      "description": "Amouage Reflection Man Мужской парфюмерная вода — Парфюмерия.",
+      "isNew": false,
+      "custom": true
+    },
+    {
+      "id": "p-3f7de138-48396",
+      "sku": "48396",
+      "slug": "versace-eros-versace-eros-мужской-туалетная-вода-тестер-100-мл-48396",
+      "name": "Versace Eros Мужской туалетная вода",
+      "brand": "Versace",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "luxury",
+      "categoryName": "Люксовая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-3f7de138-48396-1794023092887.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "rating": 4.8,
+      "reviewsCount": 65,
+      "minPrice": 1834,
+      "volumes": [
+        {
+          "type": "vol_5_мл_bottle",
+          "label": "5 мл",
+          "volumeMl": 5,
+          "price": 1834,
+          "inStock": true,
+          "costPrice": 1134
+        },
+        {
+          "type": "vol_30_мл_bottle",
+          "label": "30 мл (флакон)",
+          "volumeMl": 30,
+          "price": 3801,
+          "inStock": true,
+          "costPrice": 2601
+        },
+        {
+          "type": "vol_30_мл_tester",
+          "label": "30 мл (тестер)",
+          "volumeMl": 30,
+          "price": 4608,
+          "inStock": true,
+          "costPrice": 3408
+        },
+        {
+          "type": "vol_50_мл_bottle",
+          "label": "50 мл (флакон)",
+          "volumeMl": 50,
+          "price": 5118,
+          "inStock": true,
+          "costPrice": 3918
+        },
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 5450,
+          "inStock": true,
+          "costPrice": 4250
+        },
+        {
+          "type": "vol_100_мл_bottle",
+          "label": "100 мл (флакон)",
+          "volumeMl": 100,
+          "price": 7208,
+          "inStock": true,
+          "costPrice": 5208
+        },
+        {
+          "type": "vol_200_мл_bottle",
+          "label": "200 мл (флакон)",
+          "volumeMl": 200,
+          "price": 9424,
+          "inStock": true,
+          "costPrice": 7424
+        }
+      ],
+      "description": "Versace Eros Мужской туалетная вода — Парфюмерия.",
+      "notes": {
+        "top": [
+          "Мята",
+          "Зеленое яблоко",
+          "Итальянский лимон"
+        ],
+        "heart": [
+          "Бобы тонка",
+          "Амброксан",
+          "Герань"
+        ],
+        "base": [
+          "Мадагаскарская ваниль",
+          "Виргинский кедр",
+          "Атласский кедр",
+          "Ветивер",
+          "Дубовый мох"
+        ]
+      },
+      "allNotes": [
+        "Мята",
+        "Зеленое яблоко",
+        "Итальянский лимон",
+        "Бобы тонка",
+        "Амброксан",
+        "Герань",
+        "Мадагаскарская ваниль",
+        "Виргинский кедр",
+        "Атласский кедр",
+        "Ветивер",
+        "Дубовый мох"
+      ],
+      "isHit": true,
+      "isNew": false,
+      "oldPrice": 2570,
+      "discountPercent": 40,
+      "custom": true
+    },
+    {
+      "id": "p-711b095d-233950",
+      "sku": "233950",
+      "slug": "french-avenue-french-avenue-royal-blend-унисекс-парфюмерная-вода-тестер-100-мл-233950",
+      "name": "French Avenue Royal Blend Унисекс парфюмерная вода",
+      "brand": "French Avenue",
+      "kind": "perfume",
+      "kindLabel": "Парфюмерия",
+      "category": "niche",
+      "categoryName": "Нишевая парфюмерия",
+      "gender": "unisex",
+      "genderLabel": "Унисекс",
+      "images": [
+        "/assets/products/custom-p-711b095d-233950-1794023207029.jpg",
+        "/assets/placeholder-product.svg"
+      ],
+      "notes": {
+        "top": [
+          "Коньяк",
+          "Корица",
+          "Мускатный орех"
+        ],
+        "heart": [
+          "Дуб",
+          "Бобы тонка",
+          "Шоколад"
+        ],
+        "base": [
+          "Ваниль",
+          "Пралине",
+          "Сандал"
+        ]
+      },
+      "allNotes": [
+        "Коньяк",
+        "Корица",
+        "Мускатный орех",
+        "Дуб",
+        "Бобы тонка",
+        "Шоколад",
+        "Ваниль",
+        "Пралине",
+        "Сандал"
+      ],
+      "isHit": true,
+      "rating": 5,
+      "reviewsCount": 81,
+      "minPrice": 3869,
+      "volumes": [
+        {
+          "type": "vol_100_мл_tester",
+          "label": "100 мл (тестер)",
+          "volumeMl": 100,
+          "price": 3869,
+          "inStock": true,
+          "costPrice": 2669
+        }
+      ],
+      "_hitPriority": 598,
+      "description": "French Avenue Royal Blend Унисекс парфюмерная вода — Парфюмерия.",
+      "isNew": false,
       "custom": true
     }
   ]

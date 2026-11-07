@@ -55,16 +55,16 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-[50vh] flex items-center justify-center px-4 py-16 bg-white">
-          <div className="max-w-md w-full text-center space-y-6 border border-zinc-200 p-8 shadow-xs">
-            <div className="w-14 h-14 bg-zinc-50 border border-zinc-200 mx-auto flex items-center justify-center">
-              <AlertCircle className="w-7 h-7 text-zinc-950 stroke-[1.5]" />
+          <div className="max-w-md w-full text-center space-y-6 rounded-[28px] border border-zinc-200/80 p-8 shadow-sm bg-white">
+            <div className="w-14 h-14 rounded-full bg-zinc-100 mx-auto flex items-center justify-center shadow-2xs">
+              <AlertCircle className="w-6 h-6 text-zinc-950 stroke-[1.5]" />
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-xl font-serif text-zinc-950 uppercase tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-light text-zinc-950 tracking-tight">
                 Что-то пошло не так
               </h2>
-              <p className="text-xs text-zinc-500 font-light leading-relaxed">
+              <p className="text-xs text-zinc-500 font-light leading-relaxed text-delicate">
                 При загрузке этого раздела возникла ошибка. Вы можете обновить страницу или
                 вернуться на главную.
               </p>
@@ -74,7 +74,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <button
                 type="button"
                 onClick={this.handleReload}
-                className="w-full sm:w-auto px-5 py-3 bg-black text-white hover:bg-zinc-800 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-black text-white hover:bg-zinc-800 text-xs font-medium uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-95"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Обновить страницу</span>
@@ -83,7 +83,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <a
                 href="/"
                 onClick={this.handleReset}
-                className="w-full sm:w-auto px-5 py-3 bg-white border border-zinc-300 hover:border-black text-zinc-950 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-white border border-zinc-200 hover:border-black text-zinc-950 text-xs font-light uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2 cursor-pointer hover:bg-zinc-50 active:scale-95"
               >
                 <Home className="w-3.5 h-3.5" />
                 <span>На главную</span>

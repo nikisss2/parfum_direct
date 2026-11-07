@@ -15,9 +15,9 @@ export interface TelegramConfig {
 
 const DEFAULT_CONFIG: TelegramConfig = {
   enabled: true,
-  botToken: '8913044342:AAEgWMP0LqUUIjRVj6C6S9q4MBrqarPOebg',
-  chatId: '',
-  chatIds: [],
+  botToken: process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '8913044342:AAEgWMP0LqUUIjRVj6C6S9q4MBrqarPOebg',
+  chatId: process.env.ADMIN_CHAT_ID || '',
+  chatIds: process.env.ADMIN_CHAT_ID ? [process.env.ADMIN_CHAT_ID] : [],
   managerUsername: 'nikisss2',
 };
 
@@ -63,17 +63,21 @@ export function saveTelegramConfig(config: Partial<TelegramConfig>): TelegramCon
   return updated;
 }
 
-export function registerSubscriberChat(chatId: string | number): void {
+export function registerSubscriberChat(chatId: string | number, authorized: boolean = false): boolean {
   const idStr = String(chatId).trim();
-  if (!idStr) return;
+  if (!idStr) return false;
   const cfg = getTelegramConfig();
   const set = new Set(cfg.chatIds);
-  set.add(idStr);
-  saveTelegramConfig({
-    enabled: true,
-    chatId: cfg.chatId || idStr,
-    chatIds: Array.from(set),
-  });
+  if (authorized || set.has(idStr)) {
+    set.add(idStr);
+    saveTelegramConfig({
+      enabled: true,
+      chatId: cfg.chatId || idStr,
+      chatIds: Array.from(set),
+    });
+    return true;
+  }
+  return false;
 }
 
 export async function sendTelegramMessage(

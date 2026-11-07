@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { fetchProductsByIds, fetchProducts } from '../api/catalog';
 import { Perfume, VolumeOption } from '../types';
+import { ProductCard } from '../components/ProductCard';
 import {
   Heart,
   Share2,
@@ -12,10 +13,7 @@ import {
   ShoppingBag,
   Trash2,
   ArrowRight,
-  ExternalLink,
-  Package,
   BookmarkCheck,
-  RotateCcw,
 } from 'lucide-react';
 
 const PLACEHOLDER = '/assets/placeholder-product.svg';
@@ -38,7 +36,6 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ perfume, onRemove, onAddToC
   const [selectedVolume, setSelectedVolume] = useState<VolumeOption>(defaultVolume);
   const [isAdded, setIsAdded] = useState(false);
 
-  // Filter unique volumes
   const uniqueVolumes = useMemo(() => {
     const map = new Map<string, VolumeOption>();
     for (const v of perfume.volumes || []) {
@@ -57,23 +54,42 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ perfume, onRemove, onAddToC
     }
   }, [uniqueVolumes]);
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     onAddToCart(perfume, selectedVolume);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1600);
   };
 
   const currentPrice = selectedVolume?.price ?? perfume.minPrice ?? 0;
+  const productUrl = `/product/${perfume.slug || perfume.id}`;
 
   return (
-    <div className="group relative flex flex-col bg-white border border-zinc-200 hover:border-black transition-all duration-200 p-3 sm:p-4">
-      {/* Image container */}
-      <div className="relative aspect-square bg-[#f4f4f5] flex items-center justify-center overflow-hidden mb-3">
-        <Link to={`/product/${perfume.slug}`} className="block w-full h-full p-4">
+    // Clean White Card matching Reference 4 (Zero grey box, borderless)
+    <div className="bg-white p-2 sm:p-3 relative flex flex-col justify-between group transition-all duration-300 select-none">
+      <div>
+        {/* Top Floating Area: Brand Kicker & Remove Button */}
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] sm:text-[11px] font-normal tracking-[0.14em] uppercase text-zinc-400">
+            {perfume.genderLabel || 'Селектив'}
+          </span>
+
+          <button
+            onClick={() => onRemove(perfume.id)}
+            aria-label="Удалить из избранного"
+            className="w-8 h-8 rounded-full bg-zinc-50 hover:bg-zinc-100 text-zinc-400 hover:text-black flex items-center justify-center transition-all cursor-pointer"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Flacon Image on Pure White Background */}
+        <Link to={productUrl} className="block relative aspect-square my-2 flex items-center justify-center overflow-hidden bg-white">
           <img
-            src={perfume.images[0] || PLACEHOLDER}
-            alt={`${perfume.brand} ${perfume.name}`}
-            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+            src={perfume.images?.[0] || PLACEHOLDER}
+            alt={`${perfume.brand || ''} ${perfume.name || ''}`}
+            className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-300 ease-out"
             loading="lazy"
             decoding="async"
             onError={e => {
@@ -83,102 +99,69 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ perfume, onRemove, onAddToC
           />
         </Link>
 
-        {/* Delete from wishlist button */}
-        <button
-          onClick={() => onRemove(perfume.id)}
-          aria-label="Удалить из избранного"
-          title="Удалить из избранного"
-          className="absolute top-2.5 right-2.5 w-8 h-8 bg-white/90 hover:bg-black hover:text-white text-zinc-500 flex items-center justify-center transition-colors border border-zinc-200"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+        {/* Volume selector chips */}
+        {uniqueVolumes.length > 1 && (
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap my-2">
+            {uniqueVolumes.slice(0, 4).map(vol => {
+              const isSelected = selectedVolume?.type === vol.type;
+              return (
+                <button
+                  key={vol.type}
+                  type="button"
+                  onClick={() => setSelectedVolume(vol)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-black text-white font-medium shadow-xs'
+                      : 'bg-zinc-100/80 hover:bg-zinc-200/80 text-zinc-700 font-normal'
+                  }`}
+                >
+                  {vol.label || `${vol.volumeMl} мл`}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-        {/* Brand tag */}
-        <div className="absolute bottom-2 left-2 pointer-events-none">
-          <span className="bg-white/90 text-[10px] font-sans uppercase tracking-wider px-1.5 py-0.5 border border-zinc-200 text-zinc-700">
-            {perfume.genderLabel || 'Унисекс'}
-          </span>
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 flex flex-col justify-between space-y-3">
-        <div>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 truncate mb-1">
+        {/* Product Info */}
+        <div className="mt-2 space-y-0.5">
+          <div className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-zinc-950 truncate">
             {perfume.brand}
           </div>
+
           <Link
-            to={`/product/${perfume.slug}`}
-            className="block text-sm font-serif font-medium text-zinc-950 hover:underline line-clamp-2 leading-tight"
+            to={productUrl}
+            className="block text-xs sm:text-sm font-light text-zinc-700 leading-snug line-clamp-2 hover:text-black transition-colors text-delicate"
           >
             {perfume.name}
           </Link>
         </div>
+      </div>
 
-        {/* Volume selector chips */}
-        {uniqueVolumes.length > 1 && (
-          <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-              Объем:
-            </span>
-            <div className="flex flex-wrap gap-1">
-              {uniqueVolumes.map(vol => {
-                const isSelected = selectedVolume?.type === vol.type;
-                const shortLabel = vol.label || `${vol.volumeMl} мл`;
-                return (
-                  <button
-                    key={vol.type}
-                    type="button"
-                    onClick={() => setSelectedVolume(vol)}
-                    className={`text-[10px] font-sans tabular-nums px-2 py-1 transition-all ${
-                      isSelected
-                        ? 'bg-black text-white font-bold'
-                        : 'bg-[#f4f4f5] text-zinc-700 hover:bg-zinc-200'
-                    }`}
-                  >
-                    {shortLabel}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+      {/* Bottom Area: Price & Add to Cart button (Responsive: stacked on mobile, inline on sm+) */}
+      <div className="mt-3 pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <span className="text-sm sm:text-base font-semibold text-zinc-950 tabular-nums whitespace-nowrap">
+          {currentPrice.toLocaleString('ru-RU')} ₽
+        </span>
 
-        {/* Price & Add to Cart button */}
-        <div className="pt-2 border-t border-zinc-100 flex items-center justify-between gap-2">
-          <div>
-            <div className="text-base font-bold text-zinc-950">
-              {currentPrice.toLocaleString('ru-RU')} ₽
-            </div>
-            {selectedVolume?.label && (
-              <div className="text-[10px] text-zinc-400 truncate">
-                {selectedVolume.label}
-              </div>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={handleAdd}
-            className={`px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 shrink-0 ${
-              isAdded
-                ? 'bg-[#5A6B32] text-white'
-                : 'bg-black text-white hover:bg-zinc-800'
-            }`}
-          >
-            {isAdded ? (
-              <>
-                <Check className="w-3.5 h-3.5" />
-                <span>В корзине</span>
-              </>
-            ) : (
-              <>
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span>В корзину</span>
-              </>
-            )}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleAdd}
+          className={`w-full sm:w-auto h-8 sm:h-9 px-3 sm:px-4 rounded-full bg-black text-white hover:bg-zinc-800 active:scale-[0.98] text-[11px] sm:text-xs font-medium uppercase tracking-wider cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap transition-all ${
+            isAdded ? 'bg-emerald-700 hover:bg-emerald-800' : ''
+          }`}
+        >
+          {isAdded ? (
+            <>
+              <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="whitespace-nowrap">В корзине</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span className="whitespace-nowrap">В корзину</span>
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
@@ -195,9 +178,7 @@ export const WishlistPage: React.FC = () => {
   } = useShop();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
 
-  // Parse items from search params (e.g. ?items=id1,id2)
   const sharedItemsParam = searchParams.get('items');
   const sharedIds = useMemo(() => {
     if (!sharedItemsParam) return [];
@@ -207,14 +188,12 @@ export const WishlistPage: React.FC = () => {
       .filter(Boolean);
   }, [sharedItemsParam]);
 
-  // Determine if viewing a shared wishlist that differs from own
   const isViewingShared = useMemo(() => {
     if (sharedIds.length === 0) return false;
     if (sharedIds.length !== wishlist.length) return true;
     return sharedIds.some(id => !wishlist.includes(id));
   }, [sharedIds, wishlist]);
 
-  // Which IDs should we display?
   const activeIds = useMemo(() => {
     if (sharedIds.length > 0) return sharedIds;
     return wishlist;
@@ -225,7 +204,6 @@ export const WishlistPage: React.FC = () => {
   const [popularHits, setPopularHits] = useState<Perfume[]>([]);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Fetch active products
   useEffect(() => {
     let cancelled = false;
     if (activeIds.length === 0) {
@@ -254,7 +232,6 @@ export const WishlistPage: React.FC = () => {
     };
   }, [activeIds]);
 
-  // If empty, fetch popular hits to recommend
   useEffect(() => {
     if (activeIds.length === 0) {
       fetchProducts({ isHit: true, limit: 4 })
@@ -288,7 +265,6 @@ export const WishlistPage: React.FC = () => {
     }
   }, [activeIds.length]);
 
-  // Generate shareable link
   const shareableUrl = useMemo(() => {
     const idsToShare = activeIds.length > 0 ? activeIds : wishlist;
     if (idsToShare.length === 0) return '';
@@ -296,7 +272,6 @@ export const WishlistPage: React.FC = () => {
     return `${base}#/wishlist?items=${encodeURIComponent(idsToShare.join(','))}`;
   }, [activeIds, wishlist]);
 
-  // Copy link
   const handleCopyLink = useCallback(async () => {
     if (!shareableUrl) return;
     try {
@@ -324,7 +299,6 @@ export const WishlistPage: React.FC = () => {
     }
   }, [shareableUrl, showToast]);
 
-  // Share to Telegram channel/friend
   const handleShareTelegram = useCallback(() => {
     if (!shareableUrl) return;
     const text = 'Мой вишлист ароматов в Maison Arôme:';
@@ -332,7 +306,6 @@ export const WishlistPage: React.FC = () => {
     window.open(tgUrl, '_blank', 'noopener,noreferrer');
   }, [shareableUrl]);
 
-  // Send direct order request to Telegram manager @nikisss2
   const handleSendToManager = useCallback(() => {
     if (products.length === 0) return;
     const listLines = products
@@ -343,19 +316,18 @@ export const WishlistPage: React.FC = () => {
       })
       .join('\n');
 
-    const totalEstimate = products.reduce((acc, p) => acc + (p.minPrice || 0), 0);
+    const totalEst = products.reduce((acc, p) => acc + (p.minPrice || 0), 0);
 
     const message =
       `Здравствуйте! Хочу заказать ароматы из вишлиста:\n\n` +
       `${listLines}\n\n` +
-      `Итого ориентировочно: ~${totalEstimate.toLocaleString('ru-RU')} ₽\n` +
+      `Итого ориентировочно: ~${totalEst.toLocaleString('ru-RU')} ₽\n` +
       `Ссылка на вишлист: ${shareableUrl || window.location.href}`;
 
     const tgUrl = `https://t.me/nikisss2?text=${encodeURIComponent(message)}`;
     window.open(tgUrl, '_blank', 'noopener,noreferrer');
   }, [products, shareableUrl]);
 
-  // Add all items to cart
   const handleAddAllToCart = useCallback(() => {
     if (products.length === 0) return;
     products.forEach(p => {
@@ -375,24 +347,15 @@ export const WishlistPage: React.FC = () => {
     );
   }, [products, addToCart, showToast]);
 
-  // Save shared wishlist to my own wishlist
   const handleImportShared = useCallback(() => {
     if (sharedIds.length === 0) return;
     importWishlist(sharedIds);
-    // Switch URL back to personal wishlist
     setSearchParams({});
   }, [sharedIds, importWishlist, setSearchParams]);
 
-  // Switch to personal wishlist
-  const handleViewPersonal = useCallback(() => {
-    setSearchParams({});
-  }, [setSearchParams]);
-
-  // Remove single item
   const handleRemoveItem = useCallback(
     (id: string) => {
       if (isViewingShared) {
-        // If viewing shared link, remove from local display list and update URL
         const next = sharedIds.filter(x => x !== id);
         if (next.length > 0) {
           setSearchParams({ items: next.join(',') });
@@ -406,7 +369,6 @@ export const WishlistPage: React.FC = () => {
     [isViewingShared, sharedIds, setSearchParams, toggleWishlist]
   );
 
-  // Total estimate sum
   const totalEstimate = useMemo(() => {
     return products.reduce((sum, p) => sum + (p.minPrice || 0), 0);
   }, [products]);
@@ -415,17 +377,16 @@ export const WishlistPage: React.FC = () => {
     <div className="min-h-screen bg-white">
       {/* Shared banner if viewing a shared list */}
       {isViewingShared && (
-        <div className="bg-[#5A6B32] text-white px-4 py-3 sm:py-4 border-b border-zinc-900 shadow-sm">
+        <div className="bg-[#F7F7F8] border-b border-zinc-200/70 px-4 py-3 sm:py-4">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
             <div className="flex items-center gap-3">
-              <BookmarkCheck className="w-5 h-5 shrink-0 text-white" />
+              <BookmarkCheck className="w-5 h-5 shrink-0 text-black" />
               <div>
-                <p className="text-xs sm:text-sm font-bold uppercase tracking-wider">
-                  Вы просматриваете список желаний по ссылке ({activeIds.length}{' '}
-                  {activeIds.length === 1 ? 'аромат' : 'ароматов'})
+                <p className="text-xs sm:text-sm font-medium text-zinc-950">
+                  Список желаний по ссылке ({activeIds.length} позиций)
                 </p>
-                <p className="text-[11px] text-zinc-200 font-light">
-                  Вы можете сохранить эту подборку в своё избранное или оформить заказ
+                <p className="text-[11px] text-zinc-500 font-light text-delicate">
+                  Сохраните подборку в свой профиль или согласуйте доставку
                 </p>
               </div>
             </div>
@@ -434,97 +395,58 @@ export const WishlistPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleImportShared}
-                className="px-4 py-2 bg-white text-zinc-950 hover:bg-zinc-100 text-xs font-bold uppercase tracking-wider transition-colors shadow-xs"
+                className="pill-btn-black py-2 px-4 rounded-full text-xs font-light shadow-2xs"
               >
                 Сохранить в моё избранное
-              </button>
-              <button
-                type="button"
-                onClick={handleViewPersonal}
-                className="px-3 py-2 bg-black/30 hover:bg-black/50 text-white text-xs font-bold uppercase tracking-wider transition-colors"
-              >
-                Мой личный список ({wishlist.length})
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Breadcrumbs & Header */}
-      <div className="border-b border-zinc-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="flex items-center gap-2 text-xs font-sans text-zinc-400 uppercase tracking-widest mb-3">
-            <Link to="/" className="hover:text-black transition-colors">
-              Главная
-            </Link>
-            <span>/</span>
-            <span className="text-zinc-900 font-semibold">Список желаний</span>
-          </div>
-
+      {/* Header */}
+      <div className="border-b border-zinc-200/70 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-4xl font-serif font-light text-zinc-950 uppercase tracking-tight">
-                {isViewingShared ? 'Поделенный список желаний' : 'Список желаний'}
+              <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Maison Arôme Wishlist
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-light text-zinc-950 mt-0.5 tracking-tight">
+                {isViewingShared ? 'Список желаний по ссылке' : 'Список желаний'}
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1">
+              <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 text-delicate">
                 {products.length > 0
-                  ? `${products.length} ${
-                      products.length === 1 ? 'сохраненный аромат' : 'сохраненных ароматов'
-                    } на сумму от ${totalEstimate.toLocaleString('ru-RU')} ₽`
-                  : 'Сохраняйте понравившиеся ароматы, чтобы не потерять их'}
+                  ? `${products.length} позиций на сумму от ${totalEstimate.toLocaleString('ru-RU')} ₽`
+                  : 'Сохраняйте понравившиеся ароматы, чтобы познакомиться с ними позже'}
               </p>
             </div>
 
-            {/* Sharing & Bulk Actions Bar */}
+            {/* Sharing & Bulk Actions */}
             {products.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
-                {/* Copy Link Button */}
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="px-3.5 py-2.5 bg-white border border-zinc-300 hover:border-black text-zinc-900 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2"
-                  title="Скопировать постоянную ссылку на вишлист"
+                  className="pill-btn-outline py-2 px-4 rounded-full text-xs font-light flex items-center gap-1.5"
                 >
-                  {copiedLink ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-[#5A6B32]" />
-                      <span className="text-[#5A6B32]">Ссылка скопирована!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-zinc-600" />
-                      <span>Поделиться ссылкой</span>
-                    </>
-                  )}
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedLink ? 'Скопировано!' : 'Поделиться'}</span>
                 </button>
 
-                {/* Share to Telegram */}
-                <button
-                  type="button"
-                  onClick={handleShareTelegram}
-                  className="px-3 py-2.5 bg-[#229ED9] hover:bg-[#1E88E5] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5"
-                  title="Отправить ссылку друзьям в Telegram"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">В Telegram</span>
-                </button>
-
-                {/* Send Order to Manager @nikisss2 */}
                 <button
                   type="button"
                   onClick={handleSendToManager}
-                  className="px-3.5 py-2.5 bg-[#5A6B32] hover:bg-[#4E5D2B] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5"
-                  title="Заказать эти ароматы у менеджера в Telegram @nikisss2"
+                  className="pill-btn-outline py-2 px-4 rounded-full text-xs font-light flex items-center gap-1.5"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Заказать в TG</span>
                 </button>
 
-                {/* Add All to Cart */}
                 <button
                   type="button"
                   onClick={handleAddAllToCart}
-                  className="px-4 py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                  className="pill-btn-black py-2 px-5 rounded-full text-xs font-medium flex items-center gap-1.5"
                 >
                   <ShoppingBag className="w-3.5 h-3.5" />
                   <span>Добавить всё в корзину</span>
@@ -538,108 +460,57 @@ export const WishlistPage: React.FC = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {loading ? (
-          /* High-performance Skeleton Grid */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="bg-white border border-zinc-200 p-4 animate-pulse space-y-3"
-              >
-                <div className="aspect-square bg-zinc-100" />
-                <div className="h-3 bg-zinc-100 w-1/2" />
-                <div className="h-4 bg-zinc-100 w-3/4" />
-                <div className="h-8 bg-zinc-100 w-full mt-4" />
+              <div key={i} className="bg-white p-4 animate-pulse space-y-3">
+                <div className="aspect-square bg-zinc-100 rounded-[24px]" />
+                <div className="h-3 bg-zinc-100 rounded-full w-1/2" />
+                <div className="h-4 bg-zinc-100 rounded-full w-3/4" />
               </div>
             ))}
           </div>
         ) : products.length === 0 ? (
-          /* Empty State */
-          <div className="max-w-xl mx-auto py-12 text-center space-y-6">
-            <div className="w-16 h-16 mx-auto bg-[#f4f4f5] border border-zinc-200 flex items-center justify-center">
-              <Heart className="w-8 h-8 text-zinc-400 stroke-[1.5]" />
+          <div className="max-w-xl mx-auto py-16 text-center space-y-6">
+            <div className="w-16 h-16 mx-auto rounded-full bg-zinc-100 flex items-center justify-center">
+              <Heart className="w-7 h-7 text-zinc-400 stroke-[1.5]" />
             </div>
 
-            <div className="space-y-2">
-              <h2 className="text-2xl font-serif text-zinc-950 uppercase tracking-tight">
-                {isViewingShared ? 'По ссылке не найдено товаров' : 'Ваш список желаний пуст'}
+            <div className="space-y-1.5">
+              <h2 className="text-xl sm:text-2xl font-light text-zinc-950">
+                Ваш список желаний пуст
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-500 font-light leading-relaxed">
-                {isViewingShared
-                  ? 'Возможно, ссылка устарела или содержит некорректные идентификаторы ароматов.'
-                  : 'Нажимайте на сердечко в каталоге или карточке товара, чтобы сохранить понравившиеся ароматы, сравнивать их и делиться ссылкой с друзьями.'}
+              <p className="text-xs sm:text-sm text-zinc-500 font-light leading-relaxed text-delicate">
+                Нажимайте на сердечко в каталоге или карточке товара, чтобы сохранить понравившиеся флаконы и распивы.
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <div className="pt-2">
               <Link
                 to="/catalog"
-                className="px-6 py-3.5 bg-black text-white hover:bg-zinc-800 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                className="pill-btn-black py-3 px-8 rounded-full text-xs font-light inline-flex items-center gap-2"
               >
                 <span>Перейти в каталог</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Popular perfumes carousel / grid preview */}
             {popularHits.length > 0 && (
-              <div className="pt-12 text-left border-t border-zinc-200">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-950">
-                    Популярные ароматы для вдохновения
-                  </h3>
-                  <Link
-                    to="/catalog?isHit=1"
-                    className="text-xs text-zinc-500 hover:text-black uppercase tracking-wider font-semibold"
-                  >
-                    Все хиты →
-                  </Link>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              <div className="pt-14 text-left border-t border-zinc-200/70">
+                <h3 className="text-xs uppercase tracking-[0.16em] font-normal text-zinc-400 mb-6">
+                  Популярные композиции для вдохновения
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6">
                   {popularHits.map(hit => (
-                    <div
-                      key={hit.id}
-                      className="border border-zinc-200 p-2.5 hover:border-black transition-colors flex flex-col justify-between"
-                    >
-                      <Link to={`/product/${hit.slug}`} className="block">
-                        <div className="aspect-square bg-[#f4f4f5] p-2 mb-2 flex items-center justify-center">
-                          <img
-                            src={hit.images[0] || PLACEHOLDER}
-                            alt={hit.name}
-                            className="w-full h-full object-contain"
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className="text-[10px] font-bold uppercase text-zinc-400 truncate">
-                          {hit.brand}
-                        </div>
-                        <div className="text-xs font-serif font-medium text-zinc-950 truncate">
-                          {hit.name}
-                        </div>
-                      </Link>
-                      <div className="mt-2 pt-2 border-t border-zinc-100 flex items-center justify-between">
-                        <span className="text-xs font-bold text-zinc-950">
-                          {(hit.minPrice ?? 0).toLocaleString('ru-RU')} ₽
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => toggleWishlist(hit.id, hit)}
-                          className="p-1 text-zinc-400 hover:text-black"
-                          title="Добавить в вишлист"
-                        >
-                          <Heart className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+                    <ProductCard key={hit.id} perfume={hit} />
                   ))}
                 </div>
               </div>
             )}
           </div>
         ) : (
-          /* Products Grid */
-          <div className="space-y-8">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="space-y-10">
+            {/* Pure White Borderless Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
               {products.map(perfume => (
                 <WishlistCard
                   key={perfume.id}
@@ -651,37 +522,31 @@ export const WishlistPage: React.FC = () => {
             </div>
 
             {/* Bottom Controls */}
-            <div className="pt-6 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-50 p-4 sm:p-6">
-              <div className="flex items-center gap-3 text-xs text-zinc-600">
-                <Share2 className="w-4 h-4 text-zinc-500" />
-                <span>
-                  Этим списком можно делиться в любых мессенджерах. Ссылка сохраняет актуальные
-                  позиции.
-                </span>
+            <div className="p-5 sm:p-6 rounded-[24px] bg-[#F7F7F8] border border-zinc-200/70 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5 text-xs text-zinc-500 font-light text-delicate">
+                <Share2 className="w-4 h-4 text-zinc-700" />
+                <span>Ссылка сохраняет актуальный состав вишлиста и готова к отправке в мессенджерах.</span>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                {!isViewingShared && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (window.confirm('Вы уверены, что хотите очистить список желаний?')) {
-                        clearWishlist();
-                      }
-                    }}
-                    className="text-xs text-zinc-400 hover:text-rose-600 transition-colors uppercase tracking-wider font-bold"
-                  >
-                    Очистить список
-                  </button>
-                )}
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('Очистить весь список желаний?')) {
+                      clearWishlist();
+                    }
+                  }}
+                  className="text-xs text-zinc-400 hover:text-black transition-colors font-light"
+                >
+                  Очистить список
+                </button>
 
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="px-4 py-2 bg-black text-white hover:bg-zinc-800 text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                  className="pill-btn-black py-2.5 px-6 rounded-full text-xs font-light"
                 >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>{copiedLink ? 'Скопировано!' : 'Скопировать ссылку'}</span>
+                  {copiedLink ? 'Скопировано!' : 'Скопировать ссылку'}
                 </button>
               </div>
             </div>

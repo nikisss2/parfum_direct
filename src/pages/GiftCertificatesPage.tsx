@@ -58,14 +58,13 @@ export const GiftCertificatesPage: React.FC = () => {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [senderName, setSenderName] = useState('');
   const [message, setMessage] = useState('');
-  const [deliveryType, setDeliveryType] = useState<'digital' | 'physical'>('digital');
   const [addedSuccess, setAddedSuccess] = useState(false);
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
 
     const certTitle = `Подарочный сертификат Maison Arôme — ${selectedAmount.toLocaleString('ru-RU')} ₽`;
-    const certSubtitle = `${deliveryType === 'digital' ? 'Электронный' : 'Физический в конверте'} · ${selectedDesign.name}${
+    const certSubtitle = `Электронный сертификат · ${selectedDesign.name}${
       recipientName ? ` для ${recipientName}` : ''
     }`;
 
@@ -87,12 +86,15 @@ export const GiftCertificatesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="border-b border-zinc-200 bg-zinc-50 py-12 sm:py-16">
+      <section className="border-b border-zinc-100 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-3xl sm:text-5xl font-serif font-normal text-zinc-950 tracking-tight leading-tight">
+          <span className="text-[11px] font-normal uppercase tracking-[0.18em] text-zinc-400">
+            Maison Arôme
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-zinc-950 tracking-tight mt-1">
             Подарочные сертификаты
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-zinc-500 max-w-xl mx-auto leading-relaxed font-light text-delicate">
             Подарите свободу выбора любимого аромата. Сертификат действует на весь каталог: оригинальные полноразмерные флаконы и распивы от 1 мл.
           </p>
         </div>
@@ -104,13 +106,13 @@ export const GiftCertificatesPage: React.FC = () => {
           {/* Left Column: Live Card Preview */}
           <div className="lg:col-span-5 space-y-6">
             <div className="sticky top-24">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4 font-sans">
+              <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400 mb-4">
                 Предпросмотр сертификата
               </h2>
 
               {/* The Virtual Card */}
               <div
-                className={`w-full aspect-[1.6/1] ${selectedDesign.bgColor} ${selectedDesign.textColor} p-6 sm:p-8 flex flex-col justify-between shadow-2xl border ${selectedDesign.borderColor} transition-all duration-300 relative overflow-hidden`}
+                className={`w-full aspect-[1.6/1] ${selectedDesign.bgColor} ${selectedDesign.textColor} p-6 sm:p-8 flex flex-col justify-between rounded-3xl shadow-xl border ${selectedDesign.borderColor} transition-all duration-300 relative overflow-hidden`}
               >
                 {/* Subtle Luxury Pattern Overlay */}
                 <div className="absolute -right-12 -top-12 w-40 h-40 bg-white/5 rounded-full blur-2xl pointer-events-none" />
@@ -148,18 +150,18 @@ export const GiftCertificatesPage: React.FC = () => {
               </div>
 
               {/* Card Perks */}
-              <div className="mt-6 space-y-2 text-xs text-zinc-600 bg-zinc-50 p-4 border border-zinc-200">
-                <div className="flex items-center gap-2">
+              <div className="mt-6 space-y-2.5 text-xs text-zinc-600 bg-zinc-50/70 p-5 rounded-2xl border border-zinc-200/80">
+                <div className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Действует на все распивы, флаконы и наборы</span>
+                  <span className="font-light text-delicate">Действует на все распивы, флаконы и наборы</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Срок действия не ограничен</span>
+                  <span className="font-light text-delicate">Срок действия не ограничен</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Можно расходовать баланс за несколько заказов</span>
+                  <span className="font-light text-delicate">Можно расходовать баланс за несколько заказов</span>
                 </div>
               </div>
             </div>
@@ -170,7 +172,7 @@ export const GiftCertificatesPage: React.FC = () => {
             <form onSubmit={handleAddToCart} className="space-y-8">
               {/* Step 1: Denomination */}
               <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-950">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-950">
                   1. Выберите номинал сертификата *
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -179,10 +181,10 @@ export const GiftCertificatesPage: React.FC = () => {
                       key={amt}
                       type="button"
                       onClick={() => setSelectedAmount(amt)}
-                      className={`py-3 px-4 text-xs font-bold font-sans tabular-nums uppercase tracking-wider border transition-all cursor-pointer ${
+                      className={`py-3 px-4 rounded-full text-xs font-medium font-sans tabular-nums uppercase tracking-wider transition-all cursor-pointer ${
                         selectedAmount === amt
-                          ? 'border-black bg-black text-white shadow-sm'
-                          : 'border-zinc-300 bg-white text-zinc-900 hover:border-black'
+                          ? 'border border-black bg-black text-white shadow-xs'
+                          : 'border border-zinc-200/80 bg-white text-zinc-900 hover:border-black'
                       }`}
                     >
                       {amt.toLocaleString('ru-RU')} ₽
@@ -193,7 +195,7 @@ export const GiftCertificatesPage: React.FC = () => {
 
               {/* Step 2: Design */}
               <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-950">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-950">
                   2. Дизайн карты
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -202,115 +204,88 @@ export const GiftCertificatesPage: React.FC = () => {
                       key={d.id}
                       type="button"
                       onClick={() => setSelectedDesign(d)}
-                      className={`p-3 border text-xs font-medium text-left transition-all cursor-pointer ${
+                      className={`p-3.5 rounded-2xl border text-xs font-medium text-left transition-all cursor-pointer ${
                         selectedDesign.id === d.id
                           ? 'border-black ring-1 ring-black bg-zinc-50'
-                          : 'border-zinc-200 hover:border-zinc-400 bg-white'
+                          : 'border-zinc-200/80 hover:border-zinc-400 bg-white'
                       }`}
                     >
-                      <div className={`w-full h-8 ${d.bgColor} border ${d.borderColor} mb-2`} />
-                      <div className="text-[11px] font-bold text-zinc-900 truncate">{d.name}</div>
+                      <div className={`w-full h-8 rounded-xl ${d.bgColor} border ${d.borderColor} mb-2 shadow-2xs`} />
+                      <div className="text-[11px] font-medium text-zinc-900 truncate">{d.name}</div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Step 3: Delivery Format */}
+              {/* Step 3: Format */}
               <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-950">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-950">
                   3. Формат получения
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label
-                    onClick={() => setDeliveryType('digital')}
-                    className={`p-4 border cursor-pointer flex items-start gap-3 transition-colors ${
-                      deliveryType === 'digital' ? 'border-black bg-zinc-50' : 'border-zinc-200 bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="deliveryType"
-                      checked={deliveryType === 'digital'}
-                      onChange={() => setDeliveryType('digital')}
-                      className="mt-0.5 accent-black"
-                    />
+                <div className="p-4 sm:p-5 rounded-2xl border border-zinc-200/80 bg-zinc-50 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center shrink-0">
+                      <Gift className="w-4 h-4" />
+                    </div>
                     <div>
-                      <div className="text-xs font-bold uppercase text-zinc-950">Электронный сертификат</div>
-                      <div className="text-[11px] text-zinc-500 mt-0.5">
-                        Мгновенная отправка в PDF на e-mail или в Telegram
+                      <div className="text-xs font-semibold uppercase text-zinc-950">Электронный сертификат</div>
+                      <div className="text-[11px] text-zinc-500 mt-0.5 font-light text-delicate">
+                        Мгновенная отправка в дизайнерском PDF на e-mail или в Telegram сразу после оплаты
                       </div>
                     </div>
-                  </label>
-
-                  <label
-                    onClick={() => setDeliveryType('physical')}
-                    className={`p-4 border cursor-pointer flex items-start gap-3 transition-colors ${
-                      deliveryType === 'physical' ? 'border-black bg-zinc-50' : 'border-zinc-200 bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="deliveryType"
-                      checked={deliveryType === 'physical'}
-                      onChange={() => setDeliveryType('physical')}
-                      className="mt-0.5 accent-black"
-                    />
-                    <div>
-                      <div className="text-xs font-bold uppercase text-zinc-950">Физический в конверте</div>
-                      <div className="text-[11px] text-zinc-500 mt-0.5">
-                        Плотный тиснёный конверт с шёлковой лентой
-                      </div>
-                    </div>
-                  </label>
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-medium uppercase tracking-wider shrink-0">
+                    Мгновенно
+                  </span>
                 </div>
               </div>
 
               {/* Step 4: Personalization */}
               <div className="space-y-4 pt-2">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-950">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-950">
                   4. Персонализация (по желанию)
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] text-zinc-600 mb-1">Имя получателя</label>
+                    <label className="block text-[11px] text-zinc-600 mb-1 font-light text-delicate">Имя получателя</label>
                     <input
                       type="text"
                       placeholder="Например: Анастасия"
                       value={recipientName}
                       onChange={e => setRecipientName(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 focus:border-black outline-none bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 focus:border-black outline-none bg-white font-light"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] text-zinc-600 mb-1">E-mail получателя (или ваш)</label>
+                    <label className="block text-[11px] text-zinc-600 mb-1 font-light text-delicate">E-mail получателя (или ваш)</label>
                     <input
                       type="email"
                       placeholder="friend@mail.ru"
                       value={recipientEmail}
                       onChange={e => setRecipientEmail(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 border border-zinc-300 focus:border-black outline-none bg-white"
+                      className="w-full text-xs px-4 py-2.5 rounded-full border border-zinc-200 focus:border-black outline-none bg-white font-light"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-zinc-600 mb-1">Тёплые пожелания</label>
+                  <label className="block text-[11px] text-zinc-600 mb-1 font-light text-delicate">Тёплые пожелания</label>
                   <textarea
                     rows={2}
                     placeholder="С днём рождения! Пусть этот аромат напоминает о самых счастливых моментах..."
                     value={message}
                     onChange={e => setMessage(e.target.value)}
-                    className="w-full text-xs px-3.5 py-2 border border-zinc-300 focus:border-black outline-none bg-white"
+                    className="w-full text-xs px-4 py-3 rounded-2xl border border-zinc-200 focus:border-black outline-none bg-white font-light"
                   />
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="pt-4 border-t border-zinc-200">
+              <div className="pt-4 border-t border-zinc-100">
                 <button
                   type="submit"
-                  className={`w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md ${
-                    addedSuccess ? 'bg-emerald-700 text-white' : 'bg-black hover:bg-zinc-800 text-white'
+                  className={`w-full py-3.5 sm:py-4 rounded-full text-xs font-medium uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md ${
+                    addedSuccess ? 'bg-emerald-700 text-white' : 'bg-black hover:bg-zinc-800 text-white active:scale-[0.99]'
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4" />

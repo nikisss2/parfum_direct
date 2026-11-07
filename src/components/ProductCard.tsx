@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Perfume, VolumeOption } from '../types';
 import { useShop } from '../context/ShopContext';
-import { Heart, ShoppingBag, Check, Plus, Minus } from 'lucide-react';
+import { Heart, Plus, Minus, Check } from 'lucide-react';
 
 const PLACEHOLDER = '/assets/placeholder-product.svg';
 
@@ -12,7 +12,6 @@ interface ProductCardProps {
 
 const getShortVolumeLabel = (vol: VolumeOption): string => {
   if (vol.label) {
-    // Сокращаем длинные названия вроде "10 мл (отливант)", "100 мл (флакон)", "92 г (флакон)"
     const match = vol.label.match(/^(\d+(?:[.,]\d+)?\s*(?:мл|ml|г|g|л|l))/i);
     if (match) return match[1].replace(/ml/i, 'мл').replace(/g/i, 'г').replace(/l/i, 'л');
     const cleaned = vol.label.replace(/\s*\((?:отливант|флакон|тестер|пробник)[^\)]*\)/gi, '').trim();
@@ -81,10 +80,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
   };
 
   const currentPrice = selectedVolume?.price ?? perfume.minPrice ?? 0;
-
   const isDecantCategory = perfume.category === 'decants' || perfume.category === 'decant' || perfume.kindLabel === 'РАСПИВ';
 
-  // Дедуплицируем объемы по миллилитрам, чтобы не было "2 мл" и "2 мл (отливант)" одновременно
   const uniqueVolumes = React.useMemo(() => {
     const map = new Map<number, VolumeOption>();
     for (const v of perfume.volumes || []) {
@@ -98,35 +95,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
     return Array.from(map.values()).sort((a, b) => a.volumeMl - b.volumeMl || a.price - b.price);
   }, [perfume.volumes, isDecantCategory]);
 
-  // На карточке товара в каталоге показываем максимум 3-4 ключевых объема, чтобы не загромождать карточку 16 кнопками
   const displayedVolumes = React.useMemo(() => {
-    if (uniqueVolumes.length <= 4) {
-      return uniqueVolumes;
-    }
-    // Если объемов много, отдаем приоритет популярным распивам (3, 5, 10) и полноразмерному флакону
+    if (uniqueVolumes.length <= 4) return uniqueVolumes;
     const priority = isDecantCategory ? [3, 5, 10, 15, 20, 30] : [3, 5, 10, 50, 100];
     const picked = uniqueVolumes.filter(v => priority.includes(Math.round(v.volumeMl)));
-    if (picked.length >= 3) {
-      return picked.slice(0, 4);
-    }
+    if (picked.length >= 3) return picked.slice(0, 4);
     return uniqueVolumes.slice(0, 4);
   }, [uniqueVolumes, isDecantCategory]);
 
-  const remainingVolumesCount = uniqueVolumes.length - displayedVolumes.length;
-
-  const singleVolumeLabel = React.useMemo(() => {
-    if (displayedVolumes.length === 1) {
-      return getShortVolumeLabel(displayedVolumes[0]);
-    }
-    if (displayedVolumes.length === 0) {
-      const match = perfume.name?.match(/(\d+(?:[.,]\d+)?)\s*(?:мл|ml|г|g)\b/i);
-      if (match) return `${match[1]} ${/г|g/i.test(match[0]) ? 'г' : 'мл'}`;
-      return null;
-    }
-    return null;
-  }, [displayedVolumes, perfume.name]);
-
-  // Calculate selective fake/strikethrough discount if applicable
   const hasDiscount = !!perfume.oldPrice || (perfume.discountPercent && perfume.discountPercent > 0);
   const baseMinPrice = perfume.minPrice ?? 0;
   const calculatedOldPrice = perfume.oldPrice
@@ -134,26 +110,59 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
         ? Math.round((currentPrice * (perfume.oldPrice / baseMinPrice)) / 10) * 10
         : perfume.oldPrice)
     : (perfume.discountPercent ? Math.round((currentPrice * (1 + perfume.discountPercent / 100)) / 10) * 10 : undefined);
-  const discountTag = perfume.discountPercent ? `-${perfume.discountPercent}%` : '-9%';
-
-  // Normalize kind label (e.g. ПАРФЮМЕРНАЯ ВОДА / РАСПИВ / ДУХИ)
-  const displayKind = perfume.kindLabel
-    ? perfume.kindLabel.toUpperCase()
-    : perfume.kind === 'perfume'
-    ? 'ПАРФЮМЕРНАЯ ВОДА'
-    : 'КОСМЕТИКА И УХОД';
+  const discountTag = perfume.discountPercent ? `-${perfume.discountPercent}%` : '-10%';
 
   const productUrl = `/product/${encodeURIComponent(perfume.slug || perfume.id)}`;
 
   return (
-    <div className="group relative flex flex-col bg-white border border-transparent hover:border-zinc-300 hover:shadow-xs p-2 sm:p-3 transition-all duration-300 ease-out">
-      {/* 1. Image Container (ЗЯ soft light-gray background #f4f4f5 with centered bottle) */}
-      <div className="relative aspect-square sm:aspect-[4/5] bg-[#f4f4f5] flex items-center justify-center overflow-hidden">
-        <Link to={productUrl} className="block w-full h-full p-3 sm:p-4">
+    // Clean White Card with NO Grey Box, NO Borders, NO Contour (The Act & Blissful Reference 4)
+    <div className="bg-white p-2 sm:p-3 relative flex flex-col justify-between group transition-all duration-300 select-none">
+      <div>
+        {/* Top Floating Area: Badges & Wishlist */}
+        <div className="flex items-center justify-between gap-1.5 mb-1 min-h-[26px]">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {perfume.isHit ? (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black text-white shadow-xs">
+                ХИТ
+              </span>
+            ) : perfume.isNew ? (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-zinc-100 text-zinc-700">
+                Новинка
+              </span>
+            ) : null}
+
+            {hasDiscount && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#5A6B32] text-white shadow-xs">
+                {discountTag}
+              </span>
+            )}
+
+            {!perfume.isHit && !perfume.isNew && !hasDiscount && (
+              <span className="text-[10px] sm:text-[11px] font-normal tracking-[0.14em] uppercase text-zinc-400">
+                Селектив
+              </span>
+            )}
+          </div>
+
+          <button
+            onClick={handleToggleFavorite}
+            aria-label={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+            className="w-8 h-8 rounded-full bg-zinc-50 hover:bg-zinc-100 text-zinc-400 hover:text-black flex items-center justify-center transition-all cursor-pointer"
+          >
+            <Heart
+              className={`w-4 h-4 transition-all ${
+                isFavorite ? 'fill-black text-black scale-110' : 'stroke-[1.5]'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* 1. Flacon Image on Pure White Background (Zero boxes/rectangles) */}
+        <Link to={productUrl} className="block relative aspect-square my-2 flex items-center justify-center overflow-hidden bg-white">
           <img
             src={perfume.images?.[0] || PLACEHOLDER}
             alt={`${perfume.brand || ''} ${perfume.name || ''}`}
-            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-400 ease-out"
+            className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-300 ease-out"
             loading="lazy"
             decoding="async"
             onError={e => {
@@ -163,181 +172,103 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           />
         </Link>
 
-        {/* Top-left Badges in refined luxury OLIVE green (#5A6B32) */}
-        <div className="absolute top-2.5 left-2.5 pointer-events-none flex flex-col gap-1 z-10">
-          {perfume.isNew ? (
-            <span className="bg-[#5A6B32] text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 leading-none select-none shadow-xs">
-              NEW
-            </span>
-          ) : perfume.isHit ? (
-            <span className="bg-[#5A6B32] text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 leading-none select-none shadow-xs">
-              ХИТ
-            </span>
-          ) : hasDiscount ? (
-            <span className="bg-[#5A6B32] text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 leading-none select-none shadow-xs">
-              {discountTag}
-            </span>
-          ) : null}
-        </div>
-
-        {/* Top-right Wishlist Heart (Minimalist outline, pure icon on gray background) */}
-        <button
-          onClick={handleToggleFavorite}
-          aria-label={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
-          className="absolute top-2.5 right-2.5 p-1 text-zinc-400 hover:text-black transition-colors z-10 cursor-pointer"
-        >
-          <Heart
-            className={`w-5 h-5 transition-transform active:scale-125 ${
-              isFavorite ? 'fill-black text-black stroke-black' : 'stroke-[1.5] text-zinc-400 hover:text-black'
-            }`}
-          />
-        </button>
-      </div>
-
-      {/* 2. Content Container */}
-      <div className="pt-3 flex-1 flex flex-col justify-between">
-        <div>
-          {/* Row 1: Volume row (Multi-choice buttons OR single volume badge for customer clarity) */}
-          {displayedVolumes.length > 1 ? (
-            <div className="flex items-center gap-1.5 flex-wrap mb-2">
-              {displayedVolumes.map(vol => {
-                const isSelected = selectedVolume?.type === vol.type || selectedVolume?.volumeMl === vol.volumeMl;
-                const shortLabel = getShortVolumeLabel(vol);
-                return (
-                  <button
-                    key={vol.type || `${vol.volumeMl}`}
-                    type="button"
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setSelectedVolume(vol);
-                    }}
-                    className={`px-2 py-0.5 border text-[11px] transition-colors rounded-none leading-tight cursor-pointer ${
-                      isSelected
-                        ? 'bg-black text-white border-black font-bold shadow-xs'
-                        : 'border-zinc-300 text-zinc-800 bg-white hover:border-black hover:text-black font-medium'
-                    }`}
-                  >
-                    {shortLabel}
-                  </button>
-                );
-              })}
-              {remainingVolumesCount > 0 && (
-                <Link
-                  to={productUrl}
-                  className="text-[11px] text-zinc-500 hover:text-black font-medium tracking-tight whitespace-nowrap pl-0.5"
+        {/* 2. Volume Selectors: Clean Pill Chips */}
+        {displayedVolumes.length > 1 && (
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap my-2">
+            {displayedVolumes.map(vol => {
+              const isSelected = selectedVolume?.type === vol.type || selectedVolume?.volumeMl === vol.volumeMl;
+              const shortLabel = getShortVolumeLabel(vol);
+              return (
+                <button
+                  key={vol.type || `${vol.volumeMl}`}
+                  type="button"
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedVolume(vol);
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-[11px] transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-black text-white font-medium shadow-xs'
+                      : 'bg-zinc-100/80 hover:bg-zinc-200/80 text-zinc-700 font-normal'
+                  }`}
                 >
-                  +{remainingVolumesCount}
-                </Link>
-              )}
-            </div>
-          ) : singleVolumeLabel ? (
-            <div className="flex items-center gap-2 flex-wrap mb-2">
-              <span className="px-2 py-0.5 border border-zinc-200 text-[11px] bg-zinc-100 text-zinc-900 font-sans tabular-nums font-medium leading-tight">
-                {singleVolumeLabel}
-              </span>
-              {(perfume.rating || 0) > 0 && (
-                <div className="flex items-center gap-1 text-[11px] font-semibold text-zinc-900">
-                  <span>{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
-                  <span className="text-amber-400 tracking-tight text-xs">★</span>
-                  <span className="text-zinc-400">({perfume.reviewsCount || 1})</span>
-                </div>
-              )}
-            </div>
-          ) : (perfume.rating || 0) > 0 ? (
-            /* Or Star Rating Line (5.0 ★★★★★ — 1) */
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-900 mb-1.5">
-              <span>{Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1)}</span>
-              <span className="text-amber-400 tracking-tight text-xs">★★★★★</span>
-              <span className="text-zinc-400">— {perfume.reviewsCount || 1}</span>
-            </div>
-          ) : null}
+                  {shortLabel}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-          {/* Row 2: Uppercase Product Kind Label (e.g. ПАРФЮМЕРНАЯ ВОДА) */}
-          <div className="text-[11px] font-bold tracking-wider text-zinc-500 uppercase mt-0.5 mb-1 truncate">
-            {displayKind}
+        {/* 3. Product Info: Bold Clean Brand + Name */}
+        <div className="mt-2 space-y-0.5">
+          <div className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-zinc-950 truncate">
+            {perfume.brand}
           </div>
 
-          {/* Row 3: Product Title: BOLD UPPERCASE BRAND + regular perfume name (HIGH CONTRAST BLACK) */}
           <Link
             to={productUrl}
-            className="block text-sm sm:text-[15px] leading-snug hover:underline line-clamp-2 mt-0.5"
+            className="block text-xs sm:text-sm font-light text-zinc-700 leading-snug line-clamp-2 hover:text-black transition-colors text-delicate"
           >
-            <span className="font-bold uppercase text-zinc-950 tracking-tight">{perfume.brand}</span>{' '}
-            <span className="font-normal text-zinc-800">{perfume.name}</span>
+            {perfume.name}
           </Link>
+        </div>
+      </div>
 
-          {/* Row 4: Olive Discount Tag */}
-          {hasDiscount && (
-            <div className="mt-2">
-              <span className="inline-flex items-center bg-[#5A6B32] text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 leading-none rounded-none">
-                СКИДКА {discountTag}
-              </span>
-            </div>
-          )}
-
-          {/* Row 5: Price display exactly as ЗЯ Screenshot: 2 371 ₽   2 790 ₽ */}
-          <div className="mt-2 flex items-baseline gap-2.5 flex-wrap">
-            <span className="text-lg sm:text-xl font-bold text-zinc-950 font-sans tracking-tight">
-              {currentPrice.toLocaleString('ru-RU')} ₽
+      {/* 4. Bottom Area: Price & Action Button (Stacked cleanly, guaranteed zero overlap on all screens) */}
+      <div className="mt-3 pt-2 space-y-2">
+        <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
+          <span className="text-sm sm:text-base font-semibold text-zinc-950 tabular-nums whitespace-nowrap">
+            {currentPrice.toLocaleString('ru-RU')} ₽
+          </span>
+          {hasDiscount && calculatedOldPrice && calculatedOldPrice > currentPrice && (
+            <span className="text-[11px] sm:text-xs text-zinc-400 line-through font-light whitespace-nowrap">
+              {calculatedOldPrice.toLocaleString('ru-RU')} ₽
             </span>
-            {hasDiscount && calculatedOldPrice && calculatedOldPrice > currentPrice && (
-              <span className="text-sm sm:text-base text-zinc-400 line-through font-normal">
-                {calculatedOldPrice.toLocaleString('ru-RU')} ₽
-              </span>
-            )}
-            {hasDiscount && (
-              <span className="text-[10px] font-bold text-[#5A6B32] uppercase">
-                {discountTag}
-              </span>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Row 6: Buy CTA Button with text "В корзину" or Quantity Counter [- N +] */}
-        <div className="mt-3 pt-2">
+        {/* Action Button: Stepper or Minimalist Pill Button - Full width for comfortable tapping */}
+        <div className="w-full">
           {inCartCount > 0 ? (
-            <div className="w-full h-9 border border-black bg-white flex items-center justify-between transition-all duration-200 animate-in fade-in">
+            <div className="h-8 sm:h-9 w-full rounded-full border border-black bg-white px-2 flex items-center justify-between shadow-xs transition-all">
               <button
                 type="button"
                 onClick={handleDecrement}
-                className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 active:scale-95 transition-all cursor-pointer"
-                aria-label="Уменьшить количество"
+                className="w-6 h-6 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-800 transition-colors cursor-pointer"
+                aria-label="Уменьшить"
               >
-                <Minus className="w-3.5 h-3.5 stroke-[2.5]" />
+                <Minus className="w-3 h-3 stroke-[2]" />
               </button>
-              <div className="flex items-center gap-1.5 select-none font-bold text-xs tracking-wider text-black">
-                <span>{inCartCount}</span>
-                <span className="text-[10px] text-zinc-500 font-normal">шт.</span>
-              </div>
+              <span className="font-medium text-xs text-black tabular-nums min-w-[16px] text-center">
+                {inCartCount}
+              </span>
               <button
                 type="button"
                 onClick={handleIncrement}
-                className="w-10 h-full flex items-center justify-center text-zinc-900 hover:bg-zinc-100 active:scale-95 transition-all cursor-pointer"
-                aria-label="Увеличить количество"
+                className="w-6 h-6 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-800 transition-colors cursor-pointer"
+                aria-label="Увеличить"
               >
-                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                <Plus className="w-3 h-3 stroke-[2]" />
               </button>
             </div>
           ) : (
             <button
               type="button"
               onClick={handleAddToCart}
-              className={`w-full py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] rounded-none cursor-pointer ${
-                isAddedAnim
-                  ? 'bg-emerald-700 border-emerald-700 text-white shadow-xs'
-                  : 'border-black bg-black text-white hover:bg-zinc-800 shadow-xs'
+              className={`w-full h-8 sm:h-9 px-3 rounded-full bg-black text-white hover:bg-zinc-800 active:scale-[0.98] text-[11px] sm:text-xs font-medium uppercase tracking-wider cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap transition-all ${
+                isAddedAnim ? 'bg-emerald-700 hover:bg-emerald-800' : ''
               }`}
             >
               {isAddedAnim ? (
                 <>
-                  <Check className="w-3.5 h-3.5 animate-in zoom-in-75 duration-200" />
-                  <span>В корзине</span>
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span className="whitespace-nowrap">В корзине</span>
                 </>
               ) : (
                 <>
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>В корзину</span>
+                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span className="whitespace-nowrap">В корзину</span>
                 </>
               )}
             </button>

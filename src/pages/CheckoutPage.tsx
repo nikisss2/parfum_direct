@@ -472,34 +472,37 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
       {/* Back button & Title */}
-      <div className="mb-6">
+      <div className="mb-8">
         <Link
           to="/cart"
-          className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider font-bold text-zinc-500 hover:text-black transition-colors mb-3"
+          className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-black transition-colors mb-3 font-light"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           <span>Вернуться в корзину</span>
         </Link>
-        <h1 className="text-2xl sm:text-4xl font-normal font-serif text-zinc-950">
+        <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400 block mb-1">
+          Maison Arôme Concierge
+        </span>
+        <h1 className="text-2xl sm:text-4xl font-light text-zinc-950 tracking-tight">
           Оформление заказа
         </h1>
-        <div className="text-xs uppercase tracking-wider text-zinc-400 mt-1 font-sans font-medium">
-          Прямое согласование, фотоконтроль флаконов и оплата в Telegram
+        <div className="text-xs text-zinc-500 mt-1 font-light text-delicate">
+          Прямое согласование, фотоконтроль флаконов перед отправкой и бережная доставка
         </div>
       </div>
 
       {/* Trust & Flow Explainer Banner */}
-      <div className="mb-8 p-5 bg-[#f4f4f5] border border-zinc-200 rounded-none flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 bg-black text-white flex items-center justify-center shrink-0">
+      <div className="mb-8 p-5 sm:p-6 bg-[#F7F7F8] border border-zinc-200/70 rounded-[28px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-start gap-3.5">
+          <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center shrink-0 shadow-2xs">
             <Send className="w-4 h-4 text-white" />
           </div>
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-zinc-950">
-              Как работает оформление через Telegram:
+            <div className="text-xs font-medium text-zinc-950">
+              Как работает согласование заказа:
             </div>
-            <div className="text-xs text-zinc-600 mt-0.5 leading-relaxed">
-              После нажатия кнопки <strong>«Оформить заказ в Telegram»</strong> сформированные данные заказа автоматически откроются в вашем диалоге с менеджером (и сохранятся в буфере обмена). Менеджер подтвердит наличие, пришлет фото флаконов перед отправкой и реквизиты для оплаты (СБП / перевод).
+            <div className="text-xs text-zinc-500 mt-0.5 leading-relaxed font-light text-delicate">
+              После нажатия <strong>«Оформить заказ в Telegram»</strong> данные заказа автоматически откроются в диалоге с нами. Мы пришлем подробный фотоотчет собранных флаконов и согласуем удобное время доставки.
             </div>
           </div>
         </div>
@@ -507,19 +510,19 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
 
       <form onSubmit={handleOrderSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Columns: Form Fields */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           {/* Section 1: Контакты получателя */}
-          <div className="p-6 rounded-none bg-white border border-zinc-200 space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-sans flex items-center justify-center font-bold">
+          <div className="p-6 sm:p-8 rounded-[28px] sm:rounded-[32px] bg-white border border-zinc-200/70 space-y-5 shadow-2xs">
+            <h2 className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-950 flex items-center gap-2.5">
+              <span className="w-5 h-5 rounded-full bg-black text-white text-[10px] flex items-center justify-center font-medium">
                 1
               </span>
-              Данные получателя
+              <span>Данные получателя</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
                   Имя и Фамилия *
                 </label>
                 <input
@@ -527,15 +530,15 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                   placeholder="Иван Иванов"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
-                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none ${
-                    errors.fullName ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900'
+                  className={`w-full text-xs px-4 py-3 rounded-full border outline-none font-light transition-all ${
+                    errors.fullName ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900'
                   }`}
                 />
-                {errors.fullName && <div className="text-[11px] text-rose-600 mt-1">{errors.fullName}</div>}
+                {errors.fullName && <div className="text-[11px] text-rose-600 mt-1 pl-3">{errors.fullName}</div>}
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
                   Номер телефона *
                 </label>
                 <input
@@ -543,73 +546,68 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                   placeholder="+7 (999) 000-00-00"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
-                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-sans tabular-nums ${
-                    errors.phone ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900'
+                  className={`w-full text-xs px-4 py-3 rounded-full border outline-none font-light tabular-nums transition-all ${
+                    errors.phone ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900'
                   }`}
                 />
-                {errors.phone && <div className="text-[11px] text-rose-600 mt-1">{errors.phone}</div>}
+                {errors.phone && <div className="text-[11px] text-rose-600 mt-1 pl-3">{errors.phone}</div>}
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
-                  Ваш Telegram ник (@username) *
+                <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
+                  Telegram ник (@username) *
                 </label>
                 <input
                   type="text"
                   placeholder="@ivanov или номер"
                   value={telegram}
                   onChange={e => setTelegram(e.target.value)}
-                  className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none font-sans ${
-                    errors.telegram ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900'
+                  className={`w-full text-xs px-4 py-3 rounded-full border outline-none font-light transition-all ${
+                    errors.telegram ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900'
                   }`}
                 />
-                {errors.telegram && <div className="text-[11px] text-rose-600 mt-1">{errors.telegram}</div>}
+                {errors.telegram && <div className="text-[11px] text-rose-600 mt-1 pl-3">{errors.telegram}</div>}
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
-                  Электронная почта (для истории)
+                <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
+                  Электронная почта
                 </label>
                 <input
                   type="email"
-                  placeholder="ivan@example.com (необязательно)"
+                  placeholder="ivan@example.com (для чека)"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full text-xs px-3.5 py-2.5 rounded-none border border-zinc-300 focus:border-black bg-white text-zinc-900 outline-none"
+                  className="w-full text-xs px-4 py-3 rounded-full border border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900 outline-none font-light transition-all"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 2: Доставка и Адрес */}
-          <div className="p-6 rounded-none bg-white border border-zinc-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-950 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-none bg-black text-white text-[10px] font-sans flex items-center justify-center font-bold">
+          <div className="p-6 sm:p-8 rounded-[28px] sm:rounded-[32px] bg-white border border-zinc-200/70 space-y-6 shadow-2xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h2 className="text-xs font-normal uppercase tracking-[0.16em] text-zinc-950 flex items-center gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-black text-white text-[10px] flex items-center justify-center font-medium">
                   2
                 </span>
-                Доставка и Пункт выдачи (ПВЗ)
+                <span>Доставка и Пункт выдачи (ПВЗ)</span>
               </h2>
 
               {isFreeShipping && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-[#5A6B32] text-white text-[10px] font-bold uppercase tracking-wider font-sans">
-                  <Check className="w-3.5 h-3.5" />
-                  Бесплатная доставка от 25 000 ₽ (до 2 500 км)
-                </span>
-              )}
-              {cartTotalPrice >= 25000 && !isWithinDistance && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-none bg-amber-100 text-amber-950 border border-amber-300 text-[10px] font-bold uppercase tracking-wider font-sans">
-                  Свыше 2 500 км от МСК · Расчет ТК от 0 ₽
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-normal uppercase tracking-wider">
+                  <Check className="w-3 h-3 text-emerald-600" />
+                  Бесплатная доставка от 25 000 ₽
                 </span>
               )}
             </div>
 
             {/* Quick Saved Addresses if logged in */}
             {user && user.savedAddresses && user.savedAddresses.length > 0 && (
-              <div className="p-3.5 bg-zinc-50 rounded-none border border-zinc-200 space-y-2">
-                <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
-                  <Building className="w-3.5 h-3.5 text-zinc-900" />
-                  Ваши сохранённые адреса из профиля:
+              <div className="p-4 bg-zinc-50 rounded-[20px] border border-zinc-200/60 space-y-2">
+                <div className="text-[10px] font-normal text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Building className="w-3.5 h-3.5 text-zinc-700" />
+                  <span>Сохранённые адреса:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {user.savedAddresses.map(saved => (
@@ -617,11 +615,11 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                       key={saved.id}
                       type="button"
                       onClick={() => handleSelectSavedAddress(saved)}
-                      className="px-3 py-1.5 rounded-none bg-white hover:bg-black hover:text-white border border-zinc-300 text-left text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-full bg-white hover:border-black border border-zinc-200/80 text-left text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     >
-                      <MapPin className="w-3 h-3 text-zinc-900 shrink-0" />
-                      <span className="font-bold">{saved.label}:</span>
-                      <span className="truncate max-w-[200px]">{saved.address}</span>
+                      <MapPin className="w-3 h-3 text-zinc-700 shrink-0" />
+                      <span className="font-medium text-zinc-900">{saved.label}:</span>
+                      <span className="truncate max-w-[200px] text-zinc-500 font-light">{saved.address}</span>
                     </button>
                   ))}
                 </div>
@@ -631,42 +629,42 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Dynamic City Search with Autocomplete */}
               <div ref={cityRef} className="relative">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
                   Город доставки *
                 </label>
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Введите город (напр. Екатеринбург)..."
+                    placeholder="Введите город (напр. Москва)..."
                     value={city}
                     onFocus={() => setCityDropdownOpen(true)}
                     onChange={e => {
                       setCity(e.target.value);
                       setCityDropdownOpen(true);
                     }}
-                    className={`w-full text-xs px-3.5 py-2.5 rounded-none border outline-none pr-8 ${
-                      errors.city ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900'
+                    className={`w-full text-xs px-4 py-3 rounded-full border outline-none pr-9 font-light transition-all ${
+                      errors.city ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900'
                     }`}
                   />
-                  <MapPin className="w-4 h-4 text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <MapPin className="w-4 h-4 text-zinc-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
-                {errors.city && <div className="text-[11px] text-rose-600 mt-1">{errors.city}</div>}
+                {errors.city && <div className="text-[11px] text-rose-600 mt-1 pl-3">{errors.city}</div>}
 
                 {/* Autocomplete Dropdown */}
                 {cityDropdownOpen && filteredCities.length > 0 && (
-                  <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-zinc-300 shadow-xl z-20 max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-200 rounded-none">
+                  <div className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-200/80 shadow-xl z-20 max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-200 rounded-2xl">
                     {filteredCities.map(c => (
                       <button
                         key={c.name}
                         type="button"
                         onClick={() => handleSelectCity(c)}
-                        className="w-full text-left px-3.5 py-2 hover:bg-zinc-100 flex items-center justify-between text-xs border-b border-zinc-100 last:border-b-0 cursor-pointer"
+                        className="w-full text-left px-4 py-2.5 hover:bg-zinc-50 flex items-center justify-between text-xs border-b border-zinc-100 last:border-b-0 cursor-pointer transition-colors"
                       >
                         <div>
-                          <span className="font-bold text-zinc-950">{c.name}</span>
-                          <span className="text-[10px] text-zinc-500 ml-1.5">{c.region}</span>
+                          <span className="font-normal text-zinc-950">{c.name}</span>
+                          <span className="text-[10px] text-zinc-400 ml-1.5 font-light">{c.region}</span>
                         </div>
-                        <span className="text-[10px] text-zinc-400 font-sans tabular-nums">{c.deliveryDays}</span>
+                        <span className="text-[10px] text-zinc-400 tabular-nums font-light">{c.deliveryDays}</span>
                       </button>
                     ))}
                   </div>
@@ -674,12 +672,12 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
                   Срок доставки до вашего города:
                 </label>
-                <div className="text-xs px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 text-zinc-900 font-sans tabular-nums flex items-center justify-between">
+                <div className="text-xs px-4 py-3 bg-zinc-50 rounded-full border border-zinc-200/70 text-zinc-900 font-light tabular-nums flex items-center justify-between">
                   <span>{city}</span>
-                  <span className="font-bold text-black">{cityDeliveryDays}</span>
+                  <span className="font-medium text-black">{cityDeliveryDays}</span>
                 </div>
               </div>
             </div>
@@ -687,28 +685,24 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
             {/* Delivery Methods Grid */}
             <div className="pt-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-950">
-                  Служба доставки:
+                <label className="block text-xs font-normal uppercase tracking-[0.14em] text-zinc-400">
+                  Служба доставки
                 </label>
-                <span className="text-[11px] font-bold text-zinc-800 bg-amber-50 px-2 py-0.5 border border-amber-200">
+                <span className="text-[11px] font-light text-zinc-500">
                   Склад в Москве · Доставка от 0 ₽
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-500 mb-2 font-light">
-                Стоимость доставки от 0 ₽ — зависит от расстояния и выбранной компании доставки.
-              </p>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {DELIVERY_OPTIONS.map(opt => {
                   const isSelected = selectedDelivery.id === opt.id;
-                  const priceToPay = isFreeShipping ? 0 : opt.price;
                   return (
                     <label
                       key={opt.id}
                       onClick={() => setSelectedDelivery(opt)}
-                      className={`flex items-start justify-between p-3.5 rounded-none border cursor-pointer transition-colors ${
+                      className={`flex items-start justify-between p-4 rounded-[20px] border cursor-pointer transition-all ${
                         isSelected
-                          ? 'border-black bg-zinc-50/70 shadow-xs'
-                          : 'border-zinc-200 hover:border-zinc-300 bg-white'
+                          ? 'border-black bg-zinc-50/80 shadow-2xs'
+                          : 'border-zinc-200/80 hover:border-zinc-300 bg-white'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -717,22 +711,22 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                           name="deliveryOption"
                           checked={isSelected}
                           onChange={() => setSelectedDelivery(opt)}
-                          className="mt-0.5 accent-black rounded-none"
+                          className="mt-1 accent-black rounded-full"
                         />
                         <div>
-                          <div className="text-xs font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-2">
+                          <div className="text-xs font-normal text-zinc-950 flex items-center gap-2">
                             <span>{opt.name}</span>
-                            <span className="text-[10px] text-zinc-400 font-sans tabular-nums font-normal">({opt.time})</span>
+                            <span className="text-[10px] text-zinc-400 font-light">({opt.time})</span>
                           </div>
-                          <div className="text-[11px] text-zinc-500 mt-0.5">{opt.description}</div>
+                          <div className="text-[11px] text-zinc-500 mt-0.5 font-light text-delicate">{opt.description}</div>
                         </div>
                       </div>
 
-                      <div className="text-xs font-bold font-sans tabular-nums text-zinc-950 shrink-0 ml-4">
+                      <div className="text-xs font-medium tabular-nums text-zinc-950 shrink-0 ml-4">
                         {isFreeShipping ? (
-                          <span className="text-[#5A6B32] uppercase">Бесплатно</span>
+                          <span className="text-emerald-700">Бесплатно</span>
                         ) : (
-                          <span className="text-zinc-700">{opt.priceNote}</span>
+                          <span className="text-zinc-600 font-light">{opt.priceNote}</span>
                         )}
                       </div>
                     </label>
@@ -741,82 +735,59 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
               </div>
             </div>
 
-            {/* Address / PVZ Input with Instant Autocomplete for all companies */}
+            {/* Address / PVZ Input */}
             <div ref={pvzInputRef} className="pt-2 relative space-y-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-950 flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-amber-500" />
-                  <span>Адрес пункта выдачи (ПВЗ всех компаний) или адрес доставки *</span>
-                </label>
-                <span className="text-[10px] text-zinc-500 font-sans">
-                  Яндекс Маркет · СДЭК · Ozon · Boxberry · 5POST · Почта РФ
-                </span>
-              </div>
+              <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-zinc-700" />
+                <span>Адрес пункта выдачи (ПВЗ всех компаний) или адрес доставки *</span>
+              </label>
 
               <div className="relative">
                 <input
                   type="text"
-                  placeholder={`Начните вводить улицу или ПВЗ в г. ${city} (напр. Ленина, Мира, Тверская)...`}
+                  placeholder={`Начните вводить улицу или ПВЗ в г. ${city}...`}
                   value={address}
                   onFocus={() => setPvzDropdownOpen(true)}
                   onChange={e => {
                     setAddress(e.target.value);
                     setPvzDropdownOpen(true);
                   }}
-                  className={`w-full text-xs px-3.5 py-3 rounded-none border outline-none pr-9 ${
-                    errors.address ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-300 focus:border-black bg-white text-zinc-900 shadow-xs'
+                  className={`w-full text-xs px-4 py-3 rounded-full border outline-none pr-9 font-light transition-all ${
+                    errors.address ? 'border-rose-500 bg-rose-50/50' : 'border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900 shadow-2xs'
                   }`}
                 />
-                <MapPin className="w-4 h-4 text-zinc-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <MapPin className="w-4 h-4 text-zinc-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-              {errors.address && <div className="text-[11px] text-rose-600 mt-1">{errors.address}</div>}
+              {errors.address && <div className="text-[11px] text-rose-600 mt-1 pl-3">{errors.address}</div>}
 
               {/* Instant PVZ Suggestions Dropdown */}
               {pvzDropdownOpen && pvzSuggestions.length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-zinc-300 shadow-2xl z-30 max-h-72 overflow-y-auto divide-y divide-zinc-100 animate-in fade-in slide-in-from-top-1 duration-200 rounded-none">
-                  <div className="px-3.5 py-2 bg-zinc-50 text-[10px] font-bold uppercase text-zinc-600 tracking-wider flex items-center justify-between sticky top-0 z-10 border-b border-zinc-200">
-                    <span>Пункты выдачи в г. {city} (все службы)</span>
-                    <span className="text-zinc-400 font-sans tabular-nums">{pvzSuggestions.length} предложений</span>
+                <div className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-200/80 shadow-2xl z-30 max-h-72 overflow-y-auto divide-y divide-zinc-100 animate-in fade-in slide-in-from-top-1 duration-200 rounded-2xl">
+                  <div className="px-4 py-2.5 bg-zinc-50 text-[10px] font-normal uppercase text-zinc-500 tracking-wider flex items-center justify-between sticky top-0 z-10 border-b border-zinc-200/70">
+                    <span>Пункты выдачи в г. {city}</span>
+                    <span className="text-zinc-400 tabular-nums">{pvzSuggestions.length} адресов</span>
                   </div>
                   {pvzSuggestions.map(p => (
                     <button
                       key={p.id}
                       type="button"
                       onClick={() => handleSelectPvzPoint(p)}
-                      className="w-full text-left px-3.5 py-2.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 cursor-pointer group"
+                      className="w-full text-left px-4 py-2.5 hover:bg-zinc-50 transition-colors flex items-start justify-between gap-3 cursor-pointer group"
                     >
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span
-                            className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-none font-sans ${
-                              p.network === 'yandex'
-                                ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                                : p.network === 'cdek'
-                                ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-                                : p.network === 'fivepost'
-                                ? 'bg-orange-100 text-orange-900 border border-orange-300'
-                                : 'bg-zinc-200 text-zinc-800'
-                            }`}
-                          >
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 font-medium">
                             {p.networkName}
                           </span>
-                          <span className="text-xs font-bold text-zinc-900 group-hover:text-black">
+                          <span className="text-xs font-medium text-zinc-900 group-hover:text-black">
                             {p.name}
                           </span>
-                          {p.metro && (
-                            <span className="text-[10px] text-zinc-500 font-sans">
-                              м. {p.metro}
-                            </span>
-                          )}
                         </div>
-                        <div className="text-[11px] text-zinc-600 mt-0.5 truncate">
+                        <div className="text-[11px] text-zinc-500 mt-0.5 truncate font-light">
                           {p.address}
                         </div>
-                        <div className="text-[10px] text-zinc-400 font-sans tabular-nums mt-0.5">
-                          {p.workTime} · {p.deliveryDays}
-                        </div>
                       </div>
-                      <span className="text-[10px] font-bold uppercase text-black shrink-0 border border-zinc-300 group-hover:border-black group-hover:bg-black group-hover:text-white px-2 py-1 transition-colors self-center">
+                      <span className="text-[10px] uppercase font-light text-black shrink-0 border border-zinc-200 group-hover:border-black rounded-full px-2.5 py-1 transition-colors self-center">
                         Выбрать
                       </span>
                     </button>
@@ -827,50 +798,34 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
 
             {/* Selected PVZ Card Highlight */}
             {selectedPvz && (
-              <div className="p-3.5 bg-zinc-950 text-white border border-black flex items-center justify-between gap-3">
+              <div className="p-4 rounded-[20px] bg-zinc-950 text-white flex items-center justify-between gap-3 shadow-sm">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 text-[9px] font-sans uppercase bg-amber-400 text-black font-bold">
+                    <span className="px-2 py-0.5 text-[9px] rounded-full bg-white/20 text-white font-medium">
                       {selectedPvz.networkName}
                     </span>
-                    <span className="text-xs font-bold truncate">{selectedPvz.name}</span>
+                    <span className="text-xs font-medium truncate">{selectedPvz.name}</span>
                   </div>
-                  <div className="text-[11px] text-zinc-300 mt-0.5 truncate">{selectedPvz.address}</div>
-                  <div className="text-[10px] text-zinc-400 font-sans tabular-nums mt-0.5">
-                    {selectedPvz.workTime} · Срок: {selectedPvz.deliveryDays} · от 0 ₽
-                  </div>
+                  <div className="text-[11px] text-zinc-300 mt-0.5 truncate font-light">{selectedPvz.address}</div>
                 </div>
-                <div className="px-2.5 py-1 bg-emerald-600 text-white font-sans text-[10px] uppercase font-bold shrink-0 flex items-center gap-1">
+                <div className="px-3 py-1 rounded-full bg-emerald-600 text-white text-[10px] uppercase font-medium shrink-0 flex items-center gap-1">
                   <Check className="w-3 h-3" />
                   Выбрано
                 </div>
               </div>
             )}
 
-            {/* Save address checkbox if logged in */}
-            {user && (
-              <label className="flex items-center gap-2 cursor-pointer select-none pt-1">
-                <input
-                  type="checkbox"
-                  checked={saveAddressToProfile}
-                  onChange={e => setSaveAddressToProfile(e.target.checked)}
-                  className="rounded-none accent-black w-4 h-4"
-                />
-                <span className="text-xs text-zinc-700">Сохранить этот адрес в профиле для будущих заказов</span>
-              </label>
-            )}
-
             {/* Comment */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
-                Комментарий к заказу (пожелания к упаковке, пробникам)
+              <label className="block text-[11px] font-normal uppercase tracking-[0.14em] text-zinc-400 mb-1.5">
+                Комментарий к заказу (пожелания к упаковке, блоттерам)
               </label>
               <textarea
                 rows={2}
-                placeholder="Положите, пожалуйста, фирменный блоттер или пробник свежего аромата..."
+                placeholder="Положите, пожалуйста, блоттер или пробник свежего аромата..."
                 value={comment}
                 onChange={e => setComment(e.target.value)}
-                className="w-full text-xs px-3.5 py-2 rounded-none border border-zinc-300 focus:border-black bg-white text-zinc-900 outline-none"
+                className="w-full text-xs px-4 py-3 rounded-2xl border border-zinc-200/80 focus:border-black bg-zinc-50/60 focus:bg-white text-zinc-900 outline-none font-light transition-all"
               />
             </div>
           </div>
@@ -878,32 +833,32 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
 
         {/* Right Column: Order Summary & Checkout Button */}
         <div className="space-y-6">
-          <div className="p-6 rounded-none bg-zinc-50 border border-zinc-200 space-y-5">
-            <h2 className="text-base font-normal font-serif text-zinc-950">
+          <div className="p-6 sm:p-8 rounded-[28px] sm:rounded-[32px] bg-[#F7F7F8] border border-zinc-200/70 space-y-6 shadow-2xs">
+            <h2 className="text-sm font-normal uppercase tracking-[0.16em] text-zinc-950">
               Состав заказа
             </h2>
 
             {/* Items list preview */}
-            <div className="divide-y divide-zinc-200 max-h-60 overflow-y-auto pr-1">
+            <div className="divide-y divide-zinc-200/60 max-h-60 overflow-y-auto pr-1 no-scrollbar">
               {cart.map(item => (
                 <div key={item.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <img
                       src={item.image}
                       alt=""
-                      className="w-10 h-10 object-contain bg-white border border-zinc-200 rounded-none shrink-0 p-0.5"
+                      className="w-10 h-10 object-contain bg-white border border-zinc-200/70 rounded-full shrink-0 p-1"
                     />
                     <div className="truncate">
-                      <div className="font-bold uppercase tracking-tight text-zinc-950 truncate">
+                      <div className="font-semibold text-zinc-950 truncate text-[11px] uppercase tracking-wider">
                         {item.brand}
                       </div>
-                      <div className="text-zinc-600 text-[11px] truncate">{item.name}</div>
-                      <div className="text-[10px] text-zinc-400 font-sans tabular-nums">
+                      <div className="text-zinc-600 text-xs truncate font-light text-delicate">{item.name}</div>
+                      <div className="text-[10px] text-zinc-400 tabular-nums font-light">
                         {item.volumeLabel} × {item.quantity}
                       </div>
                     </div>
                   </div>
-                  <div className="font-bold font-sans tabular-nums text-zinc-950 shrink-0">
+                  <div className="font-medium tabular-nums text-zinc-950 shrink-0">
                     {(item.price * item.quantity).toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
@@ -912,13 +867,13 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
 
             {/* Loyalty bonus redemption */}
             {user ? (
-              <div className="p-3.5 bg-zinc-900 text-white space-y-2 border border-zinc-800">
+              <div className="p-4 rounded-[20px] bg-white border border-zinc-200/80 space-y-2 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Coins className="w-4 h-4 text-amber-400" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Программа лояльности</span>
+                    <Coins className="w-4 h-4 text-amber-500" />
+                    <span className="text-xs font-medium text-zinc-900">Баллы лояльности</span>
                   </div>
-                  <span className="text-xs font-sans tabular-nums text-amber-300 font-bold">{bonusPoints} баллов</span>
+                  <span className="text-xs tabular-nums text-zinc-950 font-medium">{bonusPoints} баллов</span>
                 </div>
                 {bonusPoints > 0 ? (
                   <label className="flex items-start gap-2.5 pt-1.5 cursor-pointer select-none">
@@ -926,94 +881,77 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
                       type="checkbox"
                       checked={useBonusPoints}
                       onChange={e => setUseBonusPoints(e.target.checked)}
-                      className="mt-0.5 accent-amber-500 rounded-none w-4 h-4 shrink-0"
+                      className="mt-0.5 accent-black rounded-full w-4 h-4 shrink-0"
                     />
                     <div className="text-[11px] leading-snug">
-                      <span className="font-bold text-white block">Списать баллы на этот заказ</span>
-                      <span className="text-zinc-400 text-[10px]">
-                        Доступно к списанию до 30%: <strong className="text-white font-sans tabular-nums">{maxBonusRedeemable} ₽</strong> (1 балл = 1 ₽)
+                      <span className="text-zinc-800 font-light block">Списать баллы на этот заказ</span>
+                      <span className="text-zinc-400 text-[10px] font-light">
+                        Доступно: <strong className="text-zinc-900 tabular-nums">{maxBonusRedeemable} ₽</strong>
                       </span>
                     </div>
                   </label>
                 ) : (
-                  <p className="text-[10px] text-zinc-400 leading-tight">
-                    Баллы будут начислены после завершения этого заказа (кэшбэк от 5% до 10%).
+                  <p className="text-[10px] text-zinc-400 font-light">
+                    Баллы начисляются за каждый выполненный заказ (до 10%).
                   </p>
                 )}
               </div>
-            ) : (
-              <div className="p-3 bg-zinc-100 border border-zinc-200 text-[11px] flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-zinc-700">
-                  <Coins className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>Кэшбэк до 10% и 500 приветственных баллов</span>
-                </div>
-                <Link to="/auth?mode=login" className="text-black font-bold uppercase text-[10px] underline shrink-0 hover:text-zinc-700">
-                  Войти
-                </Link>
-              </div>
-            )}
+            ) : null}
 
             {/* Price Calculations */}
-            <div className="space-y-2 pt-4 border-t border-zinc-200 text-xs">
-              <div className="flex justify-between text-zinc-600">
+            <div className="space-y-2 pt-4 border-t border-zinc-200/70 text-xs">
+              <div className="flex justify-between text-zinc-500 font-light">
                 <span>Товары ({cart.reduce((a, b) => a + b.quantity, 0)} шт.)</span>
-                <span className="font-sans tabular-nums text-zinc-950">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
+                <span className="tabular-nums text-zinc-950 font-medium">{cartTotalPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex justify-between text-zinc-900 font-bold">
+                <div className="flex justify-between text-zinc-900 font-medium">
                   <span>Скидка</span>
-                  <span className="font-sans tabular-nums text-emerald-600">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
+                  <span className="tabular-nums text-emerald-700">−{discountAmount.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
               {appliedBonusPoints > 0 && (
-                <div className="flex justify-between text-zinc-900 font-bold">
-                  <span className="flex items-center gap-1 text-amber-800">
-                    <Coins className="w-3.5 h-3.5 text-amber-600" />
+                <div className="flex justify-between text-zinc-900 font-medium">
+                  <span className="flex items-center gap-1 text-amber-700">
+                    <Coins className="w-3.5 h-3.5" />
                     Оплата бонусами
                   </span>
-                  <span className="font-sans tabular-nums text-amber-700">−{appliedBonusPoints.toLocaleString('ru-RU')} ₽</span>
+                  <span className="tabular-nums text-amber-700">−{appliedBonusPoints.toLocaleString('ru-RU')} ₽</span>
                 </div>
               )}
 
-              <div className="flex justify-between items-center text-zinc-600">
+              <div className="flex justify-between items-center text-zinc-500 font-light">
                 <span>Доставка ({selectedDelivery.name})</span>
-                <span className="font-sans tabular-nums text-zinc-950 font-bold">
-                  {isFreeShipping ? '0 ₽ (Бесплатно)' : 'от 0 ₽'}
+                <span className="tabular-nums text-zinc-950 font-medium">
+                  {isFreeShipping ? 'Бесплатно' : 'от 0 ₽'}
                 </span>
               </div>
-              <div className="text-[10px] text-zinc-400 font-light leading-snug">
-                * Склад в Москве. Окончательный тариф доставки (от 0 ₽) рассчитывается по тарифам ТК.
-              </div>
 
-              <div className="pt-3 border-t border-zinc-200 flex justify-between text-base font-bold text-zinc-950">
-                <span className="uppercase tracking-wider">Итого к оплате:</span>
-                <span className="font-sans tabular-nums text-lg">{finalTotal.toLocaleString('ru-RU')} ₽</span>
+              <div className="pt-4 border-t border-zinc-200/70 flex justify-between items-baseline text-base font-normal text-zinc-950">
+                <span className="text-sm uppercase tracking-wider text-zinc-500 font-light">К оплате</span>
+                <span className="tabular-nums text-xl font-medium">{finalTotal.toLocaleString('ru-RU')} ₽</span>
               </div>
             </div>
 
-            {/* Legal Consent Checkbox (152-ФЗ и Оферта) */}
+            {/* Legal Consent Checkbox */}
             <div className="space-y-1 pt-1">
-              <label className="flex items-start gap-2.5 cursor-pointer text-xs text-zinc-600 select-none">
+              <label className="flex items-start gap-2.5 cursor-pointer text-xs text-zinc-500 select-none font-light">
                 <input
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={e => setAgreeTerms(e.target.checked)}
-                  className="mt-0.5 accent-black rounded-none w-4 h-4 shrink-0"
+                  className="mt-0.5 accent-black rounded-full w-4 h-4 shrink-0"
                 />
                 <span className="leading-tight text-[11px]">
-                  Я подтверждаю заказ и принимаю условия{' '}
-                  <Link to="/terms" target="_blank" className="text-zinc-950 underline hover:text-black font-semibold">
-                    Пользовательского соглашения
-                  </Link>
-                  ,{' '}
-                  <Link to="/offer" target="_blank" className="text-zinc-950 underline hover:text-black font-semibold">
-                    Публичной оферты
+                  Я принимаю условия{' '}
+                  <Link to="/offer" target="_blank" className="text-zinc-900 underline hover:text-black">
+                    Оферты
                   </Link>{' '}
                   и даю согласие на{' '}
-                  <Link to="/privacy" target="_blank" className="text-zinc-950 underline hover:text-black font-semibold">
-                    обработку персональных данных (152-ФЗ)
+                  <Link to="/privacy" target="_blank" className="text-zinc-900 underline hover:text-black">
+                    обработку данных
                   </Link>
                   .
                 </span>
@@ -1025,31 +963,29 @@ ${discountAmount > 0 ? `🏷️ Скидка: -${discountAmount.toLocaleString('
             <button
               type="submit"
               disabled={isSubmitting || !agreeTerms}
-              className="w-full py-4 bg-black hover:bg-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-widest text-center transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
+              className="pill-btn-black py-4 px-8 rounded-full text-xs font-medium w-full text-center flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40"
             >
-              <span className="inline-flex items-center justify-center gap-2.5">
-                <Send className="w-4 h-4 text-white shrink-0" />
-                <span>{isSubmitting ? 'Формирование заказа...' : 'Оформить заказ в Telegram'}</span>
-              </span>
+              <Send className="w-4 h-4 text-white shrink-0" />
+              <span>{isSubmitting ? 'Формирование заказа...' : 'Оформить заказ в Telegram'}</span>
             </button>
 
-            <div className="text-[11px] text-zinc-500 text-center leading-relaxed">
-              При нажатии заказ копируется в буфер обмена и открывается диалог в Telegram с личным менеджером.
+            <div className="text-[11px] text-zinc-400 text-center leading-relaxed font-light text-delicate">
+              Данные заказа автоматически откроются в диалоге с нами.
             </div>
 
             {/* Guarantees */}
-            <div className="p-3.5 bg-white rounded-none border border-zinc-200 text-xs text-zinc-600 space-y-2">
-              <div className="flex items-center gap-2 text-zinc-900 font-bold uppercase tracking-wider text-[10px]">
-                <ShieldCheck className="w-4 h-4 text-[#5A6B32]" />
-                100% Оригинал
+            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 text-xs text-zinc-600 space-y-2.5 shadow-2xs">
+              <div className="flex items-center gap-2 text-zinc-900 font-normal text-[11px]">
+                <ShieldCheck className="w-4 h-4 stroke-[1.5]" />
+                <span>100% Оригинал с батч-кодом</span>
               </div>
-              <div className="flex items-center gap-2 text-zinc-900 font-bold uppercase tracking-wider text-[10px]">
-                <Camera className="w-4 h-4 text-[#5A6B32]" />
-                Фото флакона перед отправкой
+              <div className="flex items-center gap-2 text-zinc-900 font-normal text-[11px]">
+                <Camera className="w-4 h-4 stroke-[1.5]" />
+                <span>Фотоотчет флакона перед отправкой</span>
               </div>
-              <div className="flex items-center gap-2 text-zinc-900 font-bold uppercase tracking-wider text-[10px]">
-                <CheckCircle2 className="w-4 h-4 text-[#5A6B32]" />
-                Оплата после согласования в диалоге
+              <div className="flex items-center gap-2 text-zinc-900 font-normal text-[11px]">
+                <CheckCircle2 className="w-4 h-4 stroke-[1.5]" />
+                <span>Оплата после подтверждения наличия</span>
               </div>
             </div>
           </div>

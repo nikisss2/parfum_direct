@@ -3,12 +3,14 @@ import compression from 'compression';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { createHash, timingSafeEqual } from 'crypto';
+import { createHash, timingSafeEqual, randomBytes } from 'crypto';
 import {
   appendCustomProduct,
   deleteCustomProduct,
   getCatalog,
   getPopularNotes,
+  getBudgetHits,
+  toListItem,
   queryProducts,
   reloadCatalog,
   searchBrands,
@@ -55,7 +57,7 @@ import { syncOrderToSpreadsheets, triggerExcelUpdate, GOOGLE_SHEET_URL } from '.
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || process.env.API_PORT || 3001);
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'parfum-admin-change-me';
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || randomBytes(24).toString('hex');
 
 const app = express();
 
@@ -80,6 +82,31 @@ app.use((_req, res, next) => {
     'Content-Security-Policy',
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; media-src 'self' blob:; object-src 'none'; frame-ancestors 'self';"
   );
+  next();
+});
+
+// Strict CORS Middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3005',
+    'https://maison-arome.ru',
+    'https://www.maison-arome.ru',
+    'https://maisonarome.ru',
+    'https://www.maisonarome.ru',
+  ];
+  if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.maison-arome.ru') || origin.endsWith('.maisonarome.ru'))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Auth-Token, X-Admin-Token');
+  }
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(204);
+    return;
+  }
   next();
 });
 
@@ -205,6 +232,13 @@ export const orderLimiter = createRateLimiter({
   message: 'Слишком частые заказы. Пожалуйста, подождите несколько минут или оформите в Telegram.',
 });
 
+export const trackLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 15,
+  keyPrefix: 'track',
+  message: 'Слишком много запросов отслеживания. В целях безопасности подождите 1 минуту.',
+});
+
 app.use('/api', globalApiLimiter);
 
 // Constant-time string comparison to prevent timing attacks
@@ -303,6 +337,11 @@ app.get('/api/products', (req, res) => {
     isSale: req.query.isSale === '1' || req.query.isSale === 'true',
   });
   res.json(result);
+});
+
+app.get('/api/products/budget-hits', (_req, res) => {
+  const items = getBudgetHits();
+  res.json({ items: items.map(toListItem) });
 });
 
 app.get('/api/products/slug/:slug', (req, res) => {
@@ -733,14 +772,31 @@ app.post('/api/user/delete-account', authUser, (req, res) => {
 app.post('/api/orders', orderLimiter, async (req, res) => {
   try {
     const orderData = req.body;
-    if (!orderData || !orderData.items?.length) {
+    if (!orderData || !Array.isArray(orderData.items) || orderData.items.length === 0) {
       res.status(400).json({ ok: false, error: 'Корзина пуста' });
       return;
     }
 
-    // Если есть токен авторизации, привязываем заказ к аккаунту
+    // Валидация позиций на сервере для предотвращения подмены цен (Price Tampering)
+    for (const it of orderData.items) {
+      if (!it.price || typeof it.price !== 'number' || it.price <= 0 || !Number.isFinite(it.price)) {
+        res.status(400).json({ ok: false, error: 'Некорректная цена товара' });
+        return;
+      }
+      if (!it.quantity || typeof it.quantity !== 'number' || it.quantity <= 0 || it.quantity > 100) {
+        res.status(400).json({ ok: false, error: 'Некорректное количество товара' });
+        return;
+      }
+    }
+
+    if (!orderData.recipient || typeof orderData.recipient !== 'object') {
+      res.status(400).json({ ok: false, error: 'Не указаны данные получателя' });
+      return;
+    }
+
+    // Привязываем заказ к аккаунту ТОЛЬКО при наличии подтвержденной валидной сессии
     const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
-    let userId = orderData.userId;
+    let userId: string | undefined = undefined;
     if (token) {
       const sessionUser = validateSession(token);
       if (sessionUser) {
@@ -753,7 +809,7 @@ app.post('/api/orders', orderLimiter, async (req, res) => {
       userId,
     });
 
-    // Автоматическое списание баллов при наличии
+    // Автоматическое списание баллов ТОЛЬКО для авторизованного владельца аккаунта
     if (userId && Number(orderData.bonusPointsUsed) > 0) {
       try {
         useBonusPoints(userId, Number(orderData.bonusPointsUsed), created.id);
@@ -778,25 +834,18 @@ app.post('/api/orders', orderLimiter, async (req, res) => {
   }
 });
 
-app.get('/api/user/orders', (req, res) => {
-  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
-  const user = token ? validateSession(token) : null;
-  const email = (req.query.email as string) || user?.email;
-  const userId = user?.id || (req.query.userId as string);
-
-  if (!userId && !email) {
-    res.json({ ok: true, orders: [] });
-    return;
-  }
-  const orders = getUserOrdersFromDb(userId, email);
+// Защита доступа к истории заказов (только авторизованный владелец аккаунта)
+app.get('/api/user/orders', authUser, (req, res) => {
+  const user = (req as any).user;
+  const orders = getUserOrdersFromDb(user.id, user.email);
   res.json({ ok: true, orders });
 });
 
-// Публичный трекер заказов для клиентов (автоматизация отслеживания)
-app.get('/api/orders/track', (req, res) => {
+// Публичный трекер заказов для клиентов с защитой от перебора (Rate Limit 15/мин) и маскировкой ПДн
+app.get('/api/orders/track', trackLimiter, (req, res) => {
   const q = (req.query.q as string || '').trim();
-  if (!q) {
-    res.status(400).json({ ok: false, error: 'Укажите номер заказа или телефон' });
+  if (!q || q.length < 5) {
+    res.status(400).json({ ok: false, error: 'Укажите полный номер заказа или номер телефона (от 10 цифр)' });
     return;
   }
   const order = findOrderForTracking(q);
@@ -824,9 +873,9 @@ app.get('/api/orders/track', (req, res) => {
         quantity: it.quantity,
         price: it.price,
       })),
-      city: order.recipient?.city,
-      address: order.recipient?.address,
-      recipientName: order.recipient?.fullName?.split(' ')[0] || 'Покупатель',
+      city: order.recipient?.city || 'Россия',
+      address: order.recipient?.address ? `${order.recipient.city || ''}, пункт выдачи заказа` : 'Пункт выдачи',
+      recipientName: order.recipient?.fullName ? `${order.recipient.fullName.charAt(0)}***` : 'Покупатель',
     },
   });
 });
@@ -900,16 +949,8 @@ app.post('/api/orders/notify-telegram', orderLimiter, async (req, res) => {
   res.json(result);
 });
 
-// Экспорт базы заказов в CSV / Excel для Google Таблиц
-app.get('/api/orders/export-csv', (req, res) => {
-  const token = (req.query.token as string) || (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
-  if (token) {
-    const user = validateSession(token);
-    if (!user || user.role !== 'admin') {
-      res.status(403).json({ ok: false, error: 'Доступ разрешен только администратору' });
-      return;
-    }
-  }
+// Экспорт базы заказов в CSV / Excel для Google Таблиц (строго только администратор)
+app.get('/api/orders/export-csv', authAdmin, (_req, res) => {
   try {
     const csvData = exportOrdersToCsv();
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
@@ -920,8 +961,8 @@ app.get('/api/orders/export-csv', (req, res) => {
   }
 });
 
-// Скачать готовый файл Excel (.xlsx) с 4 листами и формулами
-app.get('/api/orders/download-xlsx', (req, res) => {
+// Скачать готовый файл Excel (.xlsx) с 4 листами и формулами (строго только администратор)
+app.get('/api/orders/download-xlsx', authAdmin, (_req, res) => {
   const xlsxPath = path.resolve(__dirname, '..', 'Таблица_Заказов_Maison_Arome.xlsx');
   if (fs.existsSync(xlsxPath)) {
     res.download(xlsxPath, 'Таблица_Заказов_Maison_Arome.xlsx');
@@ -930,16 +971,10 @@ app.get('/api/orders/download-xlsx', (req, res) => {
   }
 });
 
-// Бонусная программа и виртуальная карта
-app.get('/api/loyalty/card', (req, res) => {
-  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
-  const user = token ? validateSession(token) : null;
-  const userId = user?.id || (req.query.userId as string);
-  if (!userId) {
-    res.status(401).json({ ok: false, error: 'Требуется авторизация' });
-    return;
-  }
-  const card = getOrCreateBonusCard(userId);
+// Бонусная программа и виртуальная карта (строго авторизованный владелец)
+app.get('/api/loyalty/card', authUser, (req, res) => {
+  const user = (req as any).user;
+  const card = getOrCreateBonusCard(user.id);
   res.json({
     ok: true,
     card,
@@ -953,16 +988,10 @@ app.get('/api/loyalty/card', (req, res) => {
   });
 });
 
-app.post('/api/loyalty/use', (req, res) => {
-  const token = (req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.headers['x-auth-token']) as string | undefined;
-  const user = token ? validateSession(token) : null;
-  const userId = user?.id || req.body?.userId;
-  if (!userId) {
-    res.status(401).json({ ok: false, error: 'Требуется авторизация' });
-    return;
-  }
+app.post('/api/loyalty/use', authUser, (req, res) => {
+  const user = (req as any).user;
   const { amount, orderId } = req.body || {};
-  const result = useBonusPoints(userId, Number(amount) || 0, orderId);
+  const result = useBonusPoints(user.id, Number(amount) || 0, orderId);
   res.json(result);
 });
 

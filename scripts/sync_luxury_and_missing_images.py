@@ -104,6 +104,8 @@ DESIGNERS = [
     ('Frederic Malle', 'https://www.fragrantica.ru/designers/Frederic-Malle.html', ['frederic malle', 'malle']),
     ('Serge Lutens', 'https://www.fragrantica.ru/designers/Serge-Lutens.html', ['serge lutens', 'lutens']),
     ('Penhaligons', 'https://www.fragrantica.ru/designers/Penhaligon-s.html', ['penhaligon', 'penhaligons']),
+    ('Lacoste', 'https://www.fragrantica.ru/designers/Lacoste.html', ['lacoste']),
+    ('Coach', 'https://www.fragrantica.ru/designers/Coach.html', ['coach']),
 ]
 
 BRAND_KEY_MAP = {}

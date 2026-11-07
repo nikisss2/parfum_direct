@@ -77,7 +77,7 @@
           } catch(i){}
           var el = document.getElementById('marome_status');
           if (el) {
-            el.innerHTML = '<div style="margin-top:12px;"><div style="color:#71717a;font-size:12px;margin-bottom:8px;">Загрузка занимает дольше обычного</div><button onclick="window.location.reload(true)" style="padding:10px 20px;background:#09090b;color:#ffffff;border:none;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">Обновить витрину</button></div>';
+            el.innerHTML = '<div style="margin-top:16px;"><div style="color:#71717a;font-size:12px;margin-bottom:10px;font-weight:300;">Загрузка занимает дольше обычного</div><button onclick="window.location.reload(true)" style="padding:10px 24px;background:#09090b;color:#ffffff;border:none;border-radius:9999px;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:all 0.2s ease;">Обновить витрину</button></div>';
           }
         }
       }, 6000);
@@ -86,19 +86,40 @@
   <body>
     <noscript><div><img src="https://mc.yandex.ru/watch/114095290" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <div id="root">
-      <div style="min-height:100vh;background:#ffffff;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#09090b;">
-        <header style="height:60px;border-bottom:1px solid #f4f4f5;display:flex;align-items:center;justify-content:center;padding:0 20px;position:relative;">
-          <div style="font-size:16px;letter-spacing:0.25em;text-transform:uppercase;font-weight:700;color:#09090b;">MAISON ARÔME</div>
+      <div style="min-height:100vh;background:#ffffff;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#09090b;-webkit-font-smoothing:antialiased;">
+        <header style="height:60px;border-bottom:1px solid #f4f4f5;display:flex;align-items:center;justify-content:center;padding:0 20px;">
+          <div style="font-size:13px;letter-spacing:0.3em;text-transform:uppercase;font-weight:600;color:#09090b;">MAISON ARÔME</div>
         </header>
-        <div style="flex:1;background:#fafafa;padding:60px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
-          <div style="width:36px;height:36px;border:2.5px solid #e4e4e7;border-top-color:#09090b;border-radius:50%;animation:marome_spin 0.8s linear infinite;margin-bottom:20px;"></div>
-          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#71717a;margin-bottom:6px;">Maison Arôme Atelier</div>
-          <div style="font-size:18px;font-weight:500;color:#09090b;margin-bottom:4px;font-family:Georgia,serif;">Оригинальная парфюмерия</div>
-          <div id="marome_status" style="font-size:12px;color:#a1a1aa;">Загрузка каталога...</div>
+        <div style="flex:1;background:#ffffff;padding:60px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+          <!-- Ambient Spinner -->
+          <div style="position:relative;margin-bottom:24px;">
+            <div style="width:48px;height:48px;border-radius:9999px;border:1px solid rgba(228,228,231,0.8);background:rgba(250,250,250,0.6);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+              <div style="width:22px;height:22px;border:2px solid #e4e4e7;border-top-color:#09090b;border-radius:50%;animation:marome_spin 0.8s linear infinite;"></div>
+            </div>
+            <div style="position:absolute;inset:0;border-radius:9999px;background:rgba(9,9,11,0.04);animation:marome_pulse 2s cubic-bezier(0,0,0.2,1) infinite;pointer-events:none;"></div>
+          </div>
+
+          <!-- Typography -->
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:#09090b;">Maison Arôme</span>
+          <span style="font-size:12px;color:#71717a;font-weight:300;letter-spacing:0.04em;margin-top:4px;">Селективная парфюмерия и распивы</span>
+
+          <!-- Shimmer Line -->
+          <div style="width:140px;height:2px;background:#f4f4f5;border-radius:9999px;overflow:hidden;margin-top:20px;position:relative;">
+            <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(9,9,11,0.6),transparent);animation:marome_shimmer 1.8s infinite linear;"></div>
+          </div>
+
+          <!-- Status Pill -->
+          <div id="marome_status" style="margin-top:24px;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:9999px;background:#fafafa;border:1px solid rgba(228,228,231,0.8);font-size:11px;font-weight:300;color:#71717a;">
+            <span style="width:6px;height:6px;border-radius:9999px;background:#10b981;animation:marome_dot 1.5s ease-in-out infinite;"></span>
+            <span>Подготовка витрины…</span>
+          </div>
         </div>
       </div>
       <style>
         @keyframes marome_spin{to{transform:rotate(360deg)}}
+        @keyframes marome_pulse{0%,100%{transform:scale(1);opacity:0.4}50%{transform:scale(1.2);opacity:0}}
+        @keyframes marome_shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        @keyframes marome_dot{0%,100%{opacity:1}50%{opacity:0.3}}
       </style>
     </div>
     <script type="module" src="/src/main.tsx"></script>

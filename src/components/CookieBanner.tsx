@@ -50,20 +50,20 @@ export const CookieBanner: React.FC = () => {
         <div className="flex items-center gap-2.5 w-full md:w-auto shrink-0 justify-end">
           <button
             onClick={() => handleAccept('necessary')}
-            className="px-3.5 py-2 text-xs font-medium text-stone-300 hover:text-white bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-light text-stone-300 hover:text-white bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-full transition-colors cursor-pointer"
           >
             Только необходимые
           </button>
           <button
             onClick={() => handleAccept('all')}
-            className="px-4 py-2 text-xs font-semibold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded-lg shadow-sm transition-colors"
+            className="px-5 py-2 text-xs font-medium text-stone-950 bg-white hover:bg-stone-200 rounded-full shadow-sm transition-colors cursor-pointer"
           >
             Принять
           </button>
           <button
             onClick={() => setIsVisible(false)}
             aria-label="Закрыть уведомление"
-            className="p-1.5 text-stone-400 hover:text-stone-200 rounded-lg transition-colors ml-1"
+            className="p-2 text-stone-400 hover:text-stone-200 rounded-full hover:bg-stone-800 transition-colors ml-1 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
