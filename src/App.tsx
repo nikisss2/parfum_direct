@@ -38,6 +38,7 @@ const WhyCheaperPage = React.lazy(() => import('./pages/WhyCheaperPage').then(m 
 const GiftCertificatesPage = React.lazy(() => import('./pages/GiftCertificatesPage').then(m => ({ default: m.GiftCertificatesPage })));
 const LoyaltyPage = React.lazy(() => import('./pages/LoyaltyPage').then(m => ({ default: m.LoyaltyPage })));
 const CollectionsPage = React.lazy(() => import('./pages/CollectionsPage').then(m => ({ default: m.CollectionsPage })));
+const ReturnsPage = React.lazy(() => import('./pages/ReturnsPage').then(m => ({ default: m.ReturnsPage })));
 
 // Scroll to top on route change (with smart back-navigation preservation)
 function ScrollToTop() {
@@ -90,6 +91,7 @@ export default function App() {
                   <Route path="/crm" element={<CrmPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/delivery" element={<DeliveryPage />} />
+                  <Route path="/returns" element={<ReturnsPage />} />
                   <Route path="/how-to-decant" element={<HowToDecantPage />} />
                   <Route path="/contacts" element={<ContactsPage />} />
                   <Route path="/faq" element={<FAQPage />} />

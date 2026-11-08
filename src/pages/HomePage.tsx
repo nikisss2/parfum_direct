@@ -224,7 +224,7 @@ export const HomePage: React.FC = () => {
                   src={cat.image}
                   alt={cat.label}
                   loading="lazy"
-                  className="h-full w-auto object-contain object-bottom translate-y-[52px] sm:translate-y-[62px] group-hover:translate-y-[46px] sm:group-hover:translate-y-[54px] group-hover:scale-105 transition-transform duration-300 ease-out"
+                  className="h-full w-auto object-contain object-bottom translate-y-[27px] sm:translate-y-[37px] group-hover:translate-y-[21px] sm:group-hover:translate-y-[29px] group-hover:scale-105 transition-transform duration-300 ease-out"
                 />
               </div>
             </Link>

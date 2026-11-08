@@ -118,12 +118,13 @@ export const Footer: React.FC = () => {
               <li><Link to="/reviews" className="hover:text-black transition-colors">Отзывы покупателей</Link></li>
               <li><Link to="/faq" className="hover:text-black transition-colors">Вопросы и ответы (FAQ)</Link></li>
               <li><Link to="/delivery" className="hover:text-black transition-colors">Доставка и оплата</Link></li>
+              <li><Link to="/returns" className="hover:text-black transition-colors">Возврат и гарантия</Link></li>
             </ul>
           </div>
 
           {/* Contacts */}
           <div className="space-y-3">
-            <div className="font-normal text-zinc-900 tracking-[0.12em] uppercase text-[11px]">Контакты</div>
+            <div className="font-normal text-zinc-900 tracking-[0.12em] uppercase text-[11px]">Контакты & Реквизиты</div>
             <div className="space-y-2.5 text-zinc-500 text-delicate">
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
@@ -138,21 +139,26 @@ export const Footer: React.FC = () => {
                 Москва · Доставка СДЭК и Яндекс по всей РФ
               </div>
               <div className="text-[11px] text-zinc-400 font-sans tabular-nums pt-0.5">
-                ИНН: 667221490551
+                ИП Лаптев Н. В. · ИНН: 667221490551
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 text-delicate">
-          <div>
-            © {new Date().getFullYear()} Maison Arôme. Все права защищены.
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 text-delicate border-t border-zinc-100">
+          <div className="flex items-center gap-2.5">
+            <span>© {new Date().getFullYear()} Maison Arôme. Все права защищены.</span>
+            <span className="px-1.5 py-0.5 rounded border border-zinc-300 text-[10px] text-zinc-500 font-mono">16+</span>
           </div>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[11px]">
-            <Link to="/privacy" className="hover:text-zinc-700 transition-colors">Конфиденциальность</Link>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5 text-[11px]">
+            <Link to="/offer" className="hover:text-zinc-700 transition-colors">Оферта</Link>
             <span>·</span>
-            <Link to="/terms" className="hover:text-zinc-700 transition-colors">Оферта</Link>
+            <Link to="/privacy" className="hover:text-zinc-700 transition-colors">Конфиденциальность (152-ФЗ)</Link>
+            <span>·</span>
+            <Link to="/returns" className="hover:text-zinc-700 transition-colors">Возврат и обмен</Link>
+            <span>·</span>
+            <Link to="/terms" className="hover:text-zinc-700 transition-colors">Соглашение</Link>
             <span>·</span>
             <Link to="/contacts" className="hover:text-zinc-700 transition-colors">Контакты</Link>
           </div>

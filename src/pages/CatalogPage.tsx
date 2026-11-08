@@ -549,12 +549,38 @@ export const CatalogPage: React.FC = () => {
     ? `Оригинальная парфюмерия ${selectedBrands[0]} в интернет-магазине Maison Arôme. Распивы от 1 мл и целые флаконы. Доставка по всей России.`
     : `Каталог оригинальной парфюмерии и уходовой косметики Maison Arôme. Более ${total.toLocaleString('ru-RU')} товаров: ниша, селектив, люкс, распивы от 1 мл. Быстрая доставка по РФ.`;
 
+  const catalogSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: catalogTitle,
+    description: catalogDesc,
+    url: 'https://maison-arome.ru/catalog',
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Главная',
+          item: 'https://maison-arome.ru/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Каталог',
+          item: 'https://maison-arome.ru/catalog',
+        },
+      ],
+    },
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <SEO
         title={catalogTitle}
         description={catalogDesc}
         canonical="https://maison-arome.ru/catalog"
+        schema={catalogSchema}
       />
 
       {/* Header bar */}

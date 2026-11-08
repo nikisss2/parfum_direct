@@ -184,34 +184,67 @@ export const ProductPage: React.FC = () => {
 
   const productSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: `${perfume.brand} ${perfume.name}`,
-    image: perfume.images && perfume.images.length > 0
-      ? (perfume.images[0].startsWith('http') ? perfume.images[0] : `https://maison-arome.ru${perfume.images[0]}`)
-      : 'https://maison-arome.ru/favicon-512.png',
-    description: perfume.description || `Оригинальный аромат ${perfume.brand} ${perfume.name}. Распивы от 1 мл и целые флаконы. 100% гарантия подлинности.`,
-    sku: perfume.sku || String(perfume.id),
-    brand: {
-      '@type': 'Brand',
-      name: perfume.brand,
-    },
-    offers: {
-      '@type': 'Offer',
-      url: `https://maison-arome.ru/product/${perfume.slug || perfume.id}`,
-      priceCurrency: 'RUB',
-      price: perfume.minPrice || perfume.volumes?.[0]?.price || 0,
-      availability: (perfume.volumes?.some(v => v.inStock) ?? true) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      itemCondition: 'https://schema.org/NewCondition',
-      seller: {
-        '@type': 'Organization',
-        name: 'Maison Arôme',
+    '@graph': [
+      {
+        '@type': 'Product',
+        name: `${perfume.brand} ${perfume.name}`,
+        image: perfume.images && perfume.images.length > 0
+          ? (perfume.images[0].startsWith('http') ? perfume.images[0] : `https://maison-arome.ru${perfume.images[0]}`)
+          : 'https://maison-arome.ru/favicon-512.png',
+        description: perfume.description || `Оригинальный аромат ${perfume.brand} ${perfume.name}. Распивы от 1 мл и целые флаконы. 100% гарантия подлинности.`,
+        sku: perfume.sku || String(perfume.id),
+        brand: {
+          '@type': 'Brand',
+          name: perfume.brand,
+        },
+        offers: {
+          '@type': 'Offer',
+          url: `https://maison-arome.ru/product/${perfume.slug || perfume.id}`,
+          priceCurrency: 'RUB',
+          price: perfume.minPrice || perfume.volumes?.[0]?.price || 0,
+          availability: (perfume.volumes?.some(v => v.inStock) ?? true) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          itemCondition: 'https://schema.org/NewCondition',
+          seller: {
+            '@type': 'Organization',
+            name: 'Maison Arôme',
+          },
+        },
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1),
+          reviewCount: Math.max(1, perfume.reviewsCount || 12),
+        },
       },
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: Math.max(4.8, Math.min(5.0, Number(perfume.rating) || 5.0)).toFixed(1),
-      reviewCount: Math.max(1, perfume.reviewsCount || 12),
-    },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Главная',
+            item: 'https://maison-arome.ru/',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Каталог',
+            item: 'https://maison-arome.ru/catalog',
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: perfume.brand,
+            item: `https://maison-arome.ru/catalog?brand=${encodeURIComponent(perfume.brand)}`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 4,
+            name: perfume.name,
+            item: `https://maison-arome.ru/product/${perfume.slug || perfume.id}`,
+          },
+        ],
+      },
+    ],
   };
 
   const displayPrice = perfume.minPrice || perfume.volumes?.[0]?.price || 0;

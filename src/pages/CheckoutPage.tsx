@@ -174,7 +174,7 @@ export const CheckoutPage: React.FC = () => {
   const [selectedDelivery, setSelectedDelivery] = useState<DeliveryOption>(DELIVERY_OPTIONS[0]);
   const [selectedPvz, setSelectedPvz] = useState<PvzPoint | null>(null);
   const [pvzDropdownOpen, setPvzDropdownOpen] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(true);
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   // Бесплатная доставка от 25 000 ₽ и до 2 500 км от склада в Москве
   const matchedCity = RUSSIAN_CITIES.find(c => c.name.toLowerCase() === city.trim().toLowerCase());

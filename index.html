@@ -3,6 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="yandex-verification" content="maison-arome-yandex-verification" />
+    <meta name="google-site-verification" content="maison-arome-google-verification" />
+
+    <!-- Google tag (gtag.js) for GA4 & Google Ads -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MAROME2026"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MAROME2026', { send_page_view: true });
+    </script>
+
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function(m,e,t,r,i,k,a){
@@ -15,6 +29,58 @@
         ym(114095290, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
     </script>
     <!-- /Yandex.Metrika counter -->
+
+    <!-- Schema.org Search & Store Metadata for Google & Yandex -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://maison-arome.ru/#website",
+          "url": "https://maison-arome.ru/",
+          "name": "Maison Arôme",
+          "alternateName": ["Мейсон Аром", "Maison Arome"],
+          "description": "Интернет-бутик оригинальной парфюмерии и распивов от 1 мл.",
+          "inLanguage": "ru-RU",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://maison-arome.ru/catalog?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "OnlineStore",
+          "@id": "https://maison-arome.ru/#store",
+          "name": "Maison Arôme",
+          "url": "https://maison-arome.ru/",
+          "logo": "https://maison-arome.ru/favicon-512.png",
+          "image": "https://maison-arome.ru/favicon-512.png",
+          "description": "Интернет-магазин оригинальной селективной парфюмерии, косметики и распивов. 100% подлинность, маркировка «Честный ЗНАК».",
+          "telephone": "+7-912-287-94-86",
+          "email": "order@maisonarome.ru",
+          "priceRange": "₽₽",
+          "currenciesAccepted": "RUB",
+          "paymentAccepted": "СБП, Безналичный расчет, Банковский перевод",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Москва",
+            "addressCountry": "RU"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+7-912-287-94-86",
+            "contactType": "customer service",
+            "availableLanguage": ["Russian"],
+            "areaServed": "RU"
+          }
+        }
+      ]
+    }
+    </script>
     <title>Maison Arôme — Оригинальная парфюмерия и распивы</title>
     <meta name="description" content="Интернет-магазин оригинальной парфюмерии Maison Arôme. Распивы от 1 мл и целые флаконы. 100% подлинность, фото перед отправкой." />
     <meta name="color-scheme" content="light" />

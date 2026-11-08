@@ -41,7 +41,7 @@ export const CookieBanner: React.FC = () => {
               Политикой конфиденциальности
             </Link>{' '}
             и{' '}
-            <Link to="/terms" className="text-amber-400 hover:text-amber-300 underline underline-offset-2">
+            <Link to="/offer" className="text-amber-400 hover:text-amber-300 underline underline-offset-2">
               Публичной офертой
             </Link>.
           </div>
