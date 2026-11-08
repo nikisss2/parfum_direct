@@ -615,70 +615,116 @@ function normalizeTitleTokens(str: string): string {
     .trim();
 }
 
+interface PreparedNoteProfile {
+  title: string;
+  analog: string;
+  analogWords: string[];
+  baseSet: Set<string>;
+  heartSet: Set<string>;
+  topSet: Set<string>;
+  allSet: Set<string>;
+  baseArr: string[];
+  heartArr: string[];
+  topArr: string[];
+  allArr: string[];
+}
+
+const NOTE_PROFILE_CACHE = new WeakMap<CatalogProduct, PreparedNoteProfile>();
+
+function getPreparedNoteProfile(p: CatalogProduct): PreparedNoteProfile {
+  let prof = NOTE_PROFILE_CACHE.get(p);
+  if (prof) return prof;
+
+  const title = normalizeTitleTokens(`${p.brand} ${p.name}`);
+  const analog = p.analogOf ? normalizeTitleTokens(p.analogOf) : '';
+  const analogWords = analog ? analog.split(' ').filter(w => w.length >= 3) : [];
+
+  const baseSet = new Set((p.notes?.base || []).map(normalizeNoteStem));
+  const heartSet = new Set((p.notes?.heart || []).map(normalizeNoteStem));
+  const topSet = new Set((p.notes?.top || []).map(normalizeNoteStem));
+  const allSet = new Set([...(p.allNotes || []).map(normalizeNoteStem), ...baseSet, ...heartSet, ...topSet]);
+
+  prof = {
+    title,
+    analog,
+    analogWords,
+    baseSet,
+    heartSet,
+    topSet,
+    allSet,
+    baseArr: Array.from(baseSet),
+    heartArr: Array.from(heartSet),
+    topArr: Array.from(topSet),
+    allArr: Array.from(allSet),
+  };
+  NOTE_PROFILE_CACHE.set(p, prof);
+  return prof;
+}
+
 export function computeNoteSimilarity(a: CatalogProduct, b: CatalogProduct): number {
   if (a.id === b.id || b.kind !== 'perfume') return -1;
+
+  const pa = getPreparedNoteProfile(a);
+  const pb = getPreparedNoteProfile(b);
 
   let score = 0;
 
   // 1. Direct luxury <-> analog or sibling analog relationship boost
-  const aTitle = normalizeTitleTokens(`${a.brand} ${a.name}`);
-  const bTitle = normalizeTitleTokens(`${b.brand} ${b.name}`);
-  const aAnalog = a.analogOf ? normalizeTitleTokens(a.analogOf) : '';
-  const bAnalog = b.analogOf ? normalizeTitleTokens(b.analogOf) : '';
-
-  if (aAnalog && bAnalog && aAnalog === bAnalog) {
+  if (pa.analog && pb.analog && pa.analog === pb.analog) {
     score += 18; // Both are verified analogs of the exact same luxury fragrance
   }
-  if (aAnalog && bAnalog === '') {
-    const analogWords = aAnalog.split(' ').filter(w => w.length >= 3);
-    if (analogWords.length >= 2 && analogWords.every(w => bTitle.includes(w))) {
-      score += 30; // B is the luxury original that A is an analog of!
+  if (pa.analogWords.length >= 2 && pb.analog === '') {
+    let allMatch = true;
+    for (let i = 0; i < pa.analogWords.length; i++) {
+      if (!pb.title.includes(pa.analogWords[i])) {
+        allMatch = false;
+        break;
+      }
     }
+    if (allMatch) score += 30; // B is the luxury original that A is an analog of!
   }
-  if (bAnalog && aAnalog === '') {
-    const analogWords = bAnalog.split(' ').filter(w => w.length >= 3);
-    if (analogWords.length >= 2 && analogWords.every(w => aTitle.includes(w))) {
-      score += 30; // B is a verified Arabic analog of luxury original A!
+  if (pb.analogWords.length >= 2 && pa.analog === '') {
+    let allMatch = true;
+    for (let i = 0; i < pb.analogWords.length; i++) {
+      if (!pa.title.includes(pb.analogWords[i])) {
+        allMatch = false;
+        break;
+      }
     }
+    if (allMatch) score += 30; // B is a verified Arabic analog of luxury original A!
   }
 
   // 2. Weighted pyramid stem overlap
-  const aBase = new Set((a.notes?.base || []).map(normalizeNoteStem));
-  const aHeart = new Set((a.notes?.heart || []).map(normalizeNoteStem));
-  const aTop = new Set((a.notes?.top || []).map(normalizeNoteStem));
-  const aAll = new Set([...(a.allNotes || []).map(normalizeNoteStem), ...aBase, ...aHeart, ...aTop]);
+  if (pa.allArr.length === 0 || pb.allArr.length === 0) return score;
 
-  const bBase = new Set((b.notes?.base || []).map(normalizeNoteStem));
-  const bHeart = new Set((b.notes?.heart || []).map(normalizeNoteStem));
-  const bTop = new Set((b.notes?.top || []).map(normalizeNoteStem));
-  const bAll = new Set([...(b.allNotes || []).map(normalizeNoteStem), ...bBase, ...bHeart, ...bTop]);
-
-  if (aAll.size === 0 || bAll.size === 0) return score;
-
-  for (const s of bBase) {
-    if (aBase.has(s)) score += 3.5;
-    else if (aAll.has(s)) score += 1.5;
+  for (let i = 0; i < pb.baseArr.length; i++) {
+    const s = pb.baseArr[i];
+    if (pa.baseSet.has(s)) score += 3.5;
+    else if (pa.allSet.has(s)) score += 1.5;
   }
-  for (const s of bHeart) {
-    if (aHeart.has(s)) score += 2.5;
-    else if (aAll.has(s)) score += 1.2;
+  for (let i = 0; i < pb.heartArr.length; i++) {
+    const s = pb.heartArr[i];
+    if (pa.heartSet.has(s)) score += 2.5;
+    else if (pa.allSet.has(s)) score += 1.2;
   }
-  for (const s of bTop) {
-    if (aTop.has(s)) score += 1.8;
-    else if (aAll.has(s)) score += 0.8;
+  for (let i = 0; i < pb.topArr.length; i++) {
+    const s = pb.topArr[i];
+    if (pa.topSet.has(s)) score += 1.8;
+    else if (pa.allSet.has(s)) score += 0.8;
   }
 
   let sharedAll = 0;
-  for (const s of bAll) {
-    if (aAll.has(s)) sharedAll++;
-  }
-  const unionSize = aAll.size + bAll.size - sharedAll;
-  if (unionSize > 0) {
-    score += (sharedAll / unionSize) * 12;
+  for (let i = 0; i < pb.allArr.length; i++) {
+    if (pa.allSet.has(pb.allArr[i])) sharedAll++;
   }
 
   // Require at least 2 shared notes (or an explicit analog relationship) so recommendations are genuinely close
   if (sharedAll < 2 && score < 15) return 0;
+
+  const unionSize = pa.allArr.length + pb.allArr.length - sharedAll;
+  if (unionSize > 0) {
+    score += (sharedAll / unionSize) * 12;
+  }
 
   return score;
 }

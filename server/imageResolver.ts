@@ -34,13 +34,28 @@ function normalizeHaystack(p: { brand: string; name: string }): string {
     .trim();
 }
 
-/** Локальный файл из public/ или dist/ */
+const LOCAL_EXISTS_CACHE = new Map<string, string | null>();
+const RESOLVED_IMAGE_CACHE = new Map<string, string>();
+
+/** Локальный файл из public/ или dist/ (с мемоизацией stat) */
 function localIfExists(relative: string): string | null {
   const clean = relative.startsWith('/') ? relative.slice(1) : relative;
+  if (LOCAL_EXISTS_CACHE.has(clean)) {
+    return LOCAL_EXISTS_CACHE.get(clean) ?? null;
+  }
   const fullPublic = path.join(PUBLIC, clean);
-  if (fs.existsSync(fullPublic)) return `/${clean}`;
+  if (fs.existsSync(fullPublic)) {
+    const res = `/${clean}`;
+    LOCAL_EXISTS_CACHE.set(clean, res);
+    return res;
+  }
   const fullDist = path.join(ROOT, 'dist', clean);
-  if (fs.existsSync(fullDist)) return `/${clean}`;
+  if (fs.existsSync(fullDist)) {
+    const res = `/${clean}`;
+    LOCAL_EXISTS_CACHE.set(clean, res);
+    return res;
+  }
+  LOCAL_EXISTS_CACHE.set(clean, null);
   return null;
 }
 
@@ -622,6 +637,25 @@ function resolveCategoryFallback(
 }
 
 export function resolveProductImage(p: {
+  name: string;
+  brand: string;
+  images?: string[];
+  kind?: string;
+  custom?: boolean;
+}): string {
+  const cacheKey = `${p.custom ? '1' : '0'}|${p.kind || ''}|${p.brand || ''}|${p.name || ''}|${p.images?.[0] || ''}`;
+  const cached = RESOLVED_IMAGE_CACHE.get(cacheKey);
+  if (cached !== undefined) return cached;
+
+  const result = resolveProductImageUncached(p);
+  if (RESOLVED_IMAGE_CACHE.size > 50000) {
+    RESOLVED_IMAGE_CACHE.clear();
+  }
+  RESOLVED_IMAGE_CACHE.set(cacheKey, result);
+  return result;
+}
+
+function resolveProductImageUncached(p: {
   name: string;
   brand: string;
   images?: string[];
