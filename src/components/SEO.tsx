@@ -50,8 +50,25 @@ export function SEO({
     setMeta('og:title', fullTitle);
     setMeta('og:description', metaDesc);
     setMeta('og:type', ogType);
-    setMeta('og:image', ogImage.startsWith('http') ? ogImage : `https://maison-arome.ru${ogImage}`);
+    const resolvedImage = ogImage.startsWith('http') ? ogImage : `https://maison-arome.ru${ogImage}`;
+    setMeta('og:image', resolvedImage);
     setMeta('og:url', canonical || window.location.href);
+
+    // Twitter Card tags (also used by Telegram, WhatsApp, VK)
+    const setNameMeta = (name: string, content: string) => {
+      let tag = document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', name);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    setNameMeta('twitter:card', 'summary_large_image');
+    setNameMeta('twitter:title', fullTitle);
+    setNameMeta('twitter:description', metaDesc);
+    setNameMeta('twitter:image', resolvedImage);
 
     // Canonical link
     let canonicalTag = document.querySelector('link[rel="canonical"]');

@@ -5,6 +5,7 @@ import { VolumeOption, Perfume } from '../types';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
 import { SEO } from '../components/SEO';
+import { BatchCodeModal } from '../components/BatchCodeModal';
 import {
   Star,
   Heart,
@@ -39,6 +40,7 @@ export const ProductPage: React.FC = () => {
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
 
   const handleShare = async () => {
     if (!perfume) return;
@@ -449,14 +451,23 @@ export const ProductPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 flex items-center gap-3 shadow-2xs">
-              <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsBatchModalOpen(true)}
+              className="p-4 rounded-[20px] bg-white border border-zinc-200/70 flex items-center gap-3 shadow-2xs hover:border-black/50 transition-all text-left cursor-pointer group"
+            >
+              <div className="w-8 h-8 rounded-full bg-zinc-100 group-hover:bg-black group-hover:text-white flex items-center justify-center text-zinc-900 shrink-0 transition-colors">
                 <ShieldCheck className="w-4 h-4 stroke-[1.5]" />
               </div>
-              <span className="text-xs text-zinc-800 font-light text-delicate">
-                100% Оригинал с батч-кодом
-              </span>
-            </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-zinc-900 font-medium text-delicate">
+                  100% Оригинал с батч-кодом
+                </span>
+                <span className="text-[10px] text-zinc-400 group-hover:text-black font-light underline decoration-zinc-300">
+                  Как проверить?
+                </span>
+              </div>
+            </button>
 
             <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 flex items-center gap-3 shadow-2xs">
               <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
@@ -663,6 +674,12 @@ export const ProductPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Batch Code Verification Modal */}
+      <BatchCodeModal
+        isOpen={isBatchModalOpen}
+        onClose={() => setIsBatchModalOpen(false)}
+      />
     </div>
   );
 };

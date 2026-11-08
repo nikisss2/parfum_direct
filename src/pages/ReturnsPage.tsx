@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, RotateCcw, AlertCircle, CheckCircle2, PackageCheck, Send, Mail, ArrowRight } from 'lucide-react';
 import { SEO } from '../components/SEO';
+import { BatchCodeModal } from '../components/BatchCodeModal';
 
 export const ReturnsPage: React.FC = () => {
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
   const schemaData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -33,7 +35,7 @@ export const ReturnsPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-10">
       <SEO
         title="Возврат и гарантия — Правила обмена и подлинности | Maison Arôme"
-        description="Официальные правила возврата, обмена и гарантия подлинности парфюмерии в интернет-магазине Maison Arôme. Законодательство РФ (2300-1 ЗОЗПП, Постановление № 2463, Честный ЗНАК)."
+        description="Официальные правила возврата, обмена и гарантия подлинности парфюмерии в интернет-бутике Maison Arôme. Законодательство РФ (2300-1 ЗОЗПП, Постановление № 2463, проверка батч-кодов)."
         canonical="https://maison-arome.ru/returns"
         schema={schemaData}
       />
@@ -54,15 +56,24 @@ export const ReturnsPage: React.FC = () => {
 
       {/* 3 Pillars Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-2">
-          <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center">
+        <button
+          type="button"
+          onClick={() => setIsBatchModalOpen(true)}
+          className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-2 text-left hover:border-black/50 transition-all cursor-pointer group"
+        >
+          <div className="w-9 h-9 rounded-full bg-black group-hover:bg-[#5A6B32] text-white flex items-center justify-center transition-colors">
             <ShieldCheck className="w-4 h-4" />
           </div>
-          <div className="text-sm font-medium text-zinc-950">100% Оригинал</div>
-          <div className="text-xs text-zinc-500 leading-relaxed font-light">
-            Только подлинная парфюмерия с кодами Data Matrix «Честный ЗНАК» и батч-кодами фабрик.
+          <div className="text-sm font-medium text-zinc-950 flex items-center justify-between">
+            <span>100% Оригинал</span>
+            <span className="text-[10px] text-zinc-400 group-hover:text-black font-light underline">
+              Инструкция
+            </span>
           </div>
-        </div>
+          <div className="text-xs text-zinc-500 leading-relaxed font-light">
+            Только подлинная парфюмерия с оригинальными заводскими батч-кодами (Batch code) и фотоотчетом перед отправкой.
+          </div>
+        </button>
 
         <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-2">
           <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center">
@@ -104,7 +115,7 @@ export const ReturnsPage: React.FC = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-zinc-600">
               <li>Сохранен товарный вид, фабричная коробка, заводская слюда (термоусадочная пленка) и защитные пломбы;</li>
-              <li>Товар не был в употреблении, сохранены потребительские свойства и код маркировки «Честный ЗНАК»;</li>
+              <li>Товар не был в употреблении, сохранены потребительские свойства, оригинальная упаковка и читаемые заводские батч-коды производителя;</li>
               <li>Имеется документ либо подтверждение заказа (электронный чек по 54-ФЗ, номер накладной СДЭК / Яндекс).</li>
             </ul>
           </div>
@@ -207,10 +218,10 @@ export const ReturnsPage: React.FC = () => {
       <section className="p-5 sm:p-6 rounded-2xl bg-zinc-950 text-white space-y-3">
         <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.14em] text-zinc-400">
           <ShieldCheck className="w-4 h-4 text-[#5A6B32]" />
-          Фискальные чеки (54-ФЗ) и маркировка «Честный ЗНАК»
+          Подлинность по заводским батч-кодам и фискальные чеки (54-ФЗ)
         </div>
         <p className="text-xs sm:text-sm text-zinc-300 font-light leading-relaxed">
-          В соответствии с Федеральным законом № 54-ФЗ при каждой покупке формируется фискальный кассовый чек, который отправляется на электронную почту или телефон клиента. Все поставки парфюмерии сопровождаются проверкой Data Matrix кодов государственной системы маркировки «Честный ЗНАК» (Постановление Правительства РФ № 1957).
+          В соответствии с Федеральным законом № 54-ФЗ при каждой покупке формируется фискальный электронный чек, направляемый на электронную почту или телефон клиента. Все поставки парфюмерии поступают напрямую от проверенных европейских и ближневосточных дистрибьюторов: каждый флакон имеет заводской батч-код, совпадающий на коробке и дне флакона, проверяемый в международных реестрах CheckFresh и Cosmetic Calculator.
         </p>
       </section>
 
@@ -239,6 +250,11 @@ export const ReturnsPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      <BatchCodeModal
+        isOpen={isBatchModalOpen}
+        onClose={() => setIsBatchModalOpen(false)}
+      />
     </div>
   );
 };

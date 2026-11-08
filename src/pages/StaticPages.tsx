@@ -15,12 +15,18 @@ import {
   CreditCard,
   Package
 } from 'lucide-react';
-import { FAQSection } from '../components/FAQSection';
+import { FAQSection, FAQ_ITEMS } from '../components/FAQSection';
+import { SEO } from '../components/SEO';
 
 /* 1. О нас */
 export const AboutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white pb-16">
+      <SEO
+        title="О бутике селективной парфюмерии | Maison Arôme"
+        description="Maison Arôme — бутик оригинальной нишевой парфюмерии и распивов от 1 мл. Прямые поставки от официальных дистрибьюторов Европы и Ближнего Востока с проверкой заводских батч-кодов."
+        canonical="https://maison-arome.ru/about"
+      />
       {/* Hero */}
       <section className="border-b border-zinc-100 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -171,6 +177,11 @@ export const AboutPage: React.FC = () => {
 export const DeliveryPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white pb-16">
+      <SEO
+        title="Доставка и оплата парфюмерии по России | Maison Arôme"
+        description="Быстрая и бережная доставка оригинальной парфюмерии и отливантов по всей России (СДЭК, Яндекс Доставка, Boxberry, Почта). 100% страхование посылок, фотоконтроль перед отправкой."
+        canonical="https://maison-arome.ru/delivery"
+      />
       {/* Hero */}
       <section className="border-b border-zinc-100 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -400,8 +411,30 @@ export const HowToDecantPage: React.FC = () => {
 
 /* 4. Ответы на вопросы (FAQ) */
 export const FAQPage: React.FC = () => {
+  const schemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text:
+          typeof item.answer === 'string'
+            ? item.answer
+            : 'Подробный ответ с описанием форматов, распивов и способов проверки подлинности по заводским батч-кодам на сайте интернет-бутика Maison Arôme.',
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-white pb-16">
+      <SEO
+        title="Вопросы и ответы (FAQ) — Распивы, оригиналы, батч-коды | Maison Arôme"
+        description="Ответы на популярные вопросы о парфюмерии в Maison Arôme: что такое отливанты и тестеры, как проверить батч-код по базам, гарантия 100% подлинности и фотоотчет перед отправкой."
+        canonical="https://maison-arome.ru/faq"
+        schema={schemaData}
+      />
       {/* Hero */}
       <section className="border-b border-zinc-100 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -435,6 +468,11 @@ export const ContactsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white pb-16">
+      <SEO
+        title="Контакты и реквизиты | Maison Arôme"
+        description="Свяжитесь с персональным парфюмерным консультантом Maison Arôme в Telegram или по почте. Реквизиты ИП Лаптев Н. В. (ИНН: 667221490551), адрес склада в Москве."
+        canonical="https://maison-arome.ru/contacts"
+      />
       {/* Hero */}
       <section className="border-b border-zinc-100 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -499,7 +537,9 @@ export const ContactsPage: React.FC = () => {
               </div>
               <div className="space-y-1.5 pt-1 text-delicate">
                 <div><strong className="text-zinc-900 font-normal">Бренд:</strong> Maison Arôme</div>
+                <div><strong className="text-zinc-900 font-normal">Исполнитель / Продавец:</strong> ИП Лаптев Н. В.</div>
                 <div><strong className="text-zinc-900 font-normal">ИНН:</strong> 667221490551</div>
+                <div><strong className="text-zinc-900 font-normal">Подтверждение подлинности:</strong> Заводские батч-коды (Batch Code)</div>
                 <div><strong className="text-zinc-900 font-normal">Склад и отгрузка:</strong> г. Москва (доставка по всей РФ и ЕАЭС)</div>
                 <div><strong className="text-zinc-900 font-normal">Режим обработки заказов:</strong> Ежедневно с 09:00 до 21:00 (МСК)</div>
               </div>
