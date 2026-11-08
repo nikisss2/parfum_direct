@@ -757,11 +757,13 @@ export function getAllUsersForAdmin(): any[] {
   const stmt = sqlite.prepare(`
     SELECT
       u.id, u.email, u.full_name, u.phone, u.city, u.role, u.created_at,
-      COUNT(o.id) as orders_count,
-      COALESCE(SUM(o.total_amount), 0) as total_spent
+      (SELECT COUNT(*) FROM orders o WHERE o.user_id = u.id) as orders_count,
+      (SELECT COALESCE(SUM(o.total_amount), 0) FROM orders o WHERE o.user_id = u.id) as total_spent,
+      b.card_number,
+      COALESCE(b.balance, 500) as bonus_balance,
+      COALESCE(b.tier, 'Silver') as bonus_tier
     FROM users u
-    LEFT JOIN orders o ON o.user_id = u.id
-    GROUP BY u.id
+    LEFT JOIN bonus_cards b ON b.user_id = u.id
     ORDER BY u.created_at DESC
   `);
   return stmt.all();

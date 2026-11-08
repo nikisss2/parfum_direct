@@ -929,6 +929,44 @@ app.get('/api/admin/users', authAdmin, (_req, res) => {
   res.json({ ok: true, users });
 });
 
+app.post('/api/admin/loyalty/award', authAdmin, (req, res) => {
+  try {
+    const { userIds, userId, amount, reason } = req.body || {};
+    const pts = Math.round(Number(amount));
+    if (!pts || isNaN(pts) || pts <= 0) {
+      res.status(400).json({ ok: false, error: 'Укажите корректное положительное количество баллов (от 1)' });
+      return;
+    }
+    const rawTarget = Array.isArray(userIds) ? userIds : (userId ? [userId] : []);
+    const targetIds = Array.from(new Set(rawTarget.filter(Boolean)));
+    if (!targetIds.length) {
+      res.status(400).json({ ok: false, error: 'Необходимо выбрать хотя бы одного клиента для начисления' });
+      return;
+    }
+    const note = typeof reason === 'string' && reason.trim() ? reason.trim() : 'Начисление бонусов администратором';
+    const results: Array<{ userId: string; balance: number; tier: string; cardNumber: string }> = [];
+
+    for (const uid of targetIds) {
+      const card = addBonusPoints(uid, pts, note);
+      results.push({
+        userId: uid,
+        balance: card.balance,
+        tier: card.tier,
+        cardNumber: card.card_number,
+      });
+    }
+
+    res.json({
+      ok: true,
+      awardedPoints: pts,
+      count: results.length,
+      results,
+    });
+  } catch (err: any) {
+    res.status(500).json({ ok: false, error: err.message || 'Ошибка начисления баллов' });
+  }
+});
+
 app.get('/api/admin/stats', authAdmin, (_req, res) => {
   const stats = getAdminStats();
   res.json({ ok: true, stats });

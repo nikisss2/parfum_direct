@@ -140,6 +140,20 @@ export const ReturnsPage: React.FC = () => {
           <p>
             Каждое отправление Maison Arôme страхуется на 100% стоимости. Если в процессе доставки посылка пострадала или обнаружен дефект:
           </p>
+
+          {/* Video proof requirement callout */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/5 border border-amber-500/25 space-y-2">
+            <div className="font-medium text-amber-950 flex items-center gap-2 text-xs sm:text-sm">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              Обязательное условие возврата поврежденного товара:
+            </div>
+            <p className="text-xs text-zinc-700 leading-relaxed font-light">
+              Возврат или обмен осуществляется строго при наличии <strong>видеодоказательства</strong> того, что товар был поврежден (видеозапись непрерывного процесса распаковки отправления при получении, на которой четко зафиксирован дефект флакона, протечка или неисправность распылителя).
+            </p>
+            <p className="text-xs text-amber-950 font-medium">
+              Обратите внимание: данное правило не распространяется на товары категории <strong>«Тестер»</strong>. Тестеры поставляются в технической коробке со специальным дисконтом и обмену или возврату не подлежат.
+            </p>
+          </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/70 space-y-1.5">
@@ -185,9 +199,9 @@ export const ReturnsPage: React.FC = () => {
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 flex items-start gap-4">
             <span className="text-sm font-semibold font-mono text-zinc-400 pt-0.5">01</span>
             <div className="space-y-1 text-xs sm:text-sm">
-              <div className="font-medium text-zinc-950">Сделайте фото или видео дефекта</div>
+              <div className="font-medium text-zinc-950">Зафиксируйте видеодоказательство повреждения</div>
               <div className="text-zinc-500 font-light text-xs">
-                Сфотографируйте поврежденный флакон, трещину или запишите короткое видео дефекта спрея.
+                Снимите видео распаковки посылки, подтверждающее повреждение флакона или дефект спрея при получении. Видеодоказательство обязательно для оформления возврата (не распространяется на товары категории «Тестер»).
               </div>
             </div>
           </div>

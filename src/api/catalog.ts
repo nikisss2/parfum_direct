@@ -310,11 +310,35 @@ export function fetchAdminUsers(token: string) {
       created_at: string;
       orders_count: number;
       total_spent: number;
+      card_number?: string;
+      bonus_balance?: number;
+      bonus_tier?: string;
     }>;
   }>('/api/admin/users', {
     headers: {
       'x-admin-token': token,
     },
+  });
+}
+
+export function adminAwardLoyaltyPointsApi(
+  token: string,
+  userIds: string[],
+  amount: number,
+  reason: string
+) {
+  return apiFetch<{
+    ok: boolean;
+    awardedPoints: number;
+    count: number;
+    results: Array<{ userId: string; balance: number; tier: string; cardNumber: string }>;
+  }>('/api/admin/loyalty/award', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-admin-token': token,
+    },
+    body: JSON.stringify({ userIds, amount, reason }),
   });
 }
 

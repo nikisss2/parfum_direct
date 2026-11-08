@@ -10,6 +10,7 @@ import {
   adminDeleteOrderApi,
   fetchAdminAudit,
   adminCreateOrderApi,
+  adminAwardLoyaltyPointsApi,
   fetchProducts,
   listItemToPerfume,
 } from '../api/catalog';
@@ -46,6 +47,10 @@ import {
   Database,
   Key,
   Download,
+  Gift,
+  Sparkles,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 
 export const CrmPage: React.FC = () => {
@@ -72,6 +77,60 @@ export const CrmPage: React.FC = () => {
 
   // Order Detail Modal
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+
+  // Loyalty Awarding State
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [isAwardModalOpen, setIsAwardModalOpen] = useState(false);
+  const [awardPointsAmount, setAwardPointsAmount] = useState<number>(500);
+  const [awardReason, setAwardReason] = useState('Подарочные баллы от бутика');
+  const [isAwardingPoints, setIsAwardingPoints] = useState(false);
+  const [targetSingleUser, setTargetSingleUser] = useState<any | null>(null);
+
+  const handleAwardPoints = async () => {
+    const ids = targetSingleUser ? [targetSingleUser.id] : selectedUserIds;
+    if (!ids.length) {
+      showToast('Выберите клиентов для начисления баллов', 'error');
+      return;
+    }
+    if (!awardPointsAmount || awardPointsAmount <= 0) {
+      showToast('Укажите положительное количество баллов', 'error');
+      return;
+    }
+
+    setIsAwardingPoints(true);
+    try {
+      const res = await adminAwardLoyaltyPointsApi(adminToken, ids, awardPointsAmount, awardReason);
+      if (res.ok) {
+        showToast(
+          `Начислено ${res.awardedPoints.toLocaleString('ru-RU')} баллов для ${res.count} ${res.count === 1 ? 'клиента' : 'клиентов'}!`,
+          'success'
+        );
+        // Instant local state update
+        setUsers(prev =>
+          prev.map(u => {
+            const updated = res.results.find(r => r.userId === u.id);
+            if (updated) {
+              return {
+                ...u,
+                bonus_balance: updated.balance,
+                bonus_tier: updated.tier,
+                card_number: updated.cardNumber,
+              };
+            }
+            return u;
+          })
+        );
+        setIsAwardModalOpen(false);
+        setTargetSingleUser(null);
+        setSelectedUserIds([]);
+      }
+    } catch (e: any) {
+      showToast(e.message || 'Ошибка начисления баллов', 'error');
+    } finally {
+      setIsAwardingPoints(false);
+    }
+  };
 
   // New Manual Order Form State
   const [newCustomerName, setNewCustomerName] = useState('');
@@ -305,42 +364,42 @@ export const CrmPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-zinc-100 text-zinc-900 pb-20 font-sans">
       {/* Top Luxury Enterprise Navigation Bar */}
-      <header className="bg-zinc-950 text-white border-b border-zinc-800 sticky top-0 z-40 shadow-lg">
+      <header className="bg-white/95 backdrop-blur-md text-zinc-900 border-b border-zinc-200/80 sticky top-0 z-40 shadow-xs">
         <div className="max-w-[1720px] mx-auto px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="font-serif text-lg font-bold uppercase tracking-wider text-white">
-                Maison Arôme <span className="text-amber-400 font-sans tabular-nums text-xs px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 ml-1">CRM 2.0</span>
+              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="font-light tracking-tight text-lg text-zinc-950 font-medium">
+                Maison Arôme <span className="font-sans tabular-nums text-[11px] px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 ml-1">CRM</span>
               </span>
             </div>
-            <span className="text-zinc-600 hidden md:inline">|</span>
-            <span className="text-xs text-zinc-400 font-sans tabular-nums hidden md:inline">
-              Защищенная корпоративная система управления
+            <span className="text-zinc-300 hidden md:inline">|</span>
+            <span className="text-xs text-zinc-500 font-light hidden md:inline">
+              Защищенная система управления заказами и клиентами
             </span>
           </div>
 
           {/* Quick Stats in Header */}
-          <div className="flex items-center gap-6 text-xs font-sans tabular-nums">
-            <div className="hidden sm:flex items-center gap-2">
+          <div className="flex items-center gap-5 text-xs font-sans tabular-nums">
+            <div className="hidden sm:flex items-center gap-1.5">
               <span className="text-zinc-500">Выручка:</span>
-              <span className="font-bold text-amber-400">
+              <span className="font-semibold text-zinc-950">
                 {(stats?.totalRevenue || 0).toLocaleString('ru-RU')} ₽
               </span>
             </div>
-            <div className="hidden sm:flex items-center gap-2">
-              <span className="text-zinc-500">Заказов в БД:</span>
-              <span className="font-bold text-white">{orders.length}</span>
+            <div className="hidden sm:flex items-center gap-1.5">
+              <span className="text-zinc-500">Заказов:</span>
+              <span className="font-semibold text-zinc-950">{orders.length}</span>
             </div>
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-1.5">
               <span className="text-zinc-500">Клиентов:</span>
-              <span className="font-bold text-white">{users.length}</span>
+              <span className="font-semibold text-zinc-950">{users.length}</span>
             </div>
 
             <button
               onClick={loadAllCrmData}
               disabled={loading}
-              className="p-2 rounded-full border border-zinc-700 hover:border-white text-zinc-300 hover:text-white transition-colors"
+              className="p-2 rounded-full border border-zinc-200 hover:border-zinc-400 text-zinc-600 hover:text-zinc-950 transition-colors"
               title="Обновить данные"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -348,7 +407,7 @@ export const CrmPage: React.FC = () => {
 
             <Link
               to="/account"
-              className="px-4 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium tracking-wider border border-zinc-700 transition-colors"
+              className="px-4 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-medium tracking-wide border border-zinc-200/80 transition-colors"
             >
               Личный профиль
             </Link>
@@ -356,7 +415,7 @@ export const CrmPage: React.FC = () => {
         </div>
 
         {/* Tab Switcher Bar */}
-        <div className="max-w-[1720px] mx-auto px-4 sm:px-8 border-t border-zinc-900 flex overflow-x-auto no-scrollbar">
+        <div className="max-w-[1720px] mx-auto px-4 sm:px-8 border-t border-zinc-100 flex gap-2 overflow-x-auto no-scrollbar py-2">
           {[
             { id: 'orders', label: 'Заказы & Доставка', icon: Package, badge: orders.length },
             { id: 'customers', label: 'Клиентская база', icon: Users, badge: users.length },
@@ -370,16 +429,16 @@ export const CrmPage: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-5 py-3.5 text-xs font-medium tracking-wider transition-all whitespace-nowrap border-b-2 ${
+                className={`flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-full transition-all whitespace-nowrap ${
                   isCurrent
-                    ? 'border-amber-400 text-amber-400 bg-white/5'
-                    : 'border-transparent text-zinc-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-zinc-950 text-white shadow-xs'
+                    : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
                 {tab.badge !== undefined && (
-                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-sans tabular-nums ${isCurrent ? 'bg-amber-400 text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-sans tabular-nums ${isCurrent ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-200 text-zinc-600'}`}>
                     {tab.badge}
                   </span>
                 )}
@@ -533,7 +592,7 @@ export const CrmPage: React.FC = () => {
             <div className="bg-white rounded-[28px] border border-zinc-200/70 shadow-2xs overflow-hidden overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-zinc-950 text-white font-sans tabular-nums uppercase text-[10px] tracking-wider border-b border-zinc-800">
+                  <tr className="bg-zinc-50/80 text-zinc-500 font-semibold uppercase text-[10px] tracking-wider border-b border-zinc-200/80">
                     <th className="py-3.5 px-4">Заказ</th>
                     <th className="py-3.5 px-4">Клиент</th>
                     <th className="py-3.5 px-4">Город & Доставка</th>
@@ -657,54 +716,151 @@ export const CrmPage: React.FC = () => {
         {/* TAB 2: CUSTOMERS CRM */}
         {activeTab === 'customers' && (
           <div className="space-y-6">
-            <div className="p-4 bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+            <div className="p-6 bg-white rounded-3xl border border-zinc-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h2 className="font-serif text-lg font-bold uppercase tracking-wide text-zinc-950">
-                  Клиентская база данных ({users.length} клиентов)
+                <h2 className="text-xl font-medium tracking-tight text-zinc-950">
+                  Клиентская база ({users.length} клиентов)
                 </h2>
                 <p className="text-xs text-zinc-500 font-light mt-0.5">
-                  Данные хранятся в защищенной базе SQLite `maison.db`. Пароли защищены через scrypt.
+                  База данных клиентов бутика, история заказов и управление бонусными картами Maison Arôme
                 </p>
               </div>
+
+              {/* Action Bar for Selected Users */}
+              {selectedUserIds.length > 0 && (
+                <div className="flex items-center gap-3 p-2 px-3 bg-zinc-950 text-white rounded-2xl shadow-lg animate-in fade-in">
+                  <span className="text-xs font-light">
+                    Выбрано клиентов: <strong className="font-semibold">{selectedUserIds.length}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTargetSingleUser(null);
+                      setIsAwardModalOpen(true);
+                    }}
+                    className="px-3.5 py-1.5 bg-white text-zinc-950 text-xs font-medium rounded-full hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <Gift className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Начислить баллы на карту ({selectedUserIds.length})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedUserIds([])}
+                    className="text-xs text-zinc-400 hover:text-white transition-colors px-1 cursor-pointer"
+                  >
+                    Сбросить
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="bg-white rounded-[28px] border border-zinc-200/70 shadow-2xs overflow-hidden overflow-x-auto">
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+              <input
+                type="text"
+                value={customerSearch}
+                onChange={e => setCustomerSearch(e.target.value)}
+                placeholder="Поиск по имени, email, телефону или номеру карты..."
+                className="w-full pl-10 pr-4 py-2.5 text-xs border border-zinc-200 rounded-full outline-none focus:border-zinc-400 bg-white font-light transition-colors"
+              />
+            </div>
+
+            <div className="bg-white rounded-3xl border border-zinc-200/80 shadow-xs overflow-hidden overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-zinc-950 text-white font-sans tabular-nums uppercase text-[10px] tracking-wider">
+                  <tr className="bg-zinc-50/80 text-zinc-500 font-semibold uppercase text-[10px] tracking-wider border-b border-zinc-200/80">
+                    <th className="py-3.5 px-4 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={
+                          users.length > 0 &&
+                          users
+                            .filter(u => {
+                              if (!customerSearch.trim()) return true;
+                              const q = customerSearch.toLowerCase().trim();
+                              return (
+                                u.full_name?.toLowerCase().includes(q) ||
+                                u.email?.toLowerCase().includes(q) ||
+                                (u.phone && u.phone.includes(q)) ||
+                                (u.card_number && u.card_number.includes(q))
+                              );
+                            })
+                            .every(u => selectedUserIds.includes(u.id))
+                        }
+                        onChange={e => {
+                          const currentFiltered = users.filter(u => {
+                            if (!customerSearch.trim()) return true;
+                            const q = customerSearch.toLowerCase().trim();
+                            return (
+                              u.full_name?.toLowerCase().includes(q) ||
+                              u.email?.toLowerCase().includes(q) ||
+                              (u.phone && u.phone.includes(q)) ||
+                              (u.card_number && u.card_number.includes(q))
+                            );
+                          });
+                          if (e.target.checked) {
+                            setSelectedUserIds(Array.from(new Set([...selectedUserIds, ...currentFiltered.map(u => u.id)])));
+                          } else {
+                            const filteredIds = new Set(currentFiltered.map(u => u.id));
+                            setSelectedUserIds(selectedUserIds.filter(id => !filteredIds.has(id)));
+                          }
+                        }}
+                        className="w-4 h-4 rounded border-zinc-300 text-zinc-950 focus:ring-0 cursor-pointer"
+                        title="Выбрать всех"
+                      />
+                    </th>
                     <th className="py-3.5 px-4">Клиент</th>
                     <th className="py-3.5 px-4">Контакты</th>
                     <th className="py-3.5 px-4">Город</th>
-                    <th className="py-3.5 px-4">Заказов</th>
-                    <th className="py-3.5 px-4">LTV (Сумма покупок)</th>
-                    <th className="py-3.5 px-4">Статус лояльности</th>
-                    <th className="py-3.5 px-4">Дата регистрации</th>
-                    <th className="py-3.5 px-4 text-right">Связь</th>
+                    <th className="py-3.5 px-4">Бонусная карта</th>
+                    <th className="py-3.5 px-4 text-right">Заказов</th>
+                    <th className="py-3.5 px-4 text-right">Сумма (LTV)</th>
+                    <th className="py-3.5 px-4 text-right">Действия</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-200">
-                  {users.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="py-12 text-center text-zinc-500 font-sans tabular-nums text-xs">
-                        Клиентов пока нет.
-                      </td>
-                    </tr>
-                  ) : (
-                    users.map(u => {
+                <tbody className="divide-y divide-zinc-100 font-light">
+                  {users
+                    .filter(u => {
+                      if (!customerSearch.trim()) return true;
+                      const q = customerSearch.toLowerCase().trim();
+                      return (
+                        u.full_name?.toLowerCase().includes(q) ||
+                        u.email?.toLowerCase().includes(q) ||
+                        (u.phone && u.phone.includes(q)) ||
+                        (u.city && u.city.toLowerCase().includes(q)) ||
+                        (u.card_number && u.card_number.includes(q))
+                      );
+                    })
+                    .map(u => {
                       const totalSpent = Number(u.total_spent || 0);
                       const ordersCount = Number(u.orders_count || 0);
-                      const isVip = totalSpent >= 50000 || ordersCount >= 5;
-                      const isRegular = ordersCount >= 2;
+                      const isSelected = selectedUserIds.includes(u.id);
                       return (
-                        <tr key={u.id} className="hover:bg-zinc-50 transition-colors">
+                        <tr key={u.id} className={`hover:bg-zinc-50/80 transition-colors ${isSelected ? 'bg-zinc-50/60' : ''}`}>
+                          <td className="py-3.5 px-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={e => {
+                                if (e.target.checked) {
+                                  setSelectedUserIds([...selectedUserIds, u.id]);
+                                } else {
+                                  setSelectedUserIds(selectedUserIds.filter(id => id !== u.id));
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-zinc-300 text-zinc-950 focus:ring-0 cursor-pointer"
+                            />
+                          </td>
+
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs font-serif">
+                              <div className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center font-medium text-xs">
                                 {(u.full_name || u.email || 'U').charAt(0).toUpperCase()}
                               </div>
                               <div>
-                                <div className="font-bold text-zinc-950">{u.full_name || 'Клиент'}</div>
-                                <div className="text-[10px] text-zinc-400 font-sans tabular-nums">{u.role === 'admin' ? 'Администратор' : 'Клиент'}</div>
+                                <div className="font-medium text-zinc-950">{u.full_name || 'Клиент'}</div>
+                                <div className="text-[10px] text-zinc-400 font-sans tabular-nums">{u.role === 'admin' ? 'Администратор' : 'Покупатель'}</div>
                               </div>
                             </div>
                           </td>
@@ -716,57 +872,69 @@ export const CrmPage: React.FC = () => {
 
                           <td className="py-3.5 px-4">{u.city || 'Москва'}</td>
 
-                          <td className="py-3.5 px-4 font-sans tabular-nums font-bold text-zinc-950">
+                          <td className="py-3.5 px-4 font-sans tabular-nums">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-semibold text-zinc-950">
+                                {(u.bonus_balance ?? 500).toLocaleString('ru-RU')} ₽
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200/80 font-normal">
+                                {u.bonus_tier || 'Silver'}
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-zinc-400 font-mono tracking-wider mt-0.5">
+                              {u.card_number || 'MA-••••••••'}
+                            </div>
+                          </td>
+
+                          <td className="py-3.5 px-4 font-sans tabular-nums font-medium text-zinc-950 text-right">
                             {ordersCount}
                           </td>
 
-                          <td className="py-3.5 px-4 font-sans tabular-nums font-bold text-zinc-950">
+                          <td className="py-3.5 px-4 font-sans tabular-nums font-medium text-zinc-950 text-right">
                             {totalSpent.toLocaleString('ru-RU')} ₽
-                          </td>
-
-                          <td className="py-3.5 px-4">
-                            {isVip ? (
-                              <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-medium font-sans tabular-nums">
-                                VIP Privilège
-                              </span>
-                            ) : isRegular ? (
-                              <span className="px-3 py-1 rounded-full bg-sky-50 text-sky-900 border border-sky-200 text-[10px] font-medium font-sans tabular-nums">
-                                Постоянный
-                              </span>
-                            ) : (
-                              <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 text-[10px] font-medium font-sans tabular-nums">
-                                Новый
-                              </span>
-                            )}
-                          </td>
-
-                          <td className="py-3.5 px-4 font-sans tabular-nums text-zinc-500 text-[11px]">
-                            {u.created_at?.split('T')[0] || '—'}
                           </td>
 
                           <td className="py-3.5 px-4 text-right">
                             <div className="flex items-center justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setTargetSingleUser(u);
+                                  setIsAwardModalOpen(true);
+                                }}
+                                className="px-3 py-1.5 rounded-full border border-zinc-200 hover:border-black hover:bg-black hover:text-white text-[11px] font-medium transition-all inline-flex items-center gap-1 cursor-pointer"
+                                title="Начислить баллы этому клиенту"
+                              >
+                                <Gift className="w-3 h-3 text-amber-700" />
+                                <span>+ Баллы</span>
+                              </button>
                               {u.phone && (
                                 <a
                                   href={`tel:${u.phone}`}
-                                  className="p-2 rounded-full border border-zinc-200 hover:border-black text-zinc-700"
+                                  className="p-1.5 rounded-full border border-zinc-200 hover:border-black text-zinc-700 hover:bg-zinc-100 transition-colors"
                                   title="Позвонить"
                                 >
-                                  <Phone className="w-3.5 h-3.5" />
+                                  <Phone className="w-3 h-3" />
                                 </a>
                               )}
                               <a
                                 href={`mailto:${u.email}`}
-                                className="p-2 rounded-full border border-zinc-200 hover:border-black text-zinc-700"
+                                className="p-1.5 rounded-full border border-zinc-200 hover:border-black text-zinc-700 hover:bg-zinc-100 transition-colors"
                                 title="Написать на Email"
                               >
-                                <Mail className="w-3.5 h-3.5" />
+                                <Mail className="w-3 h-3" />
                               </a>
                             </div>
                           </td>
                         </tr>
                       );
-                    })
+                    })}
+                  {users.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="py-12 text-center text-zinc-400 font-light text-xs">
+                        Клиентов пока нет
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -1155,7 +1323,7 @@ export const CrmPage: React.FC = () => {
           >
             <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
               <div>
-                <h3 className="font-serif text-2xl font-bold uppercase tracking-tight text-zinc-950">
+                <h3 className="text-xl font-medium tracking-tight text-zinc-950">
                   Заказ {selectedOrder.orderNumber}
                 </h3>
                 <div className="text-xs text-zinc-400 font-sans tabular-nums mt-0.5">
@@ -1257,6 +1425,166 @@ export const CrmPage: React.FC = () => {
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Распечатать накладную</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Awarding Loyalty Points */}
+      {isAwardModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+          <div
+            onClick={e => e.stopPropagation()}
+            className="w-full max-w-lg bg-white rounded-3xl border border-zinc-200 shadow-2xl p-6 sm:p-7 space-y-5"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center">
+                  <Gift className="w-5 h-5 text-amber-700" />
+                </div>
+                <div>
+                  <h3 className="text-base font-medium text-zinc-950 tracking-tight">
+                    Начисление бонусных баллов
+                  </h3>
+                  <p className="text-[11px] text-zinc-500 font-light">
+                    1 балл = 1 рубль для оплаты заказов в Maison Arôme
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setIsAwardModalOpen(false);
+                  setTargetSingleUser(null);
+                }}
+                className="p-2 rounded-full text-zinc-400 hover:text-black hover:bg-zinc-100 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Recipient(s) info */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">
+                Получатели бонусов:
+              </label>
+              <div className="p-3 bg-zinc-50 border border-zinc-200/70 rounded-2xl max-h-32 overflow-y-auto space-y-1 text-xs">
+                {targetSingleUser ? (
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-zinc-950">{targetSingleUser.full_name || targetSingleUser.email}</span>
+                    <span className="text-[11px] text-zinc-500 font-sans tabular-nums">
+                      Текущий баланс: {(targetSingleUser.bonus_balance ?? 500).toLocaleString('ru-RU')} ₽
+                    </span>
+                  </div>
+                ) : (
+                  selectedUserIds.map(uid => {
+                    const u = users.find(item => item.id === uid);
+                    return (
+                      <div key={uid} className="flex items-center justify-between text-xs py-0.5">
+                        <span className="text-zinc-800">{u?.full_name || u?.email || uid}</span>
+                        <span className="text-[11px] text-zinc-500 font-sans tabular-nums">
+                          {(u?.bonus_balance ?? 500).toLocaleString('ru-RU')} ₽
+                        </span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* Points Amount */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">
+                Количество баллов для начисления:
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[300, 500, 1000, 3000, 5000].map(amt => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => setAwardPointsAmount(amt)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                      awardPointsAmount === amt
+                        ? 'bg-black text-white shadow-xs'
+                        : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+                    }`}
+                  >
+                    +{amt.toLocaleString('ru-RU')} ₽
+                  </button>
+                ))}
+              </div>
+              <div className="relative pt-1">
+                <input
+                  type="number"
+                  min={1}
+                  step={50}
+                  value={awardPointsAmount || ''}
+                  onChange={e => setAwardPointsAmount(Math.max(1, Number(e.target.value)))}
+                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 outline-none focus:border-black font-sans tabular-nums"
+                  placeholder="Или введите свою сумму баллов..."
+                />
+              </div>
+            </div>
+
+            {/* Reason / Comment */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">
+                Основание начисления (причина):
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  'Подарочные баллы от бутика',
+                  'Компенсация за задержку доставки',
+                  'Бонус постоянного клиента',
+                  'Бонус за отзыв об аромате',
+                ].map(preset => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setAwardReason(preset)}
+                    className={`px-2.5 py-1 rounded-full text-[11px] transition-all cursor-pointer border ${
+                      awardReason === preset
+                        ? 'border-black bg-zinc-950 text-white'
+                        : 'border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-zinc-400'
+                    }`}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={awardReason}
+                onChange={e => setAwardReason(e.target.value)}
+                placeholder="Своя причина..."
+                className="w-full px-4 py-2 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 outline-none focus:border-black"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="pt-2 flex items-center justify-end gap-3 border-t border-zinc-100">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAwardModalOpen(false);
+                  setTargetSingleUser(null);
+                }}
+                className="px-4 py-2 rounded-full text-xs text-zinc-500 hover:text-zinc-950 transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                type="button"
+                disabled={isAwardingPoints || (!targetSingleUser && selectedUserIds.length === 0)}
+                onClick={handleAwardPoints}
+                className="px-5 py-2.5 rounded-full bg-zinc-950 hover:bg-black text-white text-xs font-medium transition-all shadow-xs flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>
+                  {isAwardingPoints
+                    ? 'Начисление…'
+                    : `Начислить ${awardPointsAmount.toLocaleString('ru-RU')} ₽ (${targetSingleUser ? '1 клиент' : `${selectedUserIds.length} клиентов`})`}
+                </span>
               </button>
             </div>
           </div>

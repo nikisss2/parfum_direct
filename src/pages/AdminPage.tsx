@@ -15,6 +15,7 @@ import {
   fetchAdminStats,
   fetchAdminUsers,
   fetchAdminOrders,
+  adminAwardLoyaltyPointsApi,
   CatalogListItem,
 } from '../api/catalog';
 import {
@@ -60,6 +61,10 @@ import {
   Users,
   ShieldCheck,
   KeyRound,
+  Gift,
+  Sparkles,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
@@ -86,6 +91,9 @@ export const AdminPage: React.FC = () => {
     created_at: string;
     orders_count: number;
     total_spent: number;
+    card_number?: string;
+    bonus_balance?: number;
+    bonus_tier?: string;
   }>>([]);
   const [adminStats, setAdminStats] = useState<{
     totalOrders: number;
@@ -94,6 +102,61 @@ export const AdminPage: React.FC = () => {
     activeOrders: number;
   } | null>(null);
   const [userSearch, setUserSearch] = useState('');
+
+  // Loyalty Points Awarding State
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [isAwardModalOpen, setIsAwardModalOpen] = useState(false);
+  const [awardPointsAmount, setAwardPointsAmount] = useState<number>(500);
+  const [awardReason, setAwardReason] = useState('Подарочные баллы от бутика');
+  const [isAwardingPoints, setIsAwardingPoints] = useState(false);
+  const [targetSingleUser, setTargetSingleUser] = useState<any | null>(null);
+
+  const handleAwardPoints = async () => {
+    const ids = targetSingleUser ? [targetSingleUser.id] : selectedUserIds;
+    if (!ids.length) {
+      showToast('Ошибка', 'Выберите клиентов для начисления баллов', 'error');
+      return;
+    }
+    if (!awardPointsAmount || awardPointsAmount <= 0) {
+      showToast('Ошибка', 'Укажите положительное количество баллов', 'error');
+      return;
+    }
+
+    setIsAwardingPoints(true);
+    try {
+      const activeToken = token || safeGetItem('maison_auth_token') || safeGetItem(TOKEN_KEY) || '';
+      const res = await adminAwardLoyaltyPointsApi(activeToken, ids, awardPointsAmount, awardReason);
+      if (res.ok) {
+        showToast(
+          'Баллы успешно начислены!',
+          `Начислено ${res.awardedPoints.toLocaleString('ru-RU')} бонусов для ${res.count} ${res.count === 1 ? 'клиента' : 'клиентов'}`,
+          'success'
+        );
+        // Instant local state update
+        setAdminUsers(prev =>
+          prev.map(u => {
+            const updated = res.results.find(r => r.userId === u.id);
+            if (updated) {
+              return {
+                ...u,
+                bonus_balance: updated.balance,
+                bonus_tier: updated.tier,
+                card_number: updated.cardNumber,
+              };
+            }
+            return u;
+          })
+        );
+        setIsAwardModalOpen(false);
+        setTargetSingleUser(null);
+        setSelectedUserIds([]);
+      }
+    } catch (err: any) {
+      showToast('Ошибка', err.message || 'Не удалось начислить баллы', 'error');
+    } finally {
+      setIsAwardingPoints(false);
+    }
+  };
 
   // Login form modes
   const [loginEmail, setLoginEmail] = useState('admin_laptev');
@@ -665,7 +728,7 @@ export const AdminPage: React.FC = () => {
             <Lock className="w-8 h-8" />
           </div>
           <div className="space-y-2">
-            <h1 className="text-2xl font-serif font-bold uppercase tracking-wide">
+            <h1 className="text-2xl font-light text-zinc-950 tracking-tight">
               Доступ ограничен
             </h1>
             <p className="text-xs text-zinc-400 font-light leading-relaxed">
@@ -700,7 +763,7 @@ export const AdminPage: React.FC = () => {
             <div className="w-12 h-12 bg-black text-white flex items-center justify-center mx-auto mb-3">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-normal font-serif uppercase tracking-wide text-zinc-950">
+            <h1 className="text-xl font-light text-zinc-950 tracking-tight">
               Панель администратора
             </h1>
             <p className="text-xs text-zinc-500 font-light">
@@ -824,11 +887,11 @@ export const AdminPage: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-normal font-serif flex items-center gap-2 text-zinc-950 uppercase tracking-wide">
+          <h1 className="text-2xl sm:text-3xl font-light flex items-center gap-2 text-zinc-950 tracking-tight">
             <ShieldCheck className="w-6 h-6 text-zinc-900" />
             Панель управления магазином
           </h1>
-          <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider text-[11px]">
+          <p className="text-xs text-zinc-500 mt-1 uppercase tracking-[0.16em] text-[11px]">
             Защищенная SQLite база данных • Каталог ({metaCount != null ? `${metaCount.toLocaleString('ru-RU')} позиций` : 'активен'})
           </p>
         </div>
@@ -850,35 +913,35 @@ export const AdminPage: React.FC = () => {
 
       {/* KPI Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
+        <div className="p-5 bg-white rounded-3xl border border-zinc-200/70 shadow-xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <CreditCard className="w-3.5 h-3.5 text-zinc-700" /> Выручка заказов
           </p>
-          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+          <p className="text-xl sm:text-2xl font-semibold text-zinc-950 tracking-tight mt-1">
             {(adminStats?.totalRevenue || totalRevenue).toLocaleString('ru-RU')} ₽
           </p>
         </div>
-        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
+        <div className="p-5 bg-white rounded-3xl border border-zinc-200/70 shadow-xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <ShoppingBag className="w-3.5 h-3.5 text-zinc-700" /> Всего заказов
           </p>
-          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+          <p className="text-xl sm:text-2xl font-semibold text-zinc-950 tracking-tight mt-1">
             {adminStats?.totalOrders ?? allOrders.length}
           </p>
         </div>
-        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
+        <div className="p-5 bg-white rounded-3xl border border-zinc-200/70 shadow-xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-amber-700" /> В обработке / сборке
           </p>
-          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+          <p className="text-xl sm:text-2xl font-semibold text-zinc-950 tracking-tight mt-1">
             {adminStats?.activeOrders ?? allOrders.filter(o => o.status === 'assembling' || o.status === 'paid').length}
           </p>
         </div>
-        <div className="p-5 bg-white rounded-[24px] border border-zinc-200/70 shadow-2xs">
+        <div className="p-5 bg-white rounded-3xl border border-zinc-200/70 shadow-xs">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5 text-emerald-700" /> Клиенты в БД (SQLite)
           </p>
-          <p className="text-xl sm:text-2xl font-bold font-serif text-zinc-950 mt-1">
+          <p className="text-xl sm:text-2xl font-semibold text-zinc-950 tracking-tight mt-1">
             {adminStats?.totalUsers ?? adminUsers.length}
           </p>
         </div>
@@ -1060,40 +1123,40 @@ export const AdminPage: React.FC = () => {
 
           {/* KPI Dashboard */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="p-4 rounded-[20px] bg-white border border-zinc-200/70 shadow-2xs">
+            <div className="p-4 rounded-2xl bg-white border border-zinc-200/70 shadow-2xs">
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Всего заказов</div>
-              <div className="text-xl font-serif text-zinc-950 mt-1">{allOrders.length}</div>
+              <div className="text-xl font-medium text-zinc-950 mt-1 tracking-tight">{allOrders.length}</div>
             </div>
-            <div className="p-4 rounded-[20px] bg-emerald-50/60 border border-emerald-200">
+            <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200">
               <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Оплачено онлайн</div>
-              <div className="text-xl font-serif text-emerald-950 mt-1">
+              <div className="text-xl font-medium text-emerald-950 mt-1 tracking-tight">
                 {allOrders.filter(o => o.status === 'paid').length}
               </div>
             </div>
-            <div className="p-4 rounded-[20px] bg-amber-50/60 border border-amber-200">
+            <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200">
               <div className="text-[10px] font-bold text-amber-800 uppercase tracking-widest">В сборке</div>
-              <div className="text-xl font-serif text-amber-950 mt-1">
+              <div className="text-xl font-medium text-amber-950 mt-1 tracking-tight">
                 {allOrders.filter(o => o.status === 'assembling').length}
               </div>
             </div>
-            <div className="p-4 rounded-[20px] bg-zinc-50 border border-zinc-200">
+            <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200">
               <div className="text-[10px] font-bold text-zinc-800 uppercase tracking-widest">Отправлено</div>
-              <div className="text-xl font-serif text-zinc-950 mt-1">
+              <div className="text-xl font-medium text-zinc-950 mt-1 tracking-tight">
                 {allOrders.filter(o => o.status === 'sent').length}
               </div>
             </div>
-            <div className="p-4 rounded-[20px] bg-teal-50/60 border border-teal-200">
+            <div className="p-4 rounded-2xl bg-teal-50/60 border border-teal-200">
               <div className="text-[10px] font-bold text-teal-800 uppercase tracking-widest">Доставлено</div>
-              <div className="text-xl font-serif text-teal-950 mt-1">
+              <div className="text-xl font-medium text-teal-950 mt-1 tracking-tight">
                 {allOrders.filter(o => o.status === 'delivered').length}
               </div>
             </div>
-            <div className="p-4 rounded-[20px] bg-zinc-950 text-white border border-zinc-900">
+            <div className="p-4 rounded-2xl bg-zinc-950 text-white border border-zinc-900">
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1">
                 <TrendingUp className="w-3 h-3 text-emerald-400" />
                 Выручка
               </div>
-              <div className="text-base sm:text-lg font-serif mt-1 text-emerald-400 truncate">
+              <div className="text-base sm:text-lg font-medium mt-1 text-emerald-400 tracking-tight truncate">
                 {totalRevenue.toLocaleString('ru-RU')} ₽
               </div>
             </div>
@@ -1166,7 +1229,7 @@ export const AdminPage: React.FC = () => {
                     {/* Header: Number, Date, Status */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-100">
                       <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-base font-bold font-serif text-zinc-950 uppercase tracking-wide">
+                        <span className="text-base font-medium text-zinc-950 tracking-tight">
                           №{order.orderNumber}
                         </span>
                         <span className="text-xs text-zinc-400 uppercase tracking-wider text-[11px]">от {order.date}</span>
@@ -1324,7 +1387,7 @@ export const AdminPage: React.FC = () => {
                             {order.paymentMethod || 'СБП / Онлайн'}
                           </span>
                         </div>
-                        <div className="text-base sm:text-lg font-serif">
+                        <div className="text-base sm:text-lg font-medium text-zinc-950 tracking-tight">
                           Итого: {order.totalAmount.toLocaleString('ru-RU')} ₽
                         </div>
                       </div>
@@ -1337,102 +1400,220 @@ export const AdminPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab: Users Management (SQLite Database) */}
+      {/* Tab: Users Management (SQLite Database & Loyalty Rewards) */}
       {activeTab === 'users' && (
         <div className="space-y-6">
-          <div className="p-6 rounded-2xl border border-zinc-200/70 bg-white space-y-4">
+          <div className="p-6 rounded-3xl border border-zinc-200/70 bg-white space-y-4 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-base font-normal font-serif text-zinc-900 uppercase tracking-wide flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-emerald-700" />
-                  Защищенная база данных клиентов (SQLite)
+                <h2 className="text-base font-medium text-zinc-950 tracking-tight flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                  База клиентов и бонусная программа
                 </h2>
-                <p className="text-xs text-zinc-500 mt-1">
-                  Все зарегистрированные покупатели магазина, их телефоны, города и сумма покупок. Пароли захешированы криптографическим алгоритмом scrypt.
+                <p className="text-xs text-zinc-500 mt-1 font-light">
+                  Зарегистрированные покупатели, виртуальные бонусные карты, баланс баллов и история покупок.
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  const activeToken = token || safeGetItem('maison_auth_token') || safeGetItem(TOKEN_KEY) || '';
-                  loadAdminData(activeToken);
-                  showToast('Обновлено', 'Список пользователей обновлен из базы', 'success');
-                }}
-                className="px-3.5 py-2 border border-zinc-300 hover:bg-zinc-100 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Обновить
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const activeToken = token || safeGetItem('maison_auth_token') || safeGetItem(TOKEN_KEY) || '';
+                    loadAdminData(activeToken);
+                    showToast('Обновлено', 'Список пользователей обновлен из базы', 'success');
+                  }}
+                  className="px-4 py-2 border border-zinc-200 hover:border-black rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Обновить</span>
+                </button>
+              </div>
             </div>
 
+            {/* Selection Action Bar */}
+            {selectedUserIds.length > 0 && (
+              <div className="p-4 bg-zinc-950 text-white rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-md animate-in fade-in">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs font-medium tracking-wide">
+                    Выбрано клиентов для начисления баллов: <strong>{selectedUserIds.length}</strong>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setTargetSingleUser(null);
+                      setIsAwardModalOpen(true);
+                    }}
+                    className="px-4 py-2 bg-white text-zinc-950 hover:bg-zinc-100 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  >
+                    <Gift className="w-3.5 h-3.5" />
+                    <span>Начислить баллы на карту</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedUserIds([])}
+                    className="px-3 py-2 text-zinc-400 hover:text-white text-xs transition-colors cursor-pointer"
+                  >
+                    Снять выбор
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
               <input
                 type="text"
                 value={userSearch}
                 onChange={e => setUserSearch(e.target.value)}
-                placeholder="Поиск по имени, email или телефону..."
-                className="w-full pl-9 pr-4 py-2.5 text-xs border border-zinc-300 rounded-2xl outline-none focus:border-black font-light transition-colors"
+                placeholder="Поиск по имени, email, телефону или номеру карты..."
+                className="w-full pl-10 pr-4 py-2.5 text-xs border border-zinc-200 rounded-full outline-none focus:border-zinc-400 bg-zinc-50/50 font-light transition-colors"
               />
             </div>
           </div>
 
           {/* Users Table */}
-          <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden">
+          <div className="bg-white border border-zinc-200/80 rounded-3xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-zinc-50 border-b border-zinc-200 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                <thead className="bg-zinc-50/80 border-b border-zinc-200/80 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
                   <tr>
-                    <th className="py-3 px-4">Клиент</th>
-                    <th className="py-3 px-4">Email</th>
-                    <th className="py-3 px-4">Телефон</th>
-                    <th className="py-3 px-4">Город</th>
-                    <th className="py-3 px-4">Роль</th>
-                    <th className="py-3 px-4 text-right">Заказов</th>
-                    <th className="py-3 px-4 text-right">Покупок (₽)</th>
-                    <th className="py-3 px-4 text-right">Регистрация</th>
+                    <th className="py-3.5 px-4 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={
+                          adminUsers.length > 0 &&
+                          adminUsers
+                            .filter(u => {
+                              if (!userSearch.trim()) return true;
+                              const q = userSearch.toLowerCase().trim();
+                              return (
+                                u.full_name?.toLowerCase().includes(q) ||
+                                u.email?.toLowerCase().includes(q) ||
+                                (u.phone && u.phone.includes(q)) ||
+                                (u.card_number && u.card_number.includes(q))
+                              );
+                            })
+                            .every(u => selectedUserIds.includes(u.id))
+                        }
+                        onChange={e => {
+                          const currentFiltered = adminUsers.filter(u => {
+                            if (!userSearch.trim()) return true;
+                            const q = userSearch.toLowerCase().trim();
+                            return (
+                              u.full_name?.toLowerCase().includes(q) ||
+                              u.email?.toLowerCase().includes(q) ||
+                              (u.phone && u.phone.includes(q)) ||
+                              (u.card_number && u.card_number.includes(q))
+                            );
+                          });
+                          if (e.target.checked) {
+                            setSelectedUserIds(Array.from(new Set([...selectedUserIds, ...currentFiltered.map(u => u.id)])));
+                          } else {
+                            const filteredIds = new Set(currentFiltered.map(u => u.id));
+                            setSelectedUserIds(selectedUserIds.filter(id => !filteredIds.has(id)));
+                          }
+                        }}
+                        className="w-4 h-4 rounded border-zinc-300 text-zinc-950 focus:ring-0 cursor-pointer"
+                        title="Выбрать всех отображаемых клиентов"
+                      />
+                    </th>
+                    <th className="py-3.5 px-4">Клиент</th>
+                    <th className="py-3.5 px-4">Контакты</th>
+                    <th className="py-3.5 px-4">Город</th>
+                    <th className="py-3.5 px-4">Роль</th>
+                    <th className="py-3.5 px-4">Бонусная карта & Баланс</th>
+                    <th className="py-3.5 px-4 text-right">Заказов</th>
+                    <th className="py-3.5 px-4 text-right">Сумма (₽)</th>
+                    <th className="py-3.5 px-4 text-right">Действия</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-200 font-light">
+                <tbody className="divide-y divide-zinc-100 font-light">
                   {adminUsers
                     .filter(u => {
                       if (!userSearch.trim()) return true;
                       const q = userSearch.toLowerCase().trim();
                       return (
-                        u.full_name.toLowerCase().includes(q) ||
-                        u.email.toLowerCase().includes(q) ||
+                        u.full_name?.toLowerCase().includes(q) ||
+                        u.email?.toLowerCase().includes(q) ||
                         (u.phone && u.phone.includes(q)) ||
-                        (u.city && u.city.toLowerCase().includes(q))
+                        (u.city && u.city.toLowerCase().includes(q)) ||
+                        (u.card_number && u.card_number.includes(q))
                       );
                     })
-                    .map(u => (
-                      <tr key={u.id} className="hover:bg-zinc-50 transition-colors">
-                        <td className="py-3 px-4 font-medium text-zinc-900">{u.full_name}</td>
-                        <td className="py-3 px-4 font-sans tabular-nums text-[11px] text-zinc-600">{u.email}</td>
-                        <td className="py-3 px-4 text-zinc-700">{u.phone || '—'}</td>
-                        <td className="py-3 px-4 text-zinc-700">{u.city || '—'}</td>
-                        <td className="py-3 px-4">
-                          <span
-                            className={`inline-block px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                              u.role === 'admin'
-                                ? 'bg-zinc-900 text-white'
-                                : 'bg-zinc-100 text-zinc-700 border border-zinc-300'
-                            }`}
-                          >
-                            {u.role === 'admin' ? 'Администратор' : 'Клиент'}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right font-medium text-zinc-900">{u.orders_count || 0}</td>
-                        <td className="py-3 px-4 text-right font-medium text-zinc-950 font-sans tabular-nums">
-                          {(u.total_spent || 0).toLocaleString('ru-RU')} ₽
-                        </td>
-                        <td className="py-3 px-4 text-right text-zinc-500 text-[11px]">
-                          {u.created_at ? u.created_at.split('T')[0] : '—'}
-                        </td>
-                      </tr>
-                    ))}
+                    .map(u => {
+                      const isSelected = selectedUserIds.includes(u.id);
+                      return (
+                        <tr key={u.id} className={`hover:bg-zinc-50/80 transition-colors ${isSelected ? 'bg-zinc-50/60' : ''}`}>
+                          <td className="py-3.5 px-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={e => {
+                                if (e.target.checked) {
+                                  setSelectedUserIds(prev => [...prev, u.id]);
+                                } else {
+                                  setSelectedUserIds(prev => prev.filter(id => id !== u.id));
+                                }
+                              }}
+                              className="w-4 h-4 rounded border-zinc-300 text-zinc-950 focus:ring-0 cursor-pointer"
+                            />
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <div className="font-medium text-zinc-950">{u.full_name || 'Покупатель'}</div>
+                            <div className="text-[10px] text-zinc-400 mt-0.5">ID: {u.id}</div>
+                          </td>
+                          <td className="py-3.5 px-4 font-sans tabular-nums text-xs">
+                            <div className="text-zinc-800">{u.email}</div>
+                            <div className="text-zinc-500 text-[11px]">{u.phone || '—'}</div>
+                          </td>
+                          <td className="py-3.5 px-4 text-zinc-700">{u.city || '—'}</td>
+                          <td className="py-3.5 px-4">
+                            <span
+                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-wide ${
+                                u.role === 'admin'
+                                  ? 'bg-zinc-900 text-white'
+                                  : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
+                              }`}
+                            >
+                              {u.role === 'admin' ? 'Администратор' : 'Клиент'}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-1.5 font-medium text-zinc-950 font-sans tabular-nums">
+                              <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                              <span>{(u.bonus_balance ?? 500).toLocaleString('ru-RU')} ₽</span>
+                            </div>
+                            <div className="text-[10px] text-zinc-400 font-sans tabular-nums flex items-center gap-1.5 mt-0.5">
+                              <span>{u.card_number || 'Карта активна'}</span>
+                              <span className="px-1.5 py-0.2 rounded-full bg-amber-50 text-amber-900 border border-amber-200/60 text-[9px] font-medium">
+                                {u.bonus_tier || 'Silver'}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-medium text-zinc-900">{u.orders_count || 0}</td>
+                          <td className="py-3.5 px-4 text-right font-medium text-zinc-950 font-sans tabular-nums">
+                            {(u.total_spent || 0).toLocaleString('ru-RU')} ₽
+                          </td>
+                          <td className="py-3.5 px-4 text-right">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTargetSingleUser(u);
+                                setIsAwardModalOpen(true);
+                              }}
+                              className="px-3 py-1.5 rounded-full border border-zinc-200 hover:border-black hover:bg-black hover:text-white text-[11px] font-medium transition-all inline-flex items-center gap-1 cursor-pointer"
+                              title="Начислить баллы этому клиенту"
+                            >
+                              <Gift className="w-3 h-3" />
+                              <span>+ Баллы</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   {adminUsers.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-zinc-400">
+                      <td colSpan={9} className="py-12 text-center text-zinc-400 font-light text-xs">
                         Пока нет зарегистрированных пользователей в базе данных
                       </td>
                     </tr>
@@ -1441,6 +1622,166 @@ export const AdminPage: React.FC = () => {
               </table>
             </div>
           </div>
+
+          {/* Modal for Awarding Loyalty Points */}
+          {isAwardModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+              <div
+                onClick={e => e.stopPropagation()}
+                className="w-full max-w-lg bg-white rounded-3xl border border-zinc-200 shadow-2xl p-6 sm:p-7 space-y-5"
+              >
+                <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center">
+                      <Gift className="w-5 h-5 text-amber-700" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-medium text-zinc-950 tracking-tight">
+                        Начисление бонусных баллов
+                      </h3>
+                      <p className="text-[11px] text-zinc-500 font-light">
+                        1 балл = 1 рубль для оплаты заказов в Maison Arôme
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsAwardModalOpen(false);
+                      setTargetSingleUser(null);
+                    }}
+                    className="p-2 rounded-full text-zinc-400 hover:text-black hover:bg-zinc-100 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Recipient(s) info */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">
+                    Получатели бонусов:
+                  </label>
+                  <div className="p-3 bg-zinc-50 border border-zinc-200/70 rounded-2xl max-h-32 overflow-y-auto space-y-1 text-xs">
+                    {targetSingleUser ? (
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-zinc-950">{targetSingleUser.full_name || targetSingleUser.email}</span>
+                        <span className="text-[11px] text-zinc-500 font-sans tabular-nums">
+                          Текущий баланс: {(targetSingleUser.bonus_balance ?? 500).toLocaleString('ru-RU')} ₽
+                        </span>
+                      </div>
+                    ) : (
+                      selectedUserIds.map(uid => {
+                        const u = adminUsers.find(item => item.id === uid);
+                        return (
+                          <div key={uid} className="flex items-center justify-between text-xs py-0.5">
+                            <span className="text-zinc-800">{u?.full_name || u?.email || uid}</span>
+                            <span className="text-[11px] text-zinc-500 font-sans tabular-nums">
+                              {(u?.bonus_balance ?? 500).toLocaleString('ru-RU')} ₽
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+
+                {/* Points Amount */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">
+                    Количество баллов для начисления:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[300, 500, 1000, 3000, 5000].map(amt => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => setAwardPointsAmount(amt)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                          awardPointsAmount === amt
+                            ? 'bg-black text-white shadow-xs'
+                            : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+                        }`}
+                      >
+                        +{amt.toLocaleString('ru-RU')} ₽
+                      </button>
+                    ))}
+                  </div>
+                  <div className="relative pt-1">
+                    <input
+                      type="number"
+                      min={1}
+                      step={50}
+                      value={awardPointsAmount || ''}
+                      onChange={e => setAwardPointsAmount(Math.max(1, Number(e.target.value)))}
+                      className="w-full px-4 py-2.5 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 outline-none focus:border-black font-sans tabular-nums"
+                      placeholder="Или введите свою сумму баллов..."
+                    />
+                  </div>
+                </div>
+
+                {/* Reason / Comment */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider block">
+                    Основание начисления (причина):
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      'Подарочные баллы от бутика',
+                      'Компенсация за задержку доставки',
+                      'Бонус постоянного клиента',
+                      'Бонус за отзыв об аромате',
+                    ].map(preset => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setAwardReason(preset)}
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-light transition-all cursor-pointer ${
+                          awardReason === preset
+                            ? 'bg-zinc-900 text-white'
+                            : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                        }`}
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    value={awardReason}
+                    onChange={e => setAwardReason(e.target.value)}
+                    placeholder="Например: Подарочные баллы от бутика"
+                    className="w-full px-4 py-2.5 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 outline-none focus:border-black font-light"
+                  />
+                </div>
+
+                {/* Actions */}
+                <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-zinc-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAwardModalOpen(false);
+                      setTargetSingleUser(null);
+                    }}
+                    className="px-4 py-2 rounded-full text-xs text-zinc-500 hover:text-black hover:bg-zinc-100 transition-colors cursor-pointer"
+                  >
+                    Отмена
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isAwardingPoints}
+                    onClick={handleAwardPoints}
+                    className="px-6 py-2.5 rounded-full bg-black text-white hover:bg-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-all shadow-md cursor-pointer disabled:opacity-50"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>
+                      {isAwardingPoints
+                        ? 'Начисляем...'
+                        : `Начислить ${awardPointsAmount.toLocaleString('ru-RU')} баллов`}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1450,7 +1791,7 @@ export const AdminPage: React.FC = () => {
           {/* Search product for editing */}
           <div className="p-6 rounded-2xl border border-zinc-200/70 bg-white space-y-4">
             <div className="space-y-1">
-              <h2 className="text-base font-normal font-serif text-zinc-900 uppercase tracking-wide flex items-center gap-2">
+              <h2 className="text-base font-medium text-zinc-900 tracking-tight flex items-center gap-2">
                 <Search className="w-4 h-4 text-black" />
                 Найти товар для редактирования
               </h2>

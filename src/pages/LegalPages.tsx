@@ -25,10 +25,10 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-8">
       {/* Editorial Header */}
       <div className="space-y-2 border-b border-zinc-200 pb-6">
-        <div className="text-[11px] font-sans uppercase tracking-widest text-zinc-400">
+        <div className="text-[11px] font-sans uppercase tracking-[0.16em] text-zinc-400">
           Правовая информация · Законодательство РФ
         </div>
-        <h1 className="text-2xl sm:text-4xl font-serif text-zinc-950 uppercase tracking-wide">
+        <h1 className="text-2xl sm:text-4xl font-light text-zinc-950 tracking-tight">
           {activeTab === 'terms' && 'Пользовательское соглашение'}
           {activeTab === 'offer' && 'Публичная оферта'}
           {activeTab === 'privacy' && 'Политика конфиденциальности (152-ФЗ)'}
@@ -79,7 +79,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
       {activeTab === 'terms' && (
         <div className="prose prose-zinc max-w-none text-xs sm:text-sm text-zinc-700 space-y-6 leading-relaxed">
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               1. Общие положения
             </h2>
             <p>
@@ -91,7 +91,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               2. Учетная запись и безопасность
             </h2>
             <p>
@@ -106,7 +106,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               3. Интеллектуальная собственность
             </h2>
             <p>
@@ -118,7 +118,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               4. Ограничение ответственности
             </h2>
             <p>
@@ -135,7 +135,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
       {activeTab === 'offer' && (
         <div className="prose prose-zinc max-w-none text-xs sm:text-sm text-zinc-700 space-y-6 leading-relaxed">
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               1. Предмет публичной оферты
             </h2>
             <p>
@@ -147,7 +147,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               2. Информация о товарах, услугах и оригинальность
             </h2>
             <p>
@@ -165,7 +165,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               3. Оплата, порядок расчетов и кассовые чеки (54-ФЗ)
             </h2>
             <p>
@@ -180,7 +180,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               4. Доставка и передача товара
             </h2>
             <p>
@@ -195,7 +195,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               5. Возврат, обмен и гарантия качества (ЗОЗПП, Постановление № 2463)
             </h2>
             <p>
@@ -208,12 +208,12 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
               5.3. На основании Постановления Правительства РФ № 2463 парфюмерно-косметические товары надлежащего качества с нарушенной упаковкой, а также индивидуально изготовленные распивы (отливанты) возврату и обмену не подлежат.
             </p>
             <p>
-              5.4. В случае выявления производственного брака атомайзера (неисправность спрея) или повреждения упаковки при транспортировке, Покупатель вправе обратиться к Продавцу в течение 14 дней с момента получения с фото/видео фиксацией дефекта для бесплатной замены или возврата средств. Возврат средств производится в течение до 10 дней в соответствии со ст. 22 ЗОЗПП.
+              5.4. В случае выявления производственного брака атомайзера (неисправность спрея) или повреждения упаковки/флакона при транспортировке, возврат или замена товара осуществляется исключительно при предоставлении видеодоказательства (видеозаписи процесса распаковки отправления), на котором четко зафиксирован дефект или факт повреждения. Данное правило не распространяется на товары категории «Тестер», которые поставляются со специальным дисконтом в технической упаковке и обмену/возврату не подлежат. Покупатель вправе обратиться с видеодоказательством в течение 14 дней с момента получения. Возврат денежных средств производится в течение до 10 дней в соответствии со ст. 22 ЗОЗПП.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               6. Реквизиты Продавца и порядок обращений
             </h2>
             <div className="p-4 bg-zinc-50 border border-zinc-200 font-sans tabular-nums text-xs space-y-1.5 text-zinc-800">
@@ -233,7 +233,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
       {activeTab === 'privacy' && (
         <div className="prose prose-zinc max-w-none text-xs sm:text-sm text-zinc-700 space-y-6 leading-relaxed">
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               1. Правовые основания и цели обработки (152-ФЗ)
             </h2>
             <p>
@@ -251,7 +251,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               2. Состав обрабатываемых данных
             </h2>
             <p>
@@ -267,7 +267,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               3. Передача третьим лицам и трансграничная передача
             </h2>
             <p>
@@ -279,7 +279,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               4. Права субъекта персональных данных
             </h2>
             <p>
@@ -288,7 +288,7 @@ export const LegalPages: React.FC<LegalPagesProps> = ({ initialTab = 'terms' }) 
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            <h2 className="text-base font-medium text-zinc-950 tracking-tight">
               5. Реквизиты Оператора персональных данных
             </h2>
             <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 font-sans tabular-nums text-xs space-y-1.5 text-zinc-800">
