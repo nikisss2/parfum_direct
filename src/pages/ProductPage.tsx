@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchProductBySlug, fetchRelated, listItemToPerfume } from '../api/catalog';
+import { fetchProductBySlug, fetchRecommendations, listItemToPerfume } from '../api/catalog';
 import { VolumeOption, Perfume } from '../types';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
@@ -19,6 +19,8 @@ import {
   Share2,
   Plus,
   Minus,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react';
 
 function volumeShortLabel(vol: VolumeOption): string {
@@ -32,7 +34,8 @@ export const ProductPage: React.FC = () => {
   const { cart, addToCart, updateCartQuantity, removeFromCart, isInWishlist, toggleWishlist } = useShop();
 
   const [perfume, setPerfume] = useState<Perfume | null>(null);
-  const [relatedPerfumes, setRelatedPerfumes] = useState<Perfume[]>([]);
+  const [similarPerfumes, setSimilarPerfumes] = useState<Perfume[]>([]);
+  const [frequentlyBoughtPerfumes, setFrequentlyBoughtPerfumes] = useState<Perfume[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedVolume, setSelectedVolume] = useState<VolumeOption | null>(null);
@@ -107,9 +110,15 @@ export const ProductPage: React.FC = () => {
       .catch(() => setPerfume(null))
       .finally(() => setLoading(false));
 
-    fetchRelated(slug)
-      .then(items => setRelatedPerfumes(items.map(listItemToPerfume)))
-      .catch(() => setRelatedPerfumes([]));
+    fetchRecommendations(slug)
+      .then(res => {
+        setSimilarPerfumes((res.similarByNotes || []).map(listItemToPerfume));
+        setFrequentlyBoughtPerfumes((res.frequentlyBought || []).map(listItemToPerfume));
+      })
+      .catch(() => {
+        setSimilarPerfumes([]);
+        setFrequentlyBoughtPerfumes([]);
+      });
   }, [slug]);
 
   const currentVolume: VolumeOption =
@@ -479,14 +488,41 @@ export const ProductPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Description */}
-          <div className="pt-4 border-t border-zinc-200/70 space-y-2">
-            <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
-              Об аромате
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-light text-delicate">
-              {perfume.description}
-            </p>
+          {/* Description & Verified Luxury Analog Callout */}
+          <div className="pt-4 border-t border-zinc-200/70 space-y-3">
+            {perfume.analogOf && (
+              <div className="p-4 rounded-[22px] bg-[#F7F7F8] border border-zinc-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 stroke-[1.5]" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[10px] uppercase tracking-[0.14em] text-zinc-400 font-normal">
+                      Ольфакторный аналог люкса
+                    </div>
+                    <div className="text-xs sm:text-sm font-medium text-zinc-950 truncate">
+                      {perfume.analogOf}
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  to={`/catalog?q=${encodeURIComponent(perfume.analogOf)}`}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-zinc-200/90 hover:border-black text-[11px] font-light text-zinc-800 hover:text-black transition-colors shrink-0 w-fit"
+                >
+                  <span>Сравнить в каталоге</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Об аромате
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-light text-delicate">
+                {perfume.description}
+              </p>
+            </div>
           </div>
 
           {/* Olfactory Pyramid in Delicate Quiet Luxury Container */}
@@ -570,29 +606,65 @@ export const ProductPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Related Products Grid */}
-      {relatedPerfumes.length > 0 && (
+      {/* Section 1: Похожие ароматы (Note Overlap & Olfactory Similarity) */}
+      {similarPerfumes.length > 0 && (
         <section className="mt-20 pt-10 border-t border-zinc-200/70">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-end justify-between gap-4 mb-6">
             <div>
               <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
-                Рекомендации
+                Ольфакторное сходство
               </span>
               <h2 className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
-                Похожие композиции
+                Похожие ароматы
               </h2>
+              <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 text-delicate">
+                Подборка композиций с наибольшим совпадением ключевых нот пирамиды
+              </p>
             </div>
             <Link
               to="/catalog"
-              className="pill-btn-outline py-2 px-5 text-xs font-light"
+              className="pill-btn-outline py-2 px-5 text-xs font-light shrink-0 flex items-center gap-1.5"
             >
-              В каталог
+              <span>В каталог</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
-            {relatedPerfumes.slice(0, 4).map(rp => (
+            {similarPerfumes.slice(0, 8).map(rp => (
               <ProductCard key={rp.id} perfume={rp} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Section 2: С ними часто берут (Popular Store Bestsellers) */}
+      {frequentlyBoughtPerfumes.length > 0 && (
+        <section className="mt-16 pt-10 border-t border-zinc-200/70">
+          <div className="flex items-end justify-between gap-4 mb-6">
+            <div>
+              <span className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Выбор покупателей
+              </span>
+              <h2 className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+                С ними часто берут
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 text-delicate">
+                Популярные ароматы и бестселлеры, которые чаще всего добавляют к заказу
+              </p>
+            </div>
+            <Link
+              to="/catalog?filter=hits"
+              className="pill-btn-outline py-2 px-5 text-xs font-light shrink-0 flex items-center gap-1.5"
+            >
+              <span>Все хиты</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+            {frequentlyBoughtPerfumes.slice(0, 8).map(fp => (
+              <ProductCard key={fp.id} perfume={fp} />
             ))}
           </div>
         </section>

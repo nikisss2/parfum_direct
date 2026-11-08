@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchMeta, fetchProducts, fetchBudgetHits, listItemToPerfume } from '../api/catalog';
+import { fetchMeta, fetchProducts, fetchBudgetHits, fetchArabicAnalogs, listItemToPerfume } from '../api/catalog';
 import { ProductCard } from '../components/ProductCard';
 import { Perfume } from '../types';
 import {
@@ -58,6 +58,7 @@ const CATEGORY_ITEMS: CategoryCardItem[] = [
 
 export const HomePage: React.FC = () => {
   const [hitPerfumes, setHitPerfumes] = useState<Perfume[]>([]);
+  const [arabicAnalogPerfumes, setArabicAnalogPerfumes] = useState<Perfume[]>([]);
   const [budgetPerfumes, setBudgetPerfumes] = useState<Perfume[]>([]);
   const [newPerfumes, setNewPerfumes] = useState<Perfume[]>([]);
   const [totalCount, setTotalCount] = useState<number | null>(null);
@@ -70,6 +71,10 @@ export const HomePage: React.FC = () => {
     fetchProducts({ isHit: true, limit: 12, sort: 'popular' })
       .then(r => setHitPerfumes(r.items.map(listItemToPerfume)))
       .catch(() => setHitPerfumes([]));
+
+    fetchArabicAnalogs(12)
+      .then(r => setArabicAnalogPerfumes(r.items.map(listItemToPerfume)))
+      .catch(() => setArabicAnalogPerfumes([]));
 
     fetchBudgetHits()
       .then(r => setBudgetPerfumes(r.items.map(listItemToPerfume)))
@@ -255,6 +260,38 @@ export const HomePage: React.FC = () => {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {hitPerfumes.slice(0, 12).map((p) => (
+              <ProductCard key={p.id} perfume={p} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 3.5. ARABIC ANALOGS OF LUXURY PERFUMES (Арабские аналоги люксовых парфюмов) */}
+      {arabicAnalogPerfumes.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-end justify-between gap-4 mb-4 sm:mb-6 pb-2.5 border-b border-zinc-200/70">
+            <div>
+              <h2 className="text-[11px] font-normal uppercase tracking-[0.16em] text-zinc-400">
+                Ольфакторные двойники
+              </h2>
+              <div className="text-xl sm:text-3xl font-light text-zinc-950 mt-0.5">
+                Арабские аналоги люксовых парфюмов
+              </div>
+              <p className="text-xs sm:text-sm text-zinc-500 font-light mt-1 max-w-2xl text-delicate">
+                Точные ольфакторные интерпретации Clive Christian, Parfums de Marly, Kilian, Creed и Louis Vuitton в оригинальном исполнении ведущих арабских домов
+              </p>
+            </div>
+            <Link
+              to="/catalog?filter=analogs"
+              className="pill-btn-outline py-1.5 px-3.5 sm:py-2 sm:px-5 text-[11px] whitespace-nowrap shrink-0"
+            >
+              <span>Все аналоги</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            {arabicAnalogPerfumes.slice(0, 12).map((p) => (
               <ProductCard key={p.id} perfume={p} />
             ))}
           </div>

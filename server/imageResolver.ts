@@ -307,8 +307,8 @@ const PRODUCT_RULES: ProductRule[] = [
   { must: ['amouage', 'reflection'], exclude: ['45', 'woman'], file: 'amouage-reflection-man.jpg' },
 
   // === FRENCH AVENUE ===
-  { must: ['royal blend'], anyBrand: ['french avenue', 'fragrance world'], file: 'french-avenue-royal-blend.jpg' },
-  { must: ['french avenue', 'royal blend'], file: 'french-avenue-royal-blend.jpg' },
+  { must: ['royal blend'], anyBrand: ['french avenue', 'fragrance world'], exclude: ['nero', 'bourbon', 'sequoia', 'vintage'], file: 'french-avenue-royal-blend.jpg' },
+  { must: ['french avenue', 'royal blend'], exclude: ['nero', 'bourbon', 'sequoia', 'vintage'], file: 'french-avenue-royal-blend.jpg' },
   { must: ['after effect'], anyBrand: ['french avenue', 'fragrance world'], file: 'french-avenue-after-effect.jpg' },
   { must: ['french avenue', 'after effect'], file: 'french-avenue-after-effect.jpg' },
 
@@ -379,8 +379,10 @@ function loadAllProductFiles(): IndexedProductFile[] {
   try {
     const files = fs.readdirSync(dir).filter(f => f.endsWith('.jpg') || f.endsWith('.png'));
     return files.map(f => {
-      const base = f.replace(/\.(jpg|png)$/, '');
-      const tokens = base.split('-').filter(t => t.length > 1 && !/^\d+$/.test(t));
+      const base = f.replace(/\.(jpg|png)$/i, '').replace(/^arab-/, '');
+      const tokens = Array.from(
+        new Set(base.split('-').filter(t => t.length > 1 && !/^\d+$/.test(t)))
+      );
       return { file: f, tokens };
     });
   } catch {
@@ -686,6 +688,13 @@ export function resolveProductImage(p: {
   // 6. Интеллектуальный поиск по токенам среди всех файлов оригинальных продуктов СТРОГО В РАМКАХ БРЕНДА ТОВАРА!
   // Товар бренда Zielinski никогда не получит фото Montale или Mancera!
   const hayTokens = new Set(hay.split(/\s+/).filter(t => t.length > 1));
+  const brandTokenSet = new Set(
+    brandLower
+      .replace(/[^a-zа-яё0-9]+/gi, ' ')
+      .split(/\s+/)
+      .filter(t => t.length > 1)
+      .concat(['perfumes', 'parfums', 'parfum', 'collection', 'maison', 'fragrance', 'world'])
+  );
   let bestFile: string | null = null;
   let bestScore = 0;
 
@@ -696,13 +705,20 @@ export function resolveProductImage(p: {
     }
 
     let hits = 0;
+    let modelHits = 0;
     for (const t of item.tokens) {
-      if (hayTokens.has(t)) hits++;
+      if (hayTokens.has(t)) {
+        hits++;
+        if (!brandTokenSet.has(t)) {
+          modelHits++;
+        }
+      }
     }
-    if (hits >= 2 && hits > bestScore) {
+    if (hits >= 2 && modelHits >= 1) {
       const ratio = hits / item.tokens.length;
-      if (ratio >= 0.4) {
-        bestScore = hits;
+      const score = hits + ratio * 0.9;
+      if (ratio >= 0.45 && score > bestScore) {
+        bestScore = score;
         bestFile = item.file;
       }
     }

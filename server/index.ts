@@ -10,6 +10,8 @@ import {
   getCatalog,
   getPopularNotes,
   getBudgetHits,
+  getArabicAnalogs,
+  getProductRecommendations,
   toListItem,
   queryProducts,
   reloadCatalog,
@@ -335,6 +337,7 @@ app.get('/api/products', (req, res) => {
     isHit: req.query.isHit === '1' || req.query.isHit === 'true',
     isNew: req.query.isNew === '1' || req.query.isNew === 'true',
     isSale: req.query.isSale === '1' || req.query.isSale === 'true',
+    isAnalog: req.query.isAnalog === '1' || req.query.isAnalog === 'true',
   });
   res.json(result);
 });
@@ -342,6 +345,17 @@ app.get('/api/products', (req, res) => {
 app.get('/api/products/budget-hits', (_req, res) => {
   const items = getBudgetHits();
   res.json({ items: items.map(toListItem) });
+});
+
+app.get('/api/products/arabic-analogs', (req, res) => {
+  const limit = req.query.limit ? Math.min(48, Math.max(1, Number(req.query.limit))) : 12;
+  const items = getArabicAnalogs(limit);
+  res.json({ items: items.map(toListItem) });
+});
+
+app.get('/api/products/recommendations/:slug', (req, res) => {
+  const result = getProductRecommendations(req.params.slug, 8);
+  res.json(result);
 });
 
 app.get('/api/products/slug/:slug', (req, res) => {
@@ -567,6 +581,7 @@ app.put('/api/admin/products/:id', authAdmin, (req, res) => {
     category: body.category || existing.category,
     categoryName: body.categoryName || existing.categoryName,
     concentration: body.concentration || existing.concentration,
+    analogOf: body.analogOf !== undefined ? body.analogOf : existing.analogOf,
     custom: true,
   };
 

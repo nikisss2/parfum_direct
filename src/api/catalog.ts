@@ -15,6 +15,7 @@ export interface CatalogListItem {
   categoryName: string;
   gender: Gender;
   genderLabel: string;
+  analogOf?: string;
   minPrice: number;
   oldPrice?: number;
   discountPercent?: number;
@@ -58,6 +59,7 @@ export type ProductsQuery = {
   isHit?: boolean;
   isNew?: boolean;
   isSale?: boolean;
+  isAnalog?: boolean;
 };
 
 function buildQuery(params: ProductsQuery): string {
@@ -75,6 +77,7 @@ function buildQuery(params: ProductsQuery): string {
   if (params.isHit) sp.set('isHit', '1');
   if (params.isNew) sp.set('isNew', '1');
   if (params.isSale) sp.set('isSale', '1');
+  if (params.isAnalog) sp.set('isAnalog', '1');
   return sp.toString();
 }
 
@@ -101,6 +104,7 @@ export function listItemToPerfume(item: CatalogListItem): Perfume {
     gender: item.gender,
     genderLabel: item.genderLabel,
     concentration: item.kind === 'perfume' ? 'Eau de Parfum' : '',
+    analogOf: item.analogOf,
     description: '',
     images: [item.image || '/assets/placeholder-product.svg'],
     notes: item.notes || { top: [], heart: [], base: [] },
@@ -125,6 +129,16 @@ export function fetchProducts(query: ProductsQuery) {
 
 export function fetchBudgetHits() {
   return apiFetch<{ items: CatalogListItem[] }>('/api/products/budget-hits');
+}
+
+export function fetchArabicAnalogs(limit = 12) {
+  return apiFetch<{ items: CatalogListItem[] }>(`/api/products/arabic-analogs?limit=${limit}`);
+}
+
+export function fetchRecommendations(slug: string) {
+  return apiFetch<{ similarByNotes: CatalogListItem[]; frequentlyBought: CatalogListItem[] }>(
+    `/api/products/recommendations/${encodeURIComponent(slug)}`
+  );
 }
 
 export function fetchProductBySlug(slug: string) {

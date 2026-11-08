@@ -31,6 +31,7 @@ export interface Perfume {
   gender: Gender;
   genderLabel: string;
   concentration: string;
+  analogOf?: string;
   description: string;
   images: string[];
   notes: PerfumeNotes;

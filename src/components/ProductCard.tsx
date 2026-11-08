@@ -200,8 +200,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           </div>
         )}
 
-        {/* 3. Product Info: Bold Clean Brand + Name */}
-        <div className="mt-2 space-y-0.5">
+        {/* 3. Product Info: Bold Clean Brand + Name + Verified Luxury Analog Pill */}
+        <div className="mt-2 space-y-1">
           <div className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-zinc-950 truncate">
             {perfume.brand}
           </div>
@@ -212,6 +212,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ perfume }) => {
           >
             {perfume.name}
           </Link>
+
+          {perfume.analogOf && (
+            <div
+              className="inline-flex items-center gap-1 max-w-full px-2.5 py-0.5 rounded-full bg-zinc-100/90 text-[10px] sm:text-[11px] font-light text-zinc-700"
+              title={`Ольфакторный аналог ${perfume.analogOf}`}
+            >
+              <span className="text-zinc-400 shrink-0">Аналог:</span>
+              <span className="font-medium text-zinc-900 truncate">{perfume.analogOf}</span>
+            </div>
+          )}
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { resolveProductImage } from './imageResolver.js';
 import { resolveNotesForProduct } from './notesData.js';
 import { applyMarkupToProduct } from './pricing.js';
+import { enrichPerfumeMetadata, computeNoteSimilarity } from './descriptionsAndAnalogs.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -33,6 +34,7 @@ export interface CatalogProduct {
   gender: Gender;
   genderLabel: string;
   concentration?: string;
+  analogOf?: string;
   description: string;
   images: string[];
   notes?: { top: string[]; heart: string[]; base: string[] };
@@ -570,6 +572,7 @@ export function groupProductsByModel(rawList: CatalogProduct[]): {
       notes: resolvedNotes ? { top: resolvedNotes.top, heart: resolvedNotes.heart, base: resolvedNotes.base } : primary.notes,
       allNotes: resolvedNotes ? resolvedNotes.all : (primary.allNotes || []),
     };
+    enrichPerfumeMetadata(prod);
 
     grouped.push(prod);
     byId.set(prod.id, prod);
@@ -724,16 +727,13 @@ export function getCatalog() {
     const bySlug = new Map<string, CatalogProduct>();
     for (const p of file.products) {
       p.brand = normalizeBrand(p.brand, p.name);
-      if (!p.description) {
-        p.description = `${p.name} — ${p.kindLabel || 'оригинальная продукция'}.`;
-      }
       if (!p.images) p.images = [];
-      if (!p.notes || !p.notes.top || p.notes.top.length === 0 || p.notes.top[0] === 'Верхние ноты') {
-        const resolved = resolveNotesForProduct(p.brand, p.name);
-        p.notes = { top: resolved.top, heart: resolved.heart, base: resolved.base };
-        p.allNotes = resolved.all;
-      } else if (!p.allNotes || p.allNotes.length === 0) {
-        p.allNotes = Array.from(new Set([...(p.notes.top || []), ...(p.notes.heart || []), ...(p.notes.base || [])]));
+      if (p.kind === 'perfume') {
+        enrichPerfumeMetadata(p);
+      } else {
+        if (!p.description || /—\s*(?:другое|оригинальная продукция)\.?$/i.test(p.description)) {
+          p.description = `${p.name} — оригинальное средство категории «${p.kindLabel || 'Уход и красота'}». 100% оригинал.`;
+        }
       }
       byId.set(p.id, p);
       bySlug.set(p.slug, p);
@@ -804,6 +804,7 @@ export type ProductQuery = {
   isHit?: boolean;
   isNew?: boolean;
   isSale?: boolean;
+  isAnalog?: boolean;
 };
 
 export function queryProducts(query: ProductQuery) {
@@ -916,6 +917,7 @@ export function queryProducts(query: ProductQuery) {
   if (query.isHit) list = list.filter(p => p.isHit);
   if (query.isNew) list = list.filter(p => p.isNew);
   if (query.isSale) list = list.filter(p => !!p.oldPrice);
+  if (query.isAnalog) list = list.filter(p => Boolean(p.analogOf));
 const TRANSLIT_DICT: Record<string, string[]> = {
   авентус: ['aventus'],
   авентусы: ['aventus'],
@@ -1014,6 +1016,23 @@ const TRANSLIT_DICT: Record<string, string[]> = {
   сайд: ['side'],
   куркджан: ['kurkdjian'],
   куркджян: ['kurkdjian'],
+  блонд: ['blonde'],
+  эмпайр: ['empire'],
+  клайв: ['clive'],
+  кристиан: ['christian'],
+  альтаир: ['althair', 'althaïr'],
+  тигар: ['tygar'],
+  валая: ['valaya'],
+  имаджинейшн: ['imagination'],
+  парагон: ['paragon'],
+  ликвид: ['liquid'],
+  брюн: ['brun'],
+  брун: ['brun'],
+  вулкан: ['vulcan'],
+  азора: ['azora'],
+  турати: ['turathi'],
+  эклэр: ['eclaire', 'eclair'],
+  эклер: ['eclaire', 'eclair'],
 };
 
 function stemRussian(word: string): string {
@@ -1049,7 +1068,7 @@ function getQueryTokenVariants(token: string): string[] {
     const tokenVariantsList = rawTokens.map(getQueryTokenVariants);
 
     list = list.filter(p => {
-      const hay = `${p.name} ${p.brand} ${p.sku} ${p.kindLabel} ${p.categoryName} ${(p.allNotes || []).join(' ')}`.toLowerCase();
+      const hay = `${p.name} ${p.brand} ${p.analogOf || ''} ${p.sku} ${p.kindLabel} ${p.categoryName} ${(p.allNotes || []).join(' ')}`.toLowerCase();
       return tokenVariantsList.every(variants => variants.some(v => hay.includes(v)));
     });
   }
@@ -1091,6 +1110,7 @@ export function toListItem(p: CatalogProduct) {
     categoryName: p.categoryName,
     gender: p.gender,
     genderLabel: p.genderLabel,
+    analogOf: p.analogOf,
     minPrice: p.minPrice,
     oldPrice: p.oldPrice,
     discountPercent: p.discountPercent,
@@ -1163,4 +1183,196 @@ export function getPopularNotes(opts?: { limit?: number }) {
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ru'))
     .slice(0, limit)
     .map(([note, count]) => ({ note, count }));
+}
+
+
+export const ARABIC_ANALOG_SHOWCASE_IDS: string[] = [
+  'p-fa-blonde-empire',   // 1. French Avenue Blonde Empire -> Clive Christian XXI Art Deco Blonde Amber
+  'p-fa-liquid-brun',     // 2. French Avenue Liquid Brun -> Parfums de Marly Althaïr
+  'p-711b095d-233950',    // 3. French Avenue Royal Blend -> Kilian Angels' Share
+  'p-5321f09d-239306',    // 4. French Avenue Vulcan Feu -> Stéphane Humbert Lucas 777 God of Fire
+  'p-dec2deab-234167',    // 5. French Avenue Essence De Blanc -> Louis Vuitton Imagination
+  'p-5f60be10-162193',    // 6. Armaf Club de Nuit Intense Man -> Creed Aventus
+  'p-ee2492a4-89827',     // 7. Armaf Club de Nuit Untold -> MFK Baccarat Rouge 540
+  'p-9e412e06-89828',     // 8. Armaf Club de Nuit White Imperiale -> Parfums de Marly Delina Exclusif
+  'p-5d247239-98150',     // 9. Lattafa Perfumes Asad -> Dior Sauvage Elixir
+  'p-75afd11b-156075',    // 10. Afnan Turathi Blue -> Bvlgari Tygar
+  'p-4ede48d6-242968',    // 11. Afnan Mystique Bouquet -> Parfums de Marly Valaya
+  'p-0f64773a-101808',    // 12. Attar Collection Azora -> Ex Nihilo Fleur Narcotique
+  'p-08f6c8f4-172597',    // 13. Lattafa Perfumes Eclaire -> Giardini Di Toscana Bianco Latte
+  'p-a0c1afb5-231992',    // 14. Lattafa Perfumes Vintage Radio -> Initio Paragon
+  'p-8ac6201e-233945',    // 15. French Avenue Spectre Wraith -> Kilian Black Phantom
+  'p-6efe67ab-89449',     // 16. Afnan 9 PM -> Jean Paul Gaultier Ultra Male
+  'p-1f748f81-86033',     // 17. Al Haramain Amber Oud Gold Edition -> Xerjoff Erba Pura
+  'p-75d6880a-101867',    // 18. Attar Collection The Queen of Sheba -> Kilian Good Girl Gone Bad
+];
+
+function canonicalModelDedupeKey(p: CatalogProduct): string {
+  const b = (p.brand || '').toLowerCase().trim();
+  const m = cleanBaseModelName(p.name)
+    .toLowerCase()
+    .replace(/\b(?:мужской|женский|унисекс|парфюмерная вода|туалетная вода|духи|edp|edt|parfum|extrait de parfum)\b/gi, '')
+    .replace(/[^a-zа-я0-9]+/gi, ' ')
+    .trim();
+  return `${b}|||${m}`;
+}
+
+export function getArabicAnalogs(limit = 12): CatalogProduct[] {
+  const { byId, products } = getCatalog();
+  const selected: CatalogProduct[] = [];
+  const seenKeys = new Set<string>();
+
+  for (const id of ARABIC_ANALOG_SHOWCASE_IDS) {
+    const p = byId.get(id);
+    if (!p || p.kind !== 'perfume' || p.minPrice <= 0 || !p.analogOf) continue;
+    const img = resolveProductImage(p);
+    if (!img || img.includes('placeholder')) continue;
+    const key = canonicalModelDedupeKey(p);
+    if (seenKeys.has(key)) continue;
+    seenKeys.add(key);
+    selected.push(p);
+    if (selected.length >= limit) return selected;
+  }
+
+  // Fallback from catalog if limit > showcase count
+  for (const p of products) {
+    if (selected.length >= limit) break;
+    if (p.kind !== 'perfume' || p.minPrice <= 0 || !p.analogOf) continue;
+    const img = resolveProductImage(p);
+    if (!img || img.includes('placeholder')) continue;
+    const key = canonicalModelDedupeKey(p);
+    if (seenKeys.has(key)) continue;
+    seenKeys.add(key);
+    selected.push(p);
+  }
+
+  return selected;
+}
+
+export function getProductRecommendations(slugOrId: string, limitEach = 8) {
+  const { bySlug, byId, products } = getCatalog();
+  const target = bySlug.get(slugOrId) || byId.get(slugOrId);
+  if (!target) {
+    return { similarByNotes: [], frequentlyBought: [] };
+  }
+
+  const targetModelKey = canonicalModelDedupeKey(target);
+
+  // 1. Похожие ароматы (weighted olfactory pyramid & analog overlap)
+  const scored: Array<{ prod: CatalogProduct; score: number; hasPhoto: boolean; img: string }> = [];
+  for (const cand of products) {
+    if (cand.id === target.id || cand.kind !== 'perfume' || cand.minPrice <= 0) continue;
+    if (/дезодорант|спрей для тела|мист|лосьон|гель для душа|мыло|sampler/i.test(cand.name)) continue;
+    if (canonicalModelDedupeKey(cand) === targetModelKey) continue;
+
+    const sim = computeNoteSimilarity(target, cand);
+    if (sim <= 0) continue;
+
+    const img = resolveProductImage(cand);
+    const hasPhoto = Boolean(img && !img.includes('placeholder'));
+    const photoBoost = hasPhoto ? 3.0 : 0;
+    const cleanTitleBoost = /\bотливант\b/i.test(cand.name) ? -1.0 : 0.5;
+    const volBoost = (cand.volumes?.length || 0) >= 2 ? 0.8 : 0;
+    const hitBoost = cand.isHit ? 0.6 : 0;
+
+    scored.push({
+      prod: cand,
+      score: sim + photoBoost + cleanTitleBoost + volBoost + hitBoost,
+      hasPhoto,
+      img,
+    });
+  }
+
+  scored.sort((a, b) => b.score - a.score || (b.prod._hitPriority || 0) - (a.prod._hitPriority || 0));
+
+  const similarProducts: CatalogProduct[] = [];
+  const usedModelKeys = new Set<string>([targetModelKey]);
+  const usedImages = new Set<string>([resolveProductImage(target)]);
+  const brandCount = new Map<string, number>();
+
+  // First pass: prioritize candidates with genuine unique bottle photos & brand diversity (max 2 per brand)
+  for (const entry of scored) {
+    if (similarProducts.length >= limitEach) break;
+    if (!entry.hasPhoto) continue;
+    if (usedImages.has(entry.img)) continue;
+    const key = canonicalModelDedupeKey(entry.prod);
+    if (usedModelKeys.has(key)) continue;
+    const bKey = entry.prod.brand.toLowerCase();
+    if ((brandCount.get(bKey) || 0) >= 2) continue;
+
+    usedModelKeys.add(key);
+    usedImages.add(entry.img);
+    brandCount.set(bKey, (brandCount.get(bKey) || 0) + 1);
+    similarProducts.push(entry.prod);
+  }
+  // Second pass if fewer than limitEach matched strict diversity
+  if (similarProducts.length < limitEach) {
+    for (const entry of scored) {
+      if (similarProducts.length >= limitEach) break;
+      const key = canonicalModelDedupeKey(entry.prod);
+      if (usedModelKeys.has(key)) continue;
+      usedModelKeys.add(key);
+      similarProducts.push(entry.prod);
+    }
+  }
+
+  // 2. С ними часто берут (curated store bestsellers with genuine photos, excluding target & similarByNotes)
+  const bestsellerPoolIds = [
+    'p-fa-blonde-empire',
+    'p-75ddbac9-12576',
+    'p-fa-liquid-brun',
+    'p-abec58bf-207653',
+    'p-f46807dc-209935',
+    'p-711b095d-233950',
+    'p-72a3abe7-100289',
+    ...BUDGET_HIT_IDS,
+    ...ARABIC_ANALOG_SHOWCASE_IDS,
+  ];
+
+  const candidateHits: CatalogProduct[] = [];
+  const poolSeenIds = new Set<string>();
+
+  for (const id of bestsellerPoolIds) {
+    const p = byId.get(id);
+    if (!p || poolSeenIds.has(p.id) || p.kind !== 'perfume' || p.minPrice <= 0) continue;
+    const img = resolveProductImage(p);
+    if (!img || img.includes('placeholder')) continue;
+    poolSeenIds.add(p.id);
+    candidateHits.push(p);
+  }
+
+  const topCatalogHits = products
+    .filter(p => p.kind === 'perfume' && p.isHit && p.minPrice > 0 && !poolSeenIds.has(p.id))
+    .sort((a, b) => (b._hitPriority || 0) - (a._hitPriority || 0))
+    .slice(0, 30);
+
+  for (const p of topCatalogHits) {
+    const img = resolveProductImage(p);
+    if (!img || img.includes('placeholder')) continue;
+    poolSeenIds.add(p.id);
+    candidateHits.push(p);
+  }
+
+  // Deterministic rotation based on target.id so every product card shows a fresh mix of genuine store hits
+  const seed = target.id.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  const offset = candidateHits.length > 0 ? seed % Math.min(8, candidateHits.length) : 0;
+  const rotatedHits = [
+    ...candidateHits.slice(offset),
+    ...candidateHits.slice(0, offset),
+  ];
+
+  const frequentProducts: CatalogProduct[] = [];
+  for (const cand of rotatedHits) {
+    if (frequentProducts.length >= limitEach) break;
+    if (cand.id === target.id) continue;
+    const key = canonicalModelDedupeKey(cand);
+    if (usedModelKeys.has(key)) continue;
+    usedModelKeys.add(key);
+    frequentProducts.push(cand);
+  }
+
+  return {
+    similarByNotes: similarProducts.map(toListItem),
+    frequentlyBought: frequentProducts.map(toListItem),
+  };
 }

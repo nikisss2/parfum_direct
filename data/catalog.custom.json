@@ -12,7 +12,7 @@
       "categoryName": "Арабская парфюмерия",
       "gender": "unisex",
       "genderLabel": "Унисекс",
-      "description": "French Avenue Liquid Brun — согревающий шедевр восточно-гурманской парфюмерии. Пряная корица, кардамон, флердоранж, карамельное пралине и бурбонская ваниль на древесной базе. 100% оригинал.",
+      "description": "French Avenue Liquid Brun — бархатная восточно-гурманская композиция. Согревающая корица, пряный кардамон, нежный флердоранж, сливочное пралине и бурбонская ваниль на древесной базе. Ольфакторный аналог Parfums de Marly Althaïr. 100% оригинал.",
       "images": [
         "/assets/products/custom-p-fa-liquid-brun-1794022678724.jpg",
         "/assets/products/french-avenue-liquid-brun.jpg"
@@ -97,7 +97,8 @@
       "_hitPriority": 1400,
       "custom": true,
       "oldPrice": 1180,
-      "discountPercent": 24
+      "discountPercent": 24,
+      "analogOf": "Parfums de Marly Althaïr"
     },
     {
       "id": "p-fa-blonde-empire",
@@ -111,7 +112,7 @@
       "categoryName": "Арабский эксклюзив",
       "gender": "unisex",
       "genderLabel": "Унисекс",
-      "description": "French Avenue Blonde Empire (Amber Empire) — роскошная восточно-гурманская композиция. Теплые оттенки золотой амбры, выдержанного рома, благородного табака и белого шоколада. 100% оригинал.",
+      "description": "French Avenue Blonde Empire (Amber Empire) — роскошная восточно-гурманская композиция. Теплые оттенки золотой амбры, выдержанного рома, благородного табака и белого шоколада. Ольфакторный аналог Clive Christian XXI Art Deco Blonde Amber. 100% оригинал.",
       "images": [
         "/assets/products/french-avenue-blonde-empire.jpg"
       ],
@@ -196,7 +197,8 @@
         }
       ],
       "_hitPriority": 1500,
-      "custom": true
+      "custom": true,
+      "analogOf": "Clive Christian XXI Art Deco Blonde Amber"
     },
     {
       "id": "p-75ddbac9-12576",
@@ -210,7 +212,7 @@
       "categoryName": "Нишевая парфюмерия",
       "gender": "unisex",
       "genderLabel": "Унисекс",
-      "description": "Creed Aventus Мужской парфюмерная вода (без спрея) 500 мл — другое, оригинальная продукция.",
+      "description": "Creed Aventus — легендарная фруктово-шипрово-древесная композиция. Королевский ананас, калабрийский бергамот, черная смородина, благородный березовый дым, дубовый мох и серая амбра. 100% оригинал.",
       "images": [
         "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1000&q=80"
       ],
@@ -549,7 +551,7 @@
         }
       ],
       "_hitPriority": 1093,
-      "description": "Creed Absolu Aventus 2025 Мужской парфюмерная вода — Парфюмерия.",
+      "description": "Creed Absolu Aventus — концентрированная пряно-шипрово-цитрусовая композиция. Сочный грейпфрут, черная смородина, бергамот, теплый имбирь, корица, пачули и гаитянский ветивер. 100% оригинал.",
       "isNew": false,
       "custom": true
     },
@@ -563,29 +565,25 @@
       "kindLabel": "Парфюмерия",
       "category": "luxury",
       "categoryName": "Люксовая парфюмерия",
-      "gender": "unisex",
-      "genderLabel": "Унисекс",
+      "gender": "male",
+      "genderLabel": "Мужской",
       "concentration": "Eau de Parfum",
-      "description": "Hugo Boss The Scent Le Parfum for Him Мужской духи (тестер) 100 мл — оригинальная парфюмерия из нашего каталога.",
+      "description": "Hugo Boss The Scent Le Parfum for Him — притягательная кожано-пряная композиция. Острый имбирь, экзотический фрукт манинка, благородный пудровый ирис и теплая темная кожа. 100% оригинал.",
       "images": [
         "/assets/products/custom-p-77837452-75708-1794022768962.jpg",
         "/assets/placeholder-product.svg"
       ],
       "notes": {
         "top": [
-          "Грейпфрут",
-          "Кориандр",
-          "Базилик"
+          "Имбирь",
+          "Экзотический фрукт манинка"
         ],
         "heart": [
-          "Имбирь",
-          "Кардамон",
-          "Цветок апельсина"
+          "Пудровый ирис"
         ],
         "base": [
-          "Табак",
-          "Амбра",
-          "Белый кедр"
+          "Благородная кожа",
+          "Древесные ноты"
         ]
       },
       "longevity": 4,
@@ -620,15 +618,11 @@
         }
       ],
       "allNotes": [
-        "Грейпфрут",
-        "Кориандр",
-        "Базилик",
         "Имбирь",
-        "Кардамон",
-        "Цветок апельсина",
-        "Табак",
-        "Амбра",
-        "Белый кедр"
+        "Манинка",
+        "Ирис",
+        "Кожа",
+        "Древесные ноты"
       ],
       "isHit": true,
       "isNew": false,
@@ -644,10 +638,10 @@
       "kindLabel": "Парфюмерия",
       "category": "luxury",
       "categoryName": "Люксовая парфюмерия",
-      "gender": "unisex",
-      "genderLabel": "Унисекс",
+      "gender": "male",
+      "genderLabel": "Мужской",
       "concentration": "Eau de Parfum",
-      "description": "Versace Eros Parfum Мужской духи (тестер) 100 мл — оригинальная парфюмерия из нашего каталога.",
+      "description": "Versace Eros Parfum — насыщенная восточно-фужерная композиция в концентрации духов. Свежая мята, итальянский лимон, зеленое яблоко, герань, амброксан, бобы тонка и мадагаскарская ваниль. 100% оригинал.",
       "images": [
         "/assets/products/custom-p-5929b09f-71442-1794022904180.jpg",
         "/assets/placeholder-product.svg"
@@ -729,10 +723,10 @@
       "kindLabel": "Парфюмерия",
       "category": "luxury",
       "categoryName": "Люксовая парфюмерия",
-      "gender": "unisex",
-      "genderLabel": "Унисекс",
+      "gender": "male",
+      "genderLabel": "Мужской",
       "concentration": "Eau de Parfum",
-      "description": "Versace Eros Eau De Parfum Мужской парфюмерная вода (тестер) 100 мл — оригинальная парфюмерия из нашего каталога.",
+      "description": "Versace Eros Eau de Parfum — яркая древесно-восточная композиция. Прохладная мята, засахаренное яблоко, итальянский лимон, шалфей, амброксан, кедр и бархатная ваниль. 100% оригинал.",
       "images": [
         "/assets/products/custom-p-831e6812-56954-1794022917667.jpg",
         "/assets/placeholder-product.svg"
@@ -822,8 +816,8 @@
       "kindLabel": "Парфюмерия",
       "category": "luxury",
       "categoryName": "Люксовая парфюмерия",
-      "gender": "unisex",
-      "genderLabel": "Унисекс",
+      "gender": "female",
+      "genderLabel": "Женский",
       "images": [
         "/assets/products/custom-p-b16caa2f-48412-1794022936899.jpg",
         "/assets/placeholder-product.svg"
@@ -873,38 +867,35 @@
           "costPrice": 5779
         }
       ],
-      "description": "Versace Eros Pour Femme Женский парфюмерная вода — Парфюмерия.",
+      "description": "Versace Eros Pour Femme — сияющая цветочно-древесно-мускусная композиция. Сицилийский лимон, зерна граната, калабрийский бергамот, лепестки пиона, жасмин самбак и сливочный сандал. 100% оригинал.",
       "notes": {
         "top": [
-          "Мята",
-          "Зеленое яблоко",
-          "Итальянский лимон"
+          "Сицилийский лимон",
+          "Калабрийский бергамот",
+          "Гранат"
         ],
         "heart": [
-          "Бобы тонка",
-          "Амброксан",
-          "Герань"
+          "Цветок лимона",
+          "Жасмин самбак",
+          "Пион"
         ],
         "base": [
-          "Мадагаскарская ваниль",
-          "Виргинский кедр",
-          "Атласский кедр",
-          "Ветивер",
-          "Дубовый мох"
+          "Сандал",
+          "Амброксан",
+          "Мускус",
+          "Древесные ноты"
         ]
       },
       "allNotes": [
-        "Мята",
-        "Зеленое яблоко",
-        "Итальянский лимон",
-        "Бобы тонка",
+        "Сицилийский лимон",
+        "Бергамот",
+        "Гранат",
+        "Цветок лимона",
+        "Жасмин",
+        "Пион",
+        "Сандал",
         "Амброксан",
-        "Герань",
-        "Мадагаскарская ваниль",
-        "Виргинский кедр",
-        "Атласский кедр",
-        "Ветивер",
-        "Дубовый мох"
+        "Мускус"
       ],
       "isHit": true,
       "isNew": false,
@@ -1063,7 +1054,7 @@
         }
       ],
       "_hitPriority": 1095,
-      "description": "Amouage Guidance Унисекс парфюмерная вода — Парфюмерия.",
+      "description": "Amouage Guidance — гипнотическая цветочно-восточная композиция Квентина Биша. Спелая груша, лесной орех, оманский ладан, османтус, шафран, сливочный сандал и акигалавуд. 100% оригинал.",
       "isNew": false,
       "custom": true
     },
@@ -1134,7 +1125,7 @@
         }
       ],
       "_hitPriority": 595,
-      "description": "Amouage Odyssey Collection Sampler Set (4 х 2 мл: Search, Purpose, Lineage и Guidance) — Парфюмерия.",
+      "description": "Amouage Odyssey Collection Sampler Set — фирменный коллекционный сет из 4 знаковых нишевых композиций дома Amouage (Search, Purpose, Lineage и Guidance) в формате 4 × 2 мл. 100% оригинал.",
       "isNew": false,
       "custom": true
     },
@@ -1251,7 +1242,7 @@
         }
       ],
       "_hitPriority": 595,
-      "description": "Amouage GUIDANCE edp ОТЛИВАНТ — Парфюмерия.",
+      "description": "Amouage Guidance — гипнотическая цветочно-восточная композиция Квентина Биша. Спелая груша, лесной орех, оманский ладан, османтус, шафран, сливочный сандал и акигалавуд. 100% оригинал.",
       "isNew": false,
       "custom": true
     },
@@ -1265,8 +1256,8 @@
       "kindLabel": "Парфюмерия",
       "category": "niche",
       "categoryName": "Нишевая парфюмерия",
-      "gender": "unisex",
-      "genderLabel": "Унисекс",
+      "gender": "male",
+      "genderLabel": "Мужской",
       "images": [
         "/assets/products/custom-p-72a3abe7-100289-1794023025692.jpg",
         "/assets/placeholder-product.svg"
@@ -1414,7 +1405,7 @@
         }
       ],
       "_hitPriority": 1089,
-      "description": "Amouage Reflection Man Мужской парфюмерная вода — Парфюмерия.",
+      "description": "Amouage Reflection Man — аристократичная древесно-цветочная композиция. Пряный розмарин, нероли, пудровый корень ириса, жасмин, благородный сандал, белый кедр и ветивер. 100% оригинал.",
       "isNew": false,
       "custom": true
     },
@@ -1428,8 +1419,8 @@
       "kindLabel": "Парфюмерия",
       "category": "luxury",
       "categoryName": "Люксовая парфюмерия",
-      "gender": "unisex",
-      "genderLabel": "Унисекс",
+      "gender": "male",
+      "genderLabel": "Мужской",
       "images": [
         "/assets/products/custom-p-3f7de138-48396-1794023092887.jpg",
         "/assets/placeholder-product.svg"
@@ -1495,7 +1486,7 @@
           "costPrice": 7424
         }
       ],
-      "description": "Versace Eros Мужской туалетная вода — Парфюмерия.",
+      "description": "Versace Eros — харизматичная фужерно-восточная композиция. Хрустящее зеленое яблоко, листья мяты, цедра лимона, бобы тонка, амброксан, мадагаскарская ваниль и атласский кедр. 100% оригинал.",
       "notes": {
         "top": [
           "Мята",
@@ -1542,8 +1533,8 @@
       "brand": "French Avenue",
       "kind": "perfume",
       "kindLabel": "Парфюмерия",
-      "category": "niche",
-      "categoryName": "Нишевая парфюмерия",
+      "category": "arabian",
+      "categoryName": "Арабская парфюмерия",
       "gender": "unisex",
       "genderLabel": "Унисекс",
       "images": [
@@ -1593,9 +1584,10 @@
         }
       ],
       "_hitPriority": 598,
-      "description": "French Avenue Royal Blend Унисекс парфюмерная вода — Парфюмерия.",
+      "description": "French Avenue Royal Blend — глубокая восточно-гурманская композиция с алкогольно-пряным характером. Выдержанный коньяк, теплая корица, спелая слива, дубовая бочка, пралине и ваниль. Ольфакторный аналог Kilian Angels' Share. 100% оригинал.",
       "isNew": false,
-      "custom": true
+      "custom": true,
+      "analogOf": "Kilian Angels' Share"
     }
   ]
 }

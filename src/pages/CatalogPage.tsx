@@ -57,6 +57,8 @@ export const CatalogPage: React.FC = () => {
     : [];
 
   const isSaleParam = searchParams.get('filter') === 'sale' || searchParams.get('filter') === 'discounts';
+  const isAnalogsParam = searchParams.get('filter') === 'analogs';
+  const isHitsParam = searchParams.get('filter') === 'hits';
   const initialNotesParam = searchParams.get('notes') || searchParams.get('note');
   const initialNotes = initialNotesParam
     ? initialNotesParam.split(',').map(s => s.trim()).filter(Boolean)
@@ -69,6 +71,8 @@ export const CatalogPage: React.FC = () => {
   const [popularNotes, setPopularNotes] = useState<{ note: string; count: number }[]>([]);
   const [noteSearch, setNoteSearch] = useState('');
   const [onlySale, setOnlySale] = useState(isSaleParam);
+  const [onlyAnalogs, setOnlyAnalogs] = useState(isAnalogsParam);
+  const [onlyHits, setOnlyHits] = useState(isHitsParam);
   const [priceMax, setPriceMax] = useState(200000);
   const [priceRange, setPriceRange] = useState(200000);
   const [debouncedPriceRange, setDebouncedPriceRange] = useState(200000);
@@ -119,6 +123,8 @@ export const CatalogPage: React.FC = () => {
     const catParam = searchParams.get('category') || searchParams.get('type') || 'all';
     const qParam = searchParams.get('q') || '';
     const isSale = searchParams.get('filter') === 'sale' || searchParams.get('filter') === 'discounts';
+    const isAnalogs = searchParams.get('filter') === 'analogs';
+    const isHits = searchParams.get('filter') === 'hits';
     const isNew = searchParams.get('filter') === 'new';
     const sortParam = (searchParams.get('sort') as any) || (isNew ? 'new' : 'popular');
 
@@ -135,6 +141,8 @@ export const CatalogPage: React.FC = () => {
     setSelectedCategory(prev => (prev !== catParam ? catParam : prev));
     setCatalogSearch(prev => (prev !== qParam ? qParam : prev));
     setOnlySale(prev => (prev !== isSale ? isSale : prev));
+    setOnlyAnalogs(prev => (prev !== isAnalogs ? isAnalogs : prev));
+    setOnlyHits(prev => (prev !== isHits ? isHits : prev));
     setSortBy(prev => (prev !== sortParam ? sortParam : prev));
     setSelectedBrands(prev => {
       const prevStr = prev.slice().sort().join(',');
@@ -158,6 +166,8 @@ export const CatalogPage: React.FC = () => {
     brands?: string[];
     notes?: string[];
     onlySale?: boolean;
+    onlyAnalogs?: boolean;
+    onlyHits?: boolean;
     priceRange?: number;
     sortBy?: string;
     catalogSearch?: string;
@@ -167,6 +177,8 @@ export const CatalogPage: React.FC = () => {
     const nextBrands = updates.brands !== undefined ? updates.brands : selectedBrands;
     const nextNotes = updates.notes !== undefined ? updates.notes : selectedNotes;
     const nextSale = updates.onlySale !== undefined ? updates.onlySale : onlySale;
+    const nextAnalogs = updates.onlyAnalogs !== undefined ? updates.onlyAnalogs : onlyAnalogs;
+    const nextHits = updates.onlyHits !== undefined ? updates.onlyHits : onlyHits;
     const nextPrice = updates.priceRange !== undefined ? updates.priceRange : priceRange;
     const nextSort = updates.sortBy !== undefined ? updates.sortBy : sortBy;
     const nextSearch = updates.catalogSearch !== undefined ? updates.catalogSearch : catalogSearch;
@@ -177,13 +189,15 @@ export const CatalogPage: React.FC = () => {
     if (nextCat && nextCat !== 'all') sp.set('category', nextCat);
     if (nextBrands.length) sp.set('brands', nextBrands.join(','));
     if (nextNotes.length) sp.set('notes', nextNotes.join(','));
-    if (nextSale) sp.set('filter', 'sale');
+    if (nextAnalogs) sp.set('filter', 'analogs');
+    else if (nextHits) sp.set('filter', 'hits');
+    else if (nextSale) sp.set('filter', 'sale');
     else if (nextSort === 'new') sp.set('filter', 'new');
     if (nextPrice < priceMax) sp.set('maxPrice', String(nextPrice));
     if (nextSort && nextSort !== 'popular' && nextSort !== 'new') sp.set('sort', nextSort);
 
     setSearchParams(sp, { replace: true });
-  }, [selectedKind, selectedCategory, selectedBrands, selectedNotes, onlySale, priceRange, priceMax, sortBy, catalogSearch, setSearchParams]);
+  }, [selectedKind, selectedCategory, selectedBrands, selectedNotes, onlySale, onlyAnalogs, onlyHits, priceRange, priceMax, sortBy, catalogSearch, setSearchParams]);
 
   const loadBrands = useCallback(() => {
     fetchBrands({
@@ -201,7 +215,7 @@ export const CatalogPage: React.FC = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [selectedKind, selectedCategory, selectedBrands, selectedNotes, onlySale, debouncedPriceRange, catalogSearch, sortBy]);
+  }, [selectedKind, selectedCategory, selectedBrands, selectedNotes, onlySale, onlyAnalogs, onlyHits, debouncedPriceRange, catalogSearch, sortBy]);
 
   useEffect(() => {
     let cancelled = false;
@@ -224,6 +238,8 @@ export const CatalogPage: React.FC = () => {
       maxPrice: debouncedPriceRange < priceMax ? debouncedPriceRange : undefined,
       sort: sortBy,
       isSale: onlySale,
+      isAnalog: onlyAnalogs,
+      isHit: onlyHits,
     })
       .then(res => {
         if (cancelled) return;
@@ -244,7 +260,7 @@ export const CatalogPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [page, selectedKind, selectedCategory, selectedBrands, selectedNotes, onlySale, debouncedPriceRange, catalogSearch, sortBy, priceMax, initialLoading]);
+  }, [page, selectedKind, selectedCategory, selectedBrands, selectedNotes, onlySale, onlyAnalogs, onlyHits, debouncedPriceRange, catalogSearch, sortBy, priceMax, initialLoading]);
 
   const toggleBrand = (brand: string) => {
     const next = selectedBrands.includes(brand)
@@ -278,6 +294,12 @@ export const CatalogPage: React.FC = () => {
     syncToUrl({ onlySale: checked });
   };
 
+  const handleToggleOnlyAnalogs = (checked: boolean) => {
+    setOnlyAnalogs(checked);
+    if (checked) setOnlyHits(false);
+    syncToUrl({ onlyAnalogs: checked, onlyHits: false });
+  };
+
   const handleSortChange = (newSort: typeof sortBy) => {
     setSortBy(newSort);
     syncToUrl({ sortBy: newSort });
@@ -294,6 +316,8 @@ export const CatalogPage: React.FC = () => {
     setSelectedBrands([]);
     setSelectedNotes([]);
     setOnlySale(false);
+    setOnlyAnalogs(false);
+    setOnlyHits(false);
     setPriceRange(priceMax);
     setDebouncedPriceRange(priceMax);
     setCatalogSearch('');
@@ -310,6 +334,8 @@ export const CatalogPage: React.FC = () => {
     selectedBrands.length +
     selectedNotes.length +
     (onlySale ? 1 : 0) +
+    (onlyAnalogs ? 1 : 0) +
+    (onlyHits ? 1 : 0) +
     (priceRange < priceMax ? 1 : 0) +
     (catalogSearch ? 1 : 0);
 
@@ -399,8 +425,23 @@ export const CatalogPage: React.FC = () => {
         </div>
       )}
 
-      {/* Sale filter */}
-      <div className="pt-4 border-t border-zinc-200/70">
+      {/* Sale & Analogs filters */}
+      <div className="pt-4 border-t border-zinc-200/70 space-y-3">
+        <label className="flex items-center justify-between cursor-pointer select-none group">
+          <span className="text-xs text-zinc-800 font-light group-hover:text-black transition-colors flex items-center gap-2">
+            <span>Аналоги люкса</span>
+            <span className="text-[10px] bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded-full font-normal">
+              Хит
+            </span>
+          </span>
+          <input
+            type="checkbox"
+            checked={onlyAnalogs}
+            onChange={e => handleToggleOnlyAnalogs(e.target.checked)}
+            className="w-4 h-4 rounded-full accent-black cursor-pointer"
+          />
+        </label>
+
         <label className="flex items-center justify-between cursor-pointer select-none group">
           <span className="text-xs text-zinc-800 font-light group-hover:text-black transition-colors flex items-center gap-2">
             <span>Специальные предложения</span>
@@ -590,7 +631,7 @@ export const CatalogPage: React.FC = () => {
             Maison Arôme Collection
           </span>
           <h1 className="text-2xl sm:text-4xl font-light text-zinc-950 mt-0.5 tracking-tight">
-            Каталог ароматов
+            {onlyAnalogs ? 'Арабские аналоги люксовых парфюмов' : onlyHits ? 'Бестселлеры бутика' : 'Каталог ароматов'}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 mt-1 font-light text-delicate">
             Оригинальные флаконы и распивы · найдено {total.toLocaleString('ru-RU')}
